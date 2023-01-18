@@ -1,17 +1,23 @@
 #include "TimeTableQt.h"
 #include "importfromfile.h"
+#include "about.h"
 #include <string>
 #include <windef.h>
 #include <QDialog>
+#include <QMouseEvent>
 
 TimeTableQt::TimeTableQt(QWidget *parent)
     : QWidget(parent)
 {
     ui.setupUi(this);
+    this->setGeometry(windowsettings.miWindowX, windowsettings.miWindowY, windowsettings.miWindowWeight, windowsettings.miWindowHeight);
     this->setFixedSize(windowsettings.miWindowWeight, windowsettings.miWindowHeight);
     time_calendar = new QTimer(this);
     connect(time_calendar, SIGNAL(timeout()), this, SLOT(UpdateWindow()));
     time_calendar->start(1000);
+    Qt::WindowFlags flags = windowFlags();
+    setWindowFlags(flags | Qt::WindowStaysOnTopHint);
+    show();
 }
 
 TimeTableQt::~TimeTableQt()
@@ -51,6 +57,35 @@ void TimeTableQt::paintEvent(QPaintEvent*)
     
 }
 
+void TimeTableQt::mousePressEvent(QMouseEvent* event)
+{
+    if (event->button() == Qt::LeftButton)
+    {
+        m_bDrag = true;
+        mouseStartPoint = event->globalPos();
+        windowTopLeftPoint = this->frameGeometry().topLeft();
+        setCursor(QCursor(Qt::SizeAllCursor));
+    }
+}
+
+void TimeTableQt::mouseMoveEvent(QMouseEvent* event)
+{
+    if (m_bDrag)
+    {
+        QPoint distance = event->globalPos() - mouseStartPoint;
+        this->move(windowTopLeftPoint + distance);
+    }
+}
+
+void TimeTableQt::mouseReleaseEvent(QMouseEvent* event)
+{
+    if (event->button() == Qt::LeftButton)
+    {
+        m_bDrag = false;
+    }
+    setCursor(QCursor(Qt::ArrowCursor));
+}
+
 void TimeTableQt::UpdateWindow() {
     update();
 }
@@ -58,7 +93,8 @@ void TimeTableQt::UpdateWindow() {
 
 void TimeTableQt::on_actionabout_triggered()
 {
-    close();
+    About* dialog = new About(this);
+    dialog->show();
 }
 
 void TimeTableQt::on_actionexit_triggered()
@@ -66,10 +102,24 @@ void TimeTableQt::on_actionexit_triggered()
     close();
 }
 
-
 void TimeTableQt::on_actioninport_triggered()
 {
     ImportFromFile* dialog = new ImportFromFile(this);
     dialog->show();
+}
+
+void TimeTableQt::on_actiontotop_triggered()
+{
+    Qt::WindowFlags flags;
+    bool ischecked=this->ui.actiontotop->isChecked();
+    if(ischecked){
+        flags=windowFlags();
+        setWindowFlags(flags|Qt::WindowStaysOnTopHint);
+        show();
+    }
+    else{
+        setWindowFlags(flags);
+        show();
+    }
 }
 

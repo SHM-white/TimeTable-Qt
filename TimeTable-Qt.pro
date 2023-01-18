@@ -13,6 +13,7 @@ SOURCES += \
     TextFormat.cpp \
     Timetable.cpp \
     WindowSettings.cpp \
+    about.cpp \
     importfromfile.cpp \
     main.cpp \
     TimeTableQt.cpp
@@ -23,6 +24,7 @@ HEADERS += \
     TextFormat.h \
     Timetable.h \
     WindowSettings.h \
+    about.h \
     framework.h \
     TimeTableQt.h \
     importfromfile.h \
@@ -31,6 +33,7 @@ HEADERS += \
 
 FORMS += \
     TimeTableQt.ui \
+    about.ui \
     importfromfile.ui
 
 TRANSLATIONS += \
@@ -58,3 +61,6 @@ else:win32:CONFIG(debug, debug|release): LIBS += -LC:/libraries/jsoncpp/lib/debu
 
 INCLUDEPATH += C:/libraries/jsoncpp/include
 DEPENDPATH += C:/libraries/jsoncpp/include
+
+RESOURCES += \
+    TimeTableQt.qrc

@@ -29,9 +29,13 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>从CSV导入</string>
   </property>
-  <widget class="QWidget" name="">
+  <property name="windowIcon">
+   <iconset resource="TimeTableQt.qrc">
+    <normaloff>:/TimeTableQt/TimeTable.ico</normaloff>:/TimeTableQt/TimeTable.ico</iconset>
+  </property>
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -169,6 +173,9 @@
         <property name="text">
          <string>确定</string>
         </property>
+        <property name="default">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item>
@@ -203,6 +210,8 @@
   <tabstop>pushButton_2</tabstop>
   <tabstop>pushButton_CANCEL</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="TimeTableQt.qrc"/>
+ </resources>
  <connections/>
 </ui>

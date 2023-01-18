@@ -12,7 +12,7 @@
             ["%02dÔÂ%02dÌì-%02d:%02d:%02d","Î¢ÈíÑÅºÚ",[2,104],15,[255,0,0]]
          ],
          "WindowSize" : [ 250,110 ],
-         "WindowLocation" : [ 1200, 20 ],
+         "WindowLocation" : [ 1200, 40 ],
          "LessonInfoFile" : "Lessons.json",
          "CountDownDay" : [ 2023 , 1 , 22 , 0 , 0 , 0],
          "CountDownDayInLine" : 4

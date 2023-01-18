@@ -55,6 +55,9 @@
     <ClCompile Include="importfromfile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="about.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="config.json" />
@@ -93,9 +96,15 @@
     <QtMoc Include="importfromfile.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="about.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="importfromfile.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="about.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

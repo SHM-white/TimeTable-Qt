@@ -21,7 +21,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -103,9 +103,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="about.cpp" />
     <ClCompile Include="importfromfile.cpp" />
     <ClCompile Include="WindowSettings.cpp" />
     <QtRcc Include="TimeTableQt.qrc" />
+    <QtUic Include="about.ui" />
     <QtUic Include="importfromfile.ui" />
     <QtUic Include="TimeTableQt.ui" />
     <QtMoc Include="TimeTableQt.h" />
@@ -124,6 +126,7 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="about.h" />
     <ClInclude Include="CSVEditor.h" />
     <QtMoc Include="importfromfile.h" />
     <ClInclude Include="Lesson.h" />

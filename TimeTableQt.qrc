@@ -1,4 +1,6 @@
 <RCC>
-    <qresource prefix="TimeTableQt">
+    <qresource prefix="/TimeTableQt">
+        <file>small.ico</file>
+        <file>TimeTable.ico</file>
     </qresource>
 </RCC>

@@ -1,4 +1,4 @@
-
+﻿
 #include "Timetable.h"
 #include <Windows.h>
 #include <fstream>
@@ -135,7 +135,7 @@ std::string TimeTable::mGetCurrentLesson(std::string& LessonNull)
         std::ifstream in(mLessonInfoPath, std::ios::in);
         if (!in.is_open())
         {
-            return std::string("找不到") + mLessonInfoPath;
+            return std::string("Can't find ") + mLessonInfoPath;
         };
         if (reader.parse(in, root)) {
             std::string week{ mGetCurrentTime("%a") };

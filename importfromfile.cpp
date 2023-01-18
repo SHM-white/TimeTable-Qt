@@ -1,5 +1,6 @@
 #include "importfromfile.h"
 #include "ui_importfromfile.h"
+#include "TimeTableQt.h"
 #include <qfiledialog.h>
 #include <qmessagebox.h>
 
@@ -33,12 +34,41 @@ void ImportFromFile::on_pushButton_clicked()
     if (openfilename.isEmpty()) {
         QMessageBox::warning(this, QString("提示"), QString("未选择文件"));
     }
-    QMessageBox::warning(this, QString(""), QString(""));
+    else {
+        this->ui->lineEdit->setText(openfilename);
+    }
+    
 }
 
 
 void ImportFromFile::on_pushButton_2_clicked()
 {
     QString openfilename = QFileDialog::getSaveFileName(this, QString("请选择需要导入到的json文件"), QString("C:\\"), QString("JSON文件(*.json);;All(*.*)"));
+    if (openfilename.isEmpty()) {
+        QMessageBox::warning(this, QString("提示"), QString("未选择文件"));
+    }
+    else {
+        this->ui->lineEdit_2->setText(openfilename);
+    }
+    
+}
+
+
+void ImportFromFile::on_pushButton_OK_clicked()
+{
+    QString csvpath = this->ui->lineEdit->text();
+    QString jsonpath = this->ui->lineEdit_2->text();
+    TimeTableQt* pParent = (TimeTableQt*)parentWidget();
+    if ((!csvpath.isEmpty()) && (!jsonpath.isEmpty())) {
+        pParent->timetable.mImportLessonsFromCsv(csvpath.toStdString(), jsonpath.toStdString());
+        QMessageBox::Yes;
+    }
+    close();
+}
+
+
+void ImportFromFile::on_pushButton_CANCEL_clicked()
+{
+    close();
 }
 

@@ -25,6 +25,10 @@ private slots:
 
     void on_pushButton_2_clicked();
 
+    void on_pushButton_OK_clicked();
+
+    void on_pushButton_CANCEL_clicked();
+
 private:
     Ui::ImportFromFile *ui;
 };

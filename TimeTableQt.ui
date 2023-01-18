@@ -25,6 +25,10 @@
   <property name="windowTitle">
    <string>TimeTable</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="TimeTableQt.qrc">
+    <normaloff>:/TimeTableQt/TimeTable.ico</normaloff>:/TimeTableQt/TimeTable.ico</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget" native="true">
    <property name="geometry">
     <rect>
@@ -101,6 +105,9 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>窗口置顶</string>
    </property>
@@ -126,6 +133,8 @@
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="TimeTableQt.qrc"/>
+ </resources>
  <connections/>
 </ui>
