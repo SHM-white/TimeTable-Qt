@@ -1,6 +1,8 @@
 #include "TimeTableQt.h"
 #include "importfromfile.h"
 #include "about.h"
+#include "showalllessons.h"
+#include "showmoreinfo.h"
 #include <string>
 #include <windef.h>
 #include <QDialog>
@@ -121,5 +123,25 @@ void TimeTableQt::on_actiontotop_triggered()
         setWindowFlags(flags);
         show();
     }
+}
+
+
+void TimeTableQt::on_actionminimize_triggered()
+{
+     this->setWindowState(Qt::WindowMinimized);
+}
+
+
+void TimeTableQt::on_actionshowall_triggered()
+{
+    ShowAllLessons* dialog = new ShowAllLessons(this);
+    dialog->show();
+}
+
+
+void TimeTableQt::on_actionmoreinfo_triggered()
+{
+    ShowMoreInfo* dialog = new ShowMoreInfo(this);
+    dialog->show();
 }
 

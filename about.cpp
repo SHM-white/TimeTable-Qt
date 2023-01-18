@@ -1,6 +1,7 @@
 #include "about.h"
 #include "ui_about.h"
 #include "TimeTableQt.h"
+#include <QDesktopServices>
 
 About::About(QWidget *parent) :
     QDialog(parent),
@@ -22,5 +23,17 @@ About::~About()
 void About::on_pushButton_clicked()
 {
     close();
+}
+
+
+void About::on_commandLinkButton_clicked()
+{
+    QDesktopServices::openUrl(QUrl(QString("https://github.com/SHM-white/TimeTable")));
+}
+
+
+void About::on_commandLinkButton_2_clicked()
+{
+    QDesktopServices::openUrl(QUrl(QString("https://github.com/SHM-white/TimeTable-Qt")));
 }
 

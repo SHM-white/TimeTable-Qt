@@ -33,4 +33,7 @@ private slots:
     void on_actionexit_triggered();
     void on_actioninport_triggered();
     void on_actiontotop_triggered();
+    void on_actionminimize_triggered();
+    void on_actionshowall_triggered();
+    void on_actionmoreinfo_triggered();
 };

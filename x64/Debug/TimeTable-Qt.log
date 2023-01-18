@@ -1,2 +1,7 @@
-﻿  importfromfile.cpp
+﻿  moc TimeTableQt.h
+  about.cpp
+  importfromfile.cpp
+  TimeTableQt.cpp
+  main.cpp
+  moc_TimeTableQt.cpp
   TimeTable-Qt.vcxproj -> D:\Documents\source\repos\TimeTable-Qt\x64\Debug\TimeTable-Qt.exe

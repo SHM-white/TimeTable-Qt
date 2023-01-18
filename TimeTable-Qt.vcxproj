@@ -105,10 +105,14 @@
   <ItemGroup>
     <ClCompile Include="about.cpp" />
     <ClCompile Include="importfromfile.cpp" />
+    <ClCompile Include="showalllessons.cpp" />
+    <ClCompile Include="showmoreinfo.cpp" />
     <ClCompile Include="WindowSettings.cpp" />
     <QtRcc Include="TimeTableQt.qrc" />
     <QtUic Include="about.ui" />
     <QtUic Include="importfromfile.ui" />
+    <QtUic Include="showalllessons.ui" />
+    <QtUic Include="showmoreinfo.ui" />
     <QtUic Include="TimeTableQt.ui" />
     <QtMoc Include="TimeTableQt.h" />
     <ClCompile Include="CSVEditor.cpp" />
@@ -131,6 +135,8 @@
     <QtMoc Include="importfromfile.h" />
     <ClInclude Include="Lesson.h" />
     <ClInclude Include="resource.h" />
+    <QtMoc Include="showalllessons.h" />
+    <QtMoc Include="showmoreinfo.h" />
     <ClInclude Include="TextFormat.h" />
     <ClInclude Include="Timetable.h" />
     <ClInclude Include="WindowSettings.h" />

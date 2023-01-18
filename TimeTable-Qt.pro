@@ -16,7 +16,9 @@ SOURCES += \
     about.cpp \
     importfromfile.cpp \
     main.cpp \
-    TimeTableQt.cpp
+    TimeTableQt.cpp \
+    showalllessons.cpp \
+    showmoreinfo.cpp
 
 HEADERS += \
     CSVEditor.h \
@@ -29,12 +31,16 @@ HEADERS += \
     TimeTableQt.h \
     importfromfile.h \
     resource.h \
+    showalllessons.h \
+    showmoreinfo.h \
     targetver.h
 
 FORMS += \
     TimeTableQt.ui \
     about.ui \
-    importfromfile.ui
+    importfromfile.ui \
+    showalllessons.ui \
+    showmoreinfo.ui
 
 TRANSLATIONS += \
     TimeTable-Qt_zh_CN.ts
