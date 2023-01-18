@@ -103,8 +103,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="importfromfile.cpp" />
     <ClCompile Include="WindowSettings.cpp" />
     <QtRcc Include="TimeTableQt.qrc" />
+    <QtUic Include="importfromfile.ui" />
     <QtUic Include="TimeTableQt.ui" />
     <QtMoc Include="TimeTableQt.h" />
     <ClCompile Include="CSVEditor.cpp" />
@@ -123,6 +125,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CSVEditor.h" />
+    <QtMoc Include="importfromfile.h" />
     <ClInclude Include="Lesson.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="TextFormat.h" />

@@ -126,25 +126,6 @@
    </property>
   </action>
  </widget>
- <resources>
-  <include location="TimeTableQt.qrc"/>
- </resources>
- <connections>
-  <connection>
-   <sender>actionexit</sender>
-   <signal>changed()</signal>
-   <receiver>TimeTableQtClass</receiver>
-   <slot>close()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>124</x>
-     <y>65</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>124</x>
-     <y>65</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <resources/>
+ <connections/>
 </ui>

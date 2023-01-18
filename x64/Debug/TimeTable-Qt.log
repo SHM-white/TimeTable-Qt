@@ -1,5 +1,18 @@
-﻿  uic TimeTableQt.ui
+﻿  Reading Qt configuration (C:/Qt/6.4.2/msvc2019_64/bin/qmake)
+  uic importfromfile.ui
+  uic TimeTableQt.ui
+  rcc TimeTableQt.qrc
+  moc TimeTableQt.h
+  moc importfromfile.h
+   RCC: Warning: No resources in 'D:\Documents\source\repos\TimeTable-Qt\TimeTable-Qt\TimeTableQt.qrc'.
+  importfromfile.cpp
+  WindowSettings.cpp
+  CSVEditor.cpp
+  TextFormat.cpp
+  Timetable.cpp
   TimeTableQt.cpp
   main.cpp
+  qrc_TimeTableQt.cpp
   moc_TimeTableQt.cpp
+  moc_importfromfile.cpp
   TimeTable-Qt.vcxproj -> D:\Documents\source\repos\TimeTable-Qt\x64\Debug\TimeTable-Qt.exe

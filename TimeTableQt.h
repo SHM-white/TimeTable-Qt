@@ -22,4 +22,7 @@ private:
     void paintEvent(QPaintEvent*) override;
 private slots:
     void UpdateWindow();
+    void on_actionabout_triggered();
+    void on_actionexit_triggered();
+    void on_actioninport_triggered();
 };

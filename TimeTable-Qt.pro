@@ -13,8 +13,9 @@ SOURCES += \
     TextFormat.cpp \
     Timetable.cpp \
     WindowSettings.cpp \
+    importfromfile.cpp \
     main.cpp \
-    mainwindow.cpp
+    TimeTableQt.cpp
 
 HEADERS += \
     CSVEditor.h \
@@ -23,12 +24,14 @@ HEADERS += \
     Timetable.h \
     WindowSettings.h \
     framework.h \
-    mainwindow.h \
+    TimeTableQt.h \
+    importfromfile.h \
     resource.h \
     targetver.h
 
 FORMS += \
-    mainwindow.ui
+    TimeTableQt.ui \
+    importfromfile.ui
 
 TRANSLATIONS += \
     TimeTable-Qt_zh_CN.ts
