@@ -1,25 +1,150 @@
-<UI version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>TimeTableQtClass</class>
- <widget class="QWidget" name="TimeTableQtClass" >
-  <property name="objectName" >
-   <string notr="true">TimeTableQtClass</string>
-  </property>
-  <property name="geometry" >
+ <widget class="QWidget" name="TimeTableQtClass">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>400</height>
+    <width>250</width>
+    <height>131</height>
    </rect>
   </property>
-  <property name="windowTitle" >
-   <string>TimeTableQt</string>
-  </property>$centralwidget$
+  <property name="minimumSize">
+   <size>
+    <width>250</width>
+    <height>100</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>250</width>
+    <height>16777215</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>TimeTable</string>
+  </property>
+  <widget class="QWidget" name="centralwidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>100</width>
+     <height>30</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>250</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>250</width>
+     <height>25</height>
+    </size>
+   </property>
+   <widget class="QMenu" name="menufiles">
+    <property name="title">
+     <string>文件</string>
+    </property>
+    <addaction name="actioninport"/>
+    <addaction name="actionshowall"/>
+    <addaction name="actionmoreinfo"/>
+   </widget>
+   <widget class="QMenu" name="menuhelp">
+    <property name="title">
+     <string>帮助</string>
+    </property>
+    <addaction name="actionabout"/>
+   </widget>
+   <widget class="QMenu" name="menuwindow">
+    <property name="title">
+     <string>窗口</string>
+    </property>
+    <addaction name="actiontotop"/>
+    <addaction name="actionminimize"/>
+    <addaction name="separator"/>
+    <addaction name="actionexit"/>
+   </widget>
+   <addaction name="menuwindow"/>
+   <addaction name="menufiles"/>
+   <addaction name="menuhelp"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>3</width>
+     <height>24</height>
+    </rect>
+   </property>
+  </widget>
+  <action name="actionabout">
+   <property name="text">
+    <string>关于</string>
+   </property>
+  </action>
+  <action name="actioninport">
+   <property name="text">
+    <string>从文件导入</string>
+   </property>
+  </action>
+  <action name="actiontotop">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>窗口置顶</string>
+   </property>
+  </action>
+  <action name="actionminimize">
+   <property name="text">
+    <string>最小化</string>
+   </property>
+  </action>
+  <action name="actionshowall">
+   <property name="text">
+    <string>显示所有</string>
+   </property>
+  </action>
+  <action name="actionmoreinfo">
+   <property name="text">
+    <string>更多信息</string>
+   </property>
+  </action>
+  <action name="actionexit">
+   <property name="text">
+    <string>退出</string>
+   </property>
+  </action>
  </widget>
- <layoutDefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
  <resources>
-   <include location="TimeTableQt.qrc"/>
+  <include location="TimeTableQt.qrc"/>
  </resources>
- <connections/>
-</UI>
+ <connections>
+  <connection>
+   <sender>actionexit</sender>
+   <signal>changed()</signal>
+   <receiver>TimeTableQtClass</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>124</x>
+     <y>65</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>124</x>
+     <y>65</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
