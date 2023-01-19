@@ -146,7 +146,12 @@
     <ClInclude Include="WindowSettings.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="feixiaohao.icon (3).ico" />
+    <Image Include="feixiaohao.icon.ico" />
+    <Image Include="feixiaohao.icon.png" />
+    <Image Include="icon2.ico" />
     <Image Include="small.ico" />
+    <Image Include="TimeTable.ico" />
     <Image Include="TimeTable2.0.ico" />
   </ItemGroup>
   <ItemGroup>

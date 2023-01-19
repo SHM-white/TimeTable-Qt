@@ -100,6 +100,21 @@
     <Image Include="TimeTable2.0.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="TimeTable.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="feixiaohao.icon.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="feixiaohao.icon.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icon2.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="feixiaohao.icon (3).ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="importfromfile.h">

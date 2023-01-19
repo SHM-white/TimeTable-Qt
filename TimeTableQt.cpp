@@ -10,6 +10,18 @@
 #include <QPainter>
 #include <QPixmap>
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#include <WinUser.h>
+#include <windowsx.h>
+#include <dwmapi.h>
+#include <objidl.h> // Fixes error C2504: 'IUnknown' : base class undefined
+#include <gdiplus.h>
+#include <GdiPlusColor.h>
+#pragma comment (lib,"Dwmapi.lib") // Adds missing library, fixes error LNK2019: unresolved external symbol __imp__DwmExtendFrameIntoClientArea
+#pragma comment (lib,"user32.lib")
+#endif
+
 TimeTableQt::TimeTableQt(QWidget *parent)
     : QWidget(parent)
 {
@@ -29,6 +41,16 @@ TimeTableQt::TimeTableQt(QWidget *parent)
     MenuRD.setX(this->ui.menubar->width());
     MenuRD.setY(this->ui.menubar->height());
     this->setMouseTracking(true);
+    BOOL bEnable = false;
+    ::DwmIsCompositionEnabled(&bEnable);
+    if (bEnable)
+    {
+        DWMNCRENDERINGPOLICY ncrp = DWMNCRP_ENABLED;
+        ::DwmSetWindowAttribute((HWND)winId(), DWMWA_NCRENDERING_POLICY, &ncrp, sizeof(ncrp));
+        MARGINS margins = { -1 };
+        ::DwmExtendFrameIntoClientArea((HWND)winId(), &margins);
+    }
+
     show();
 }
 
