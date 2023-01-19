@@ -21,7 +21,6 @@
 
 -----
 
-## [点此](https://github.com/SHM-white/TimeTable/releases)跳转至旧版本的Release下载使用Windows API的版本
+## [点此](https://github.com/SHM-white/TimeTable-Qt/releases)下载Qt版本
 
-目前该Qt版本还需要个几天时间，可以先拿旧版本用着
-
+### [点此](https://github.com/SHM-white/TimeTable/releases)跳转至旧版本的Release下载使用Windows API的版本
