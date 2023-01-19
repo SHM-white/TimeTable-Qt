@@ -137,7 +137,6 @@
     <ClInclude Include="CSVEditor.h" />
     <QtMoc Include="importfromfile.h" />
     <ClInclude Include="Lesson.h" />
-    <ClInclude Include="resource.h" />
     <QtMoc Include="showalllessons.h" />
     <QtMoc Include="showmoreinfo.h" />
     <ClInclude Include="resource1.h" />
@@ -146,10 +145,7 @@
     <ClInclude Include="WindowSettings.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="feixiaohao.icon (3).ico" />
-    <Image Include="feixiaohao.icon.ico" />
-    <Image Include="feixiaohao.icon.png" />
-    <Image Include="icon2.ico" />
+    <Image Include="123.ico" />
     <Image Include="small.ico" />
     <Image Include="TimeTable.ico" />
     <Image Include="TimeTable2.0.ico" />

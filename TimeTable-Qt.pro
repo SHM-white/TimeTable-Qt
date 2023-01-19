@@ -70,3 +70,5 @@ DEPENDPATH += C:/libraries/jsoncpp/include
 
 RESOURCES += \
     TimeTableQt.qrc
+
+RC_FILE += TimeTable-Qt.rc

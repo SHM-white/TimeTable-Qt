@@ -29,13 +29,13 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>所有课程</string>
   </property>
   <property name="windowIcon">
    <iconset resource="TimeTableQt.qrc">
-    <normaloff>:/TimeTableQt/TimeTable.ico</normaloff>:/TimeTableQt/TimeTable.ico</iconset>
+    <normaloff>:/TimeTableQt/123.ico</normaloff>:/TimeTableQt/123.ico</iconset>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>

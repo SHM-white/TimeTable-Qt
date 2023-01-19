@@ -77,9 +77,6 @@
     <ClInclude Include="Lesson.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TextFormat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -103,16 +100,7 @@
     <Image Include="TimeTable.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="feixiaohao.icon.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="feixiaohao.icon.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="icon2.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="feixiaohao.icon (3).ico">
+    <Image Include="123.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
