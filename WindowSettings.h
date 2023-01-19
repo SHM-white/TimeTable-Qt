@@ -35,6 +35,7 @@ public:
 	std::vector<TextFormat> msTextFormat;
 	std::string msLessonNull;
 	std::string msLessonInfoFile{ ".\\Lessons.json" };
+	std::string msBackGroundImg{""};
 	COLORREF mcBackGroundColor{ 0x00ffffff };
     tm mCountDownDay;
 private:

@@ -6,20 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>353</width>
-    <height>500</height>
+    <width>280</width>
+    <height>403</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>353</width>
-    <height>500</height>
+    <width>280</width>
+    <height>403</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>353</width>
-    <height>500</height>
+    <width>280</width>
+    <height>403</height>
    </size>
   </property>
   <property name="font">
@@ -38,13 +38,13 @@
   <property name="sizeGripEnabled">
    <bool>false</bool>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>331</width>
-     <height>481</height>
+     <width>261</width>
+     <height>381</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">

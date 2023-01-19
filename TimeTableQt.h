@@ -3,6 +3,7 @@
 
 #include <QtWidgets/QWidget>
 #include <qtimer.h>
+#include <qpixmap.h>
 #include "ui_TimeTableQt.h"
 #include "WindowSettings.h"
 
@@ -18,11 +19,13 @@ public:
     WindowSettings windowsettings{ ".\\Config.json" };
     TimeTable timetable{ windowsettings.msLessonInfoFile };
 private:
+    QPixmap pic;
     bool m_bDrag{ false };
     Ui::TimeTableQtClass ui;
     QTimer* time_calendar;
     QPoint mouseStartPoint;
     QPoint windowTopLeftPoint;
+    QPoint MenuRD;
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;

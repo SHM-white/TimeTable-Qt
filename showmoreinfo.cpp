@@ -13,7 +13,7 @@ void ShowMoreInfo::mFlashList()
     QString result;
     std::vector<std::string> in;
     this->ui->listView->clearMask();
-    std::string Days[]{ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+    //std::string Days[]{ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
     pParent->timetable.mGetTodayMoreInfo(in, Days[this->ui->comboBox->currentIndex()]);
     for (auto a : in) {
         result = QString::fromLocal8Bit(a.c_str());
@@ -53,7 +53,7 @@ void ShowMoreInfo::on_pushButton_clicked()
     QString result{ this->ui->lineEdit->text() };
     if (!result.isEmpty()) {
         int currentItem = this->ui->comboBox->currentIndex();
-        std::string Days[]{ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+        //std::string Days[]{ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
         std::string info = result.toStdString();
         pParent->timetable.mAddMoreInfo(Days[currentItem], info);
     }

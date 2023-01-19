@@ -7,6 +7,8 @@
 #include <windef.h>
 #include <QDialog>
 #include <QMouseEvent>
+#include <QPainter>
+#include <QPixmap>
 
 TimeTableQt::TimeTableQt(QWidget *parent)
     : QWidget(parent)
@@ -19,6 +21,12 @@ TimeTableQt::TimeTableQt(QWidget *parent)
     time_calendar->start(1000);
     Qt::WindowFlags flags = windowFlags();
     setWindowFlags(flags | Qt::WindowStaysOnTopHint);
+    QString picpath = QString::fromLocal8Bit(windowsettings.msBackGroundImg.c_str());
+    pic = QPixmap(picpath);
+    this->ui.menubar->setVisible(false);
+    MenuRD.setX(this->ui.menubar->width());
+    MenuRD.setY(this->ui.menubar->height());
+    this->setMouseTracking(true);
     show();
 }
 
@@ -30,11 +38,14 @@ TimeTableQt::~TimeTableQt()
 void TimeTableQt::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
-    //painter.begin(this);
+    
+    if (!pic.isNull()) {
+        pic = pic.scaled(this->width(), this->height());
+        painter.drawPixmap(0, 0, this->width(), this->height(), pic);
+    }
     int i = 1;
     for (TextFormat a : windowsettings.msTextFormat) {
         QFont font;
-        
         painter.setPen(QColor(GetRValue(a.color),GetGValue(a.color),GetBValue(a.color)));
         font.setFamily(QString::fromLocal8Bit(a.msFontName.c_str(),a.msFontName.size()));
         font.setPointSize(a.miTextSize);
@@ -77,6 +88,14 @@ void TimeTableQt::mouseMoveEvent(QMouseEvent* event)
         QPoint distance = event->globalPos() - mouseStartPoint;
         this->move(windowTopLeftPoint + distance);
     }
+    QPoint CurrentPos = event->pos();
+    if (CurrentPos.y() < MenuRD.y()) {
+        this->ui.menubar->setVisible(true);
+    }
+    else {
+        this->ui.menubar->setVisible(false);
+    }
+    
 }
 
 void TimeTableQt::mouseReleaseEvent(QMouseEvent* event)

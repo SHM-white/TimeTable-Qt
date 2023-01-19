@@ -5,6 +5,8 @@
 #include <QStringListModel>
 #include <QStandardItemModel>
 #include <QModelIndex>
+#include <string>
+#include <vector>
 #include "TimeTableQt.h"
 
 namespace Ui {
@@ -28,6 +30,7 @@ private slots:
     void on_pushButton_clicked();
 
 private:
+    std::string Days[7]{ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
     Ui::ShowMoreInfo* ui;
     QStandardItemModel* ItemModel = nullptr;
     TimeTableQt* pParent = (TimeTableQt*)parentWidget();
