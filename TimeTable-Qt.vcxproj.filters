@@ -58,6 +58,12 @@
     <ClCompile Include="about.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="showalllessons.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="showmoreinfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="config.json" />
@@ -83,6 +89,9 @@
     <ClInclude Include="WindowSettings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -99,6 +108,12 @@
     <QtMoc Include="about.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="showalllessons.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="showmoreinfo.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="importfromfile.ui">
@@ -107,5 +122,16 @@
     <QtUic Include="about.ui">
       <Filter>Form Files</Filter>
     </QtUic>
+    <QtUic Include="showalllessons.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="showmoreinfo.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="TimeTable-Qt.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

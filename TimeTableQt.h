@@ -19,6 +19,7 @@ public:
     WindowSettings windowsettings{ ".\\Config.json" };
     TimeTable timetable{ windowsettings.msLessonInfoFile };
 private:
+    Qt::WindowFlags flags;
     QPixmap pic;
     bool m_bDrag{ false };
     Ui::TimeTableQtClass ui;

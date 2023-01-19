@@ -19,10 +19,12 @@ TimeTableQt::TimeTableQt(QWidget *parent)
     time_calendar = new QTimer(this);
     connect(time_calendar, SIGNAL(timeout()), this, SLOT(UpdateWindow()));
     time_calendar->start(1000);
-    Qt::WindowFlags flags = windowFlags();
+    setWindowFlags(Qt::WindowMinMaxButtonsHint | Qt::FramelessWindowHint);
+    flags = windowFlags();
     setWindowFlags(flags | Qt::WindowStaysOnTopHint);
     QString picpath = QString::fromLocal8Bit(windowsettings.msBackGroundImg.c_str());
     pic = QPixmap(picpath);
+    pic = pic.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     this->ui.menubar->setVisible(false);
     MenuRD.setX(this->ui.menubar->width());
     MenuRD.setY(this->ui.menubar->height());
@@ -40,7 +42,6 @@ void TimeTableQt::paintEvent(QPaintEvent*)
     QPainter painter(this);
     
     if (!pic.isNull()) {
-        pic = pic.scaled(this->width(), this->height());
         painter.drawPixmap(0, 0, this->width(), this->height(), pic);
     }
     int i = 1;
@@ -131,10 +132,8 @@ void TimeTableQt::on_actioninport_triggered()
 
 void TimeTableQt::on_actiontotop_triggered()
 {
-    Qt::WindowFlags flags;
     bool ischecked=this->ui.actiontotop->isChecked();
     if(ischecked){
-        flags=windowFlags();
         setWindowFlags(flags|Qt::WindowStaysOnTopHint);
         show();
     }

@@ -77,6 +77,9 @@
       <AdditionalDependencies>"C:\libraries\jsoncpp\lib\Release\jsoncpp.lib";%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\libraries\jsoncpp\lib\Release</AdditionalLibraryDirectories>
     </Link>
+    <ClCompile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ClCompile>
@@ -137,6 +140,7 @@
     <ClInclude Include="resource.h" />
     <QtMoc Include="showalllessons.h" />
     <QtMoc Include="showmoreinfo.h" />
+    <ClInclude Include="resource1.h" />
     <ClInclude Include="TextFormat.h" />
     <ClInclude Include="Timetable.h" />
     <ClInclude Include="WindowSettings.h" />
@@ -144,6 +148,9 @@
   <ItemGroup>
     <Image Include="small.ico" />
     <Image Include="TimeTable2.0.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="TimeTable-Qt.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

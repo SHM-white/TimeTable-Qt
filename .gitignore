@@ -25,8 +25,14 @@ x64/[Dd]ebug/
 x86/[Dd]ebug/
 x64/[Rr]elease/
 x86/[Rr]elease/
+x64/[Dd]ebug/qmake/
+x86/[Dd]ebug/qmake/
+x64/[Rr]elease/qmake/
+x86/[Rr]elease/qmake/
 x64/
 x86/
+x64/qmake/
+x86/qmake/
 ../x64/
 ../x86/
 [Ww][Ii][Nn]32/
