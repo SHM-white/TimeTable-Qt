@@ -18,7 +18,9 @@ public:
 	int mAddLesson(const std::string& week, const std::string& Lesson, const std::string& sBegin, const std::string& sEnd);
 	int mAddMoreInfo(const std::string& week, const std::string& Info);
 	int mGetLesson(std::vector<std::string>& input);
+	int mGetLesson(std::vector<std::string>& input, const std::string& week);
 	int mGetTodayMoreInfo(std::vector<std::string>& input);
+	int mGetTodayMoreInfo(std::vector<std::string>& input,const std::string week);
 	int mImportLessonsFromCsv(const std::string& path,const std::string& TargetFileName);
     std::string mGetCountDown(tm tmIn, const std::string& TimeFormat);
 	std::string mGetCurrentLesson(std::string& LessonNull);

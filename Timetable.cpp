@@ -83,29 +83,20 @@ std::string TimeTable::mReplacePath(const std::string& Path)
 //获取所有的课程并返回至传入的数组
 int TimeTable::mGetLesson(std::vector<std::string>& input)
 {
-    Json::Reader reader;
-    Json::Value root;
-    std::ifstream in(mLessonInfoPath, std::ios::in);
-    if (!in.is_open())
-    {
-        return 0;
-    };
+    input.clear();
     std::string Days[]{ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
-    if (reader.parse(in, root)) {
-        for (auto a : Days) {
-            const Json::Value Lessons = root[a]["Lessons"];
-            for (unsigned int i = 0; i < Lessons.size(); ++i) {
-                std::string result{ a + "\t" + Lessons[i][0].asString() + "\t" + Lessons[i][1].asString() + "\t" + Lessons[i][2].asString() };
-                input.push_back(result);
-            }
-        }
+    for (auto a : Days) {
+        mGetLesson(input, a);
     }
-    in.close();
-    in.clear();
     return 1;
 }
 //获取今日的信息并存入传入的数组
 int TimeTable::mGetTodayMoreInfo(std::vector<std::string>& input)
+{
+    std::string week{ mGetCurrentTime("%a") };
+    return mGetTodayMoreInfo(input, week);
+}
+int TimeTable::mGetTodayMoreInfo(std::vector<std::string>& input, const std::string week)
 {
     std::ifstream in(mLessonInfoPath, std::ios::in);
     if (!in.is_open())
@@ -114,7 +105,6 @@ int TimeTable::mGetTodayMoreInfo(std::vector<std::string>& input)
     };
     Json::Reader reader;
     Json::Value root;
-    std::string week{ mGetCurrentTime("%a") };
     if (reader.parse(in, root)) {
         const Json::Value Infos = root[week]["Infos"];
         for (unsigned int i = 0; i < Infos.size(); ++i) {
@@ -207,4 +197,26 @@ std::string TimeTable::mGetCountDown(tm tmIn, const std::string& TimeFormat)
     snprintf(tmp, sizeof(tmp) - 1, TimeFormat.c_str(), tmIn.tm_mon, tmIn.tm_mday - 1, tmIn.tm_hour, tmIn.tm_min, tmIn.tm_sec);
     //vsprintf_s(tmp, sizeof(tmp), TimeFormat.c_str(), tmIn.tm_mon, tmIn.tm_mday-1, tmIn.tm_hour, tmIn.tm_min, tmIn.tm_sec);
     return tmp;
+}
+
+int TimeTable::mGetLesson(std::vector<std::string>& input, const std::string& week)
+{
+    Json::Reader reader;
+    Json::Value root;
+    std::ifstream in(mLessonInfoPath, std::ios::in);
+    if (!in.is_open())
+    {
+        return 0;
+    };
+    //std::string Days[]{ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+    if (reader.parse(in, root)) {
+        const Json::Value Lessons = root[week]["Lessons"];
+        for (unsigned int i = 0; i < Lessons.size(); ++i) {
+            std::string result{ week + "\t" + Lessons[i][0].asString() + "\t" + Lessons[i][1].asString() + "\t" + Lessons[i][2].asString() };
+            input.push_back(result);
+        }
+    }
+    in.close();
+    in.clear();
+    return 1;
 }

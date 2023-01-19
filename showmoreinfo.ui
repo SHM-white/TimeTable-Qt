@@ -35,7 +35,7 @@
    <iconset resource="TimeTableQt.qrc">
     <normaloff>:/TimeTableQt/TimeTable.ico</normaloff>:/TimeTableQt/TimeTable.ico</iconset>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -51,7 +51,46 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QComboBox" name="comboBox"/>
+       <widget class="QComboBox" name="comboBox">
+        <property name="currentText">
+         <string>Mon</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>Mon</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Tue</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Wed</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Thu</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Fri</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Sat</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Sun</string>
+         </property>
+        </item>
+       </widget>
       </item>
       <item>
        <widget class="QLineEdit" name="lineEdit"/>
@@ -63,14 +102,14 @@
       <item>
        <widget class="QPushButton" name="pushButton">
         <property name="text">
-         <string>PushButton</string>
+         <string>添加</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="pushButton_2">
         <property name="text">
-         <string>PushButton</string>
+         <string>关闭</string>
         </property>
         <property name="default">
          <bool>true</bool>
