@@ -1,18 +1,2 @@
-﻿  Reading Qt configuration (C:/Qt/6.4.2/msvc2019_64/bin/qmake)
-  about.cpp
-  importfromfile.cpp
-  showalllessons.cpp
-  showmoreinfo.cpp
-  WindowSettings.cpp
-  CSVEditor.cpp
-  TextFormat.cpp
-  Timetable.cpp
-  TimeTableQt.cpp
-  main.cpp
-  qrc_TimeTableQt.cpp
-  moc_TimeTableQt.cpp
-  moc_about.cpp
-  moc_importfromfile.cpp
-  moc_showalllessons.cpp
-  moc_showmoreinfo.cpp
+﻿  Timetable.cpp
   TimeTable-Qt.vcxproj -> D:\Documents\source\repos\TimeTable-Qt\x64\Debug\TimeTable-Qt.exe
