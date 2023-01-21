@@ -38,6 +38,7 @@ public:
 	std::string msBackGroundImg{""};
 	COLORREF mcBackGroundColor{ 0x00ffffff };
 	int miBackGroundColor[4]{ 255,255,255,0 };
+	bool bAcrylicEffect{ false };
     tm mCountDownDay;
 private:
 	std::string msSettingPath{ ".\\Config.json" };

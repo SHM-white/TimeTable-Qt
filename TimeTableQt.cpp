@@ -9,9 +9,9 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPixmap>
+#include <windows.h>
 
 #ifdef Q_OS_WIN
-#include <windows.h>
 #include <WinUser.h>
 #include <windowsx.h>
 #include <dwmapi.h>
@@ -28,19 +28,39 @@ TimeTableQt::TimeTableQt(QWidget *parent)
     ui.setupUi(this);
     this->setGeometry(windowsettings.miWindowX, windowsettings.miWindowY, windowsettings.miWindowWeight, windowsettings.miWindowHeight);
     this->setFixedSize(windowsettings.miWindowWeight, windowsettings.miWindowHeight);
+    
     time_calendar = new QTimer(this);
     connect(time_calendar, SIGNAL(timeout()), this, SLOT(UpdateWindow()));
     time_calendar->start(1000);
+
+    //setAttribute(Qt::WA_TranslucentBackground);
     setWindowFlags(Qt::WindowMinMaxButtonsHint | Qt::FramelessWindowHint);
-    flags = windowFlags();
-    setWindowFlags(flags | Qt::WindowStaysOnTopHint);
+
     QString picpath = QString::fromLocal8Bit(windowsettings.msBackGroundImg.c_str());
     pic = QPixmap(picpath);
     pic = pic.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    
+    if (windowsettings.bAcrylicEffect) {
+        //setWindowFlags(Qt::FramelessWindowHint);
+        setAttribute(Qt::WA_TranslucentBackground);
+        //QColor color(255, 50, 50, 80);
+
+        HWND hMoudle = (HWND)(winId());
+        HMODULE hDLL = LoadLibrary(TEXT("AcrylicMaterial"));
+
+        using fun = void (*)(HWND hWnd);
+        fun pSetBlur = (fun)GetProcAddress(hDLL, "setAcrylicEffect");
+        //fun pSetBlur = (fun)GetProcAddress(hDLL, "setMicaEffect");
+        pSetBlur((HWND)(winId()));
+    }
+    flags = windowFlags();
+    setWindowFlags(flags | Qt::WindowStaysOnTopHint);
+    
     this->ui.menubar->setVisible(false);
     MenuRD.setX(this->ui.menubar->width());
     MenuRD.setY(this->ui.menubar->height());
     this->setMouseTracking(true);
+
     BOOL bEnable = false;
     ::DwmIsCompositionEnabled(&bEnable);
     if (bEnable)
@@ -50,7 +70,7 @@ TimeTableQt::TimeTableQt(QWidget *parent)
         MARGINS margins = { -1 };
         ::DwmExtendFrameIntoClientArea((HWND)winId(), &margins);
     }
-
+    Sleep(1000);//等待dll加载完成后显示窗口
     show();
 }
 
@@ -62,9 +82,10 @@ TimeTableQt::~TimeTableQt()
 void TimeTableQt::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
-    
-    if (!pic.isNull()) {
-        painter.drawPixmap(0, 0, this->width(), this->height(), pic);
+    if (!windowsettings.bAcrylicEffect) {
+        if (!pic.isNull()) {
+            painter.drawPixmap(0, 0, this->width(), this->height(), pic);
+        }
     }
     int i = 1;
     for (TextFormat a : windowsettings.msTextFormat) {

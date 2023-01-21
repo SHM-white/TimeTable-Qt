@@ -45,6 +45,7 @@ int WindowSettings::mGetWindowSettings()
         mCountDownDay.tm_hour = Settings["CountDownDay"][3].asInt();
         mCountDownDay.tm_min = Settings["CountDownDay"][4].asInt();
         mCountDownDay.tm_sec = Settings["CountDownDay"][5].asInt();
+        bAcrylicEffect = Settings["AcrylicEffect"].asBool();
     }
     return 1;
 }
