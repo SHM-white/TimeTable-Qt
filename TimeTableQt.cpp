@@ -50,7 +50,6 @@ TimeTableQt::TimeTableQt(QWidget *parent)
 
         using fun = void (*)(HWND hWnd);
         fun pSetBlur = (fun)GetProcAddress(hDLL, "setAcrylicEffect");
-        //fun pSetBlur = (fun)GetProcAddress(hDLL, "setMicaEffect");
         pSetBlur((HWND)(winId()));
     }
     flags = windowFlags();
@@ -72,6 +71,7 @@ TimeTableQt::TimeTableQt(QWidget *parent)
     }
     Sleep(1000);//等待dll加载完成后显示窗口
     show();
+    SetCapture((HWND)winId());
 }
 
 TimeTableQt::~TimeTableQt()
@@ -82,10 +82,11 @@ TimeTableQt::~TimeTableQt()
 void TimeTableQt::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
-    if (!windowsettings.bAcrylicEffect) {
-        if (!pic.isNull()) {
-            painter.drawPixmap(0, 0, this->width(), this->height(), pic);
-        }
+    if (pic.isNull()|| windowsettings.bAcrylicEffect) {
+        painter.fillRect(rect(), QColor(windowsettings.miBackGroundColor[0], windowsettings.miBackGroundColor[1], windowsettings.miBackGroundColor[2], windowsettings.miBackGroundColor[3]));
+    }
+    else {
+        painter.drawPixmap(0, 0, this->width(), this->height(), pic);
     }
     int i = 1;
     for (TextFormat a : windowsettings.msTextFormat) {
