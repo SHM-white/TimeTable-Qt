@@ -37,6 +37,7 @@ public:
 	std::string msLessonInfoFile{ ".\\Lessons.json" };
 	std::string msBackGroundImg{""};
 	COLORREF mcBackGroundColor{ 0x00ffffff };
+	int miBackGroundColor[4]{ 255,255,255,0 };
     tm mCountDownDay;
 private:
 	std::string msSettingPath{ ".\\Config.json" };

@@ -28,6 +28,9 @@ int WindowSettings::mGetWindowSettings()
         msLessonNull = Settings["LessonNull"].asString();
         msLessonInfoFile = Settings["LessonInfoFile"].asString();
         mcBackGroundColor = RGB(Settings["BackGroundColor"][0].asInt(), Settings["BackGroundColor"][1].asInt(), Settings["BackGroundColor"][2].asInt());
+        for (int i = 0; i < Settings["BackGroundColor"].size(); i++) {
+            miBackGroundColor[i] = Settings["BackGroundColor"][i].asInt();
+        }
         msBackGroundImg = Settings["BackGroundImg"].asString();
         msTextFormat.clear();
         for (int i = 0; i < (int)Settings["TextFormat"].size(); i++) {
