@@ -31,19 +31,17 @@ TimeTableQt::TimeTableQt(QWidget *parent)
     
     time_calendar = new QTimer(this);
     connect(time_calendar, SIGNAL(timeout()), this, SLOT(UpdateWindow()));
-    time_calendar->start(1000);
+    time_calendar->start(500);
 
     //setAttribute(Qt::WA_TranslucentBackground);
     setWindowFlags(Qt::WindowMinMaxButtonsHint | Qt::FramelessWindowHint);
+    setAttribute(Qt::WA_TranslucentBackground);
 
     QString picpath = QString::fromLocal8Bit(windowsettings.msBackGroundImg.c_str());
     pic = QPixmap(picpath);
     pic = pic.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     
     if (windowsettings.bAcrylicEffect) {
-        //setWindowFlags(Qt::FramelessWindowHint);
-        setAttribute(Qt::WA_TranslucentBackground);
-        //QColor color(255, 50, 50, 80);
 
         HWND hMoudle = (HWND)(winId());
         HMODULE hDLL = LoadLibrary(TEXT("AcrylicMaterial"));

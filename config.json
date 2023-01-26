@@ -3,8 +3,8 @@
    "Settings" : {
       "Window" : {
          "LessonNull" : "",
-         "BackGroundColor" : [0,0,255,1],
-         "BackGroundImg" : "BackGround.png",
+         "BackGroundColor" : [0,0,255,255],
+         "BackGroundImg" : "alpha_test.png",
          "LessonInLine" : 2,
          "TextFormat" : [ 
             ["当前时间：%a-%H:%M:%S","微软雅黑",[2,22],15,[0,0,0]],
