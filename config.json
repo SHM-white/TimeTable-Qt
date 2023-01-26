@@ -3,7 +3,7 @@
    "Settings" : {
       "Window" : {
          "LessonNull" : "",
-         "BackGroundColor" : [0,0,255,255],
+         "BackGroundColor" : [0,0,255,1],
          "BackGroundImg" : "alpha_test.png",
          "LessonInLine" : 2,
          "TextFormat" : [ 

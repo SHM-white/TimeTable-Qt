@@ -57,8 +57,18 @@ TimeTableQt::TimeTableQt(QWidget *parent)
     MenuRD.setX(this->ui.menubar->width());
     MenuRD.setY(this->ui.menubar->height());
     this->setMouseTracking(true);
+    Sleep(500);//等待dll加载完成后显示窗口
+    show();
+}
 
-    BOOL bEnable = false;
+TimeTableQt::~TimeTableQt()
+{
+    delete time_calendar;
+}
+
+void TimeTableQt::ShowShadow()
+{
+    BOOL bEnable = true;
     ::DwmIsCompositionEnabled(&bEnable);
     if (bEnable)
     {
@@ -67,14 +77,12 @@ TimeTableQt::TimeTableQt(QWidget *parent)
         MARGINS margins = { -1 };
         ::DwmExtendFrameIntoClientArea((HWND)winId(), &margins);
     }
-    Sleep(1000);//等待dll加载完成后显示窗口
-    show();
-    SetCapture((HWND)winId());
 }
 
-TimeTableQt::~TimeTableQt()
+void TimeTableQt::showEvent(QShowEvent* event)
 {
-    delete time_calendar;
+    //ShowShadow();
+    QWidget::showEvent(event);
 }
 
 void TimeTableQt::paintEvent(QPaintEvent*)
@@ -84,6 +92,7 @@ void TimeTableQt::paintEvent(QPaintEvent*)
         painter.fillRect(rect(), QColor(windowsettings.miBackGroundColor[0], windowsettings.miBackGroundColor[1], windowsettings.miBackGroundColor[2], windowsettings.miBackGroundColor[3]));
     }
     else {
+        painter.fillRect(rect(), QColor(255, 255, 255, 1));
         painter.drawPixmap(0, 0, this->width(), this->height(), pic);
     }
     int i = 1;
