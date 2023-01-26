@@ -33,6 +33,8 @@ ShowAllLessons::ShowAllLessons(QWidget *parent) :
     ui(new Ui::ShowAllLessons)
 {
     ui->setupUi(this);
+    std::string week = pParent->timetable.mGetCurrentTime(std::string("%a"));
+    this->ui->comboBox->setCurrentText(QString::fromStdString(week));
     mFlashList();
 }
 
