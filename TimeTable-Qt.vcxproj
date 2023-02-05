@@ -107,12 +107,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="about.cpp" />
+    <ClCompile Include="changeconfigpath.cpp" />
     <ClCompile Include="importfromfile.cpp" />
     <ClCompile Include="showalllessons.cpp" />
     <ClCompile Include="showmoreinfo.cpp" />
     <ClCompile Include="WindowSettings.cpp" />
     <QtRcc Include="TimeTableQt.qrc" />
     <QtUic Include="about.ui" />
+    <QtUic Include="changeconfigpath.ui" />
     <QtUic Include="importfromfile.ui" />
     <QtUic Include="showalllessons.ui" />
     <QtUic Include="showmoreinfo.ui" />
@@ -131,9 +133,12 @@
     <None Include="config.json" />
     <None Include="Lessons.json" />
     <None Include="README.md" />
+    <None Include="TimeTable-Qt.pri" />
+    <None Include="TimeTable-Qt.pro" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="about.h" />
+    <QtMoc Include="changeconfigpath.h" />
     <ClInclude Include="CSVEditor.h" />
     <QtMoc Include="importfromfile.h" />
     <ClInclude Include="Lesson.h" />

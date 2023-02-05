@@ -89,6 +89,14 @@ int WindowSettings::mPrintText(QPainter& painter,TimeTable& timetable){
     }
     return 0;
 }
+bool WindowSettings::mChangeConfigPath(const std::string& path)
+{
+    if (path.size() == 0) {
+        return false;
+    }
+    msSettingPath = path;
+    return true;
+}
 /*int WindowSettings::mPrintText(HDC& hdc, TimeTable& timetable)
 {
       int i = 1;

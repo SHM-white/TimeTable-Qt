@@ -3,6 +3,7 @@
 #include "about.h"
 #include "showalllessons.h"
 #include "showmoreinfo.h"
+#include "changeconfigpath.h"
 #include <string>
 #include <windef.h>
 #include <QDialog>
@@ -26,21 +27,32 @@ TimeTableQt::TimeTableQt(QWidget *parent)
     : QWidget(parent)
 {
     ui.setupUi(this);
-    this->setGeometry(windowsettings.miWindowX, windowsettings.miWindowY, windowsettings.miWindowWeight, windowsettings.miWindowHeight);
-    this->setFixedSize(windowsettings.miWindowWeight, windowsettings.miWindowHeight);
     
     time_calendar = new QTimer(this);
     connect(time_calendar, SIGNAL(timeout()), this, SLOT(UpdateWindow()));
     time_calendar->start(500);
-
-    //setAttribute(Qt::WA_TranslucentBackground);
+    flags = windowFlags();
+    setWindowFlags(flags | Qt::WindowStaysOnTopHint);
     setWindowFlags(Qt::WindowMinMaxButtonsHint | Qt::FramelessWindowHint);
     setAttribute(Qt::WA_TranslucentBackground);
+    mInitializeWindow();
+    
+}
+
+TimeTableQt::~TimeTableQt()
+{
+    delete time_calendar;
+}
+
+bool TimeTableQt::mInitializeWindow()
+{
+    this->setGeometry(windowsettings.miWindowX, windowsettings.miWindowY, windowsettings.miWindowWeight, windowsettings.miWindowHeight);
+    this->setFixedSize(windowsettings.miWindowWeight, windowsettings.miWindowHeight);
 
     QString picpath = QString::fromLocal8Bit(windowsettings.msBackGroundImg.c_str());
     pic = QPixmap(picpath);
     pic = pic.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-    
+
     if (windowsettings.bAcrylicEffect) {
 
         HWND hMoudle = (HWND)(winId());
@@ -50,20 +62,15 @@ TimeTableQt::TimeTableQt(QWidget *parent)
         fun pSetBlur = (fun)GetProcAddress(hDLL, "setAcrylicEffect");
         pSetBlur((HWND)(winId()));
     }
-    flags = windowFlags();
-    setWindowFlags(flags | Qt::WindowStaysOnTopHint);
     
+
     this->ui.menubar->setVisible(false);
     MenuRD.setX(this->ui.menubar->width());
     MenuRD.setY(this->ui.menubar->height());
     this->setMouseTracking(true);
     Sleep(500);//等待dll加载完成后显示窗口
     show();
-}
-
-TimeTableQt::~TimeTableQt()
-{
-    delete time_calendar;
+    return true;
 }
 
 void TimeTableQt::ShowShadow()
@@ -211,6 +218,13 @@ void TimeTableQt::on_actionshowall_triggered()
 void TimeTableQt::on_actionmoreinfo_triggered()
 {
     ShowMoreInfo* dialog = new ShowMoreInfo(this);
+    dialog->show();
+}
+
+
+void TimeTableQt::on_actionChangeConfig_triggered()
+{
+    ChangeConfigPath* dialog = new ChangeConfigPath(this);
     dialog->show();
 }
 

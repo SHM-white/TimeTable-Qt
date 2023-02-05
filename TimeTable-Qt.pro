@@ -14,9 +14,12 @@ SOURCES += \
     Timetable.cpp \
     WindowSettings.cpp \
     about.cpp \
+    changeconfigpath.cpp \
     importfromfile.cpp \
     main.cpp \
     TimeTableQt.cpp \
+    mainwindow.cpp \
+    settings.cpp \
     showalllessons.cpp \
     showmoreinfo.cpp
 
@@ -24,13 +27,18 @@ HEADERS += \
     CSVEditor.h \
     Lesson.h \
     TextFormat.h \
+    TimeTable-Qt.aps \
     Timetable.h \
     WindowSettings.h \
     about.h \
+    changeconfigpath.h \
     framework.h \
     TimeTableQt.h \
     importfromfile.h \
+    mainwindow.h \
     resource.h \
+    resource1.h \
+    settings.h \
     showalllessons.h \
     showmoreinfo.h \
     targetver.h
@@ -38,7 +46,10 @@ HEADERS += \
 FORMS += \
     TimeTableQt.ui \
     about.ui \
+    changeconfigpath.ui \
     importfromfile.ui \
+    mainwindow.ui \
+    settings.ui \
     showalllessons.ui \
     showmoreinfo.ui
 
@@ -54,11 +65,23 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     .gitignore \
+    1.png \
+    123.ico \
+    AcrylicMaterial.dll \
+    BackGround.png \
     Lessons.json \
+    Lessons1.json \
     README.md \
+    TimeTable-Qt.pri \
     TimeTable-Qt.pro.user \
+    TimeTable-Qt.rc \
+    TimeTable-Qt.vcxproj \
+    TimeTable-Qt.vcxproj.filters \
+    TimeTable-Qt.vcxproj.user \
+    TimeTable.ico \
     TimeTable2.0.ico \
     TimeTable2.0.rc \
+    alpha_test.png \
     config.json \
     small.ico
 
@@ -69,6 +92,7 @@ INCLUDEPATH += C:/libraries/jsoncpp/include
 DEPENDPATH += C:/libraries/jsoncpp/include
 
 RESOURCES += \
+    TimeTableQt.qrc \
     TimeTableQt.qrc
 
 RC_FILE += TimeTable-Qt.rc

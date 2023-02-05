@@ -30,7 +30,7 @@ void ImportFromFile::on_buttonBox_accepted()
 
 void ImportFromFile::on_pushButton_clicked()
 {
-    QString openfilename = QFileDialog::getOpenFileName(this, QString("请选择需要打开的csv文件"), QString("C:\\"), QString("ANSI编码的csv文件(*.csv);;All(*.*)"));
+    QString openfilename = QFileDialog::getOpenFileName(this, QString("请选择需要打开的csv文件"), QString(".\\"), QString("ANSI编码的csv文件(*.csv);;All(*.*)"));
     if (openfilename.isEmpty()) {
         QMessageBox::warning(this, QString("提示"), QString("未选择文件"));
     }
@@ -43,7 +43,7 @@ void ImportFromFile::on_pushButton_clicked()
 
 void ImportFromFile::on_pushButton_2_clicked()
 {
-    QString openfilename = QFileDialog::getSaveFileName(this, QString("请选择需要导入到的json文件"), QString("C:\\"), QString("JSON文件(*.json);;All(*.*)"));
+    QString openfilename = QFileDialog::getSaveFileName(this, QString("请选择需要导入到的json文件"), QString(".\\"), QString("JSON文件(*.json);;All(*.*)"));
     if (openfilename.isEmpty()) {
         QMessageBox::warning(this, QString("提示"), QString("未选择文件"));
     }

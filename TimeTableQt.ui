@@ -59,6 +59,8 @@
      <string>文件</string>
     </property>
     <addaction name="actioninport"/>
+    <addaction name="actionChangeConfig"/>
+    <addaction name="separator"/>
     <addaction name="actionshowall"/>
     <addaction name="actionmoreinfo"/>
    </widget>
@@ -130,6 +132,14 @@
   <action name="actionexit">
    <property name="text">
     <string>退出</string>
+   </property>
+  </action>
+  <action name="actionChangeConfig">
+   <property name="text">
+    <string>更改配置文件</string>
+   </property>
+   <property name="iconText">
+    <string>更改配置文件</string>
    </property>
   </action>
  </widget>

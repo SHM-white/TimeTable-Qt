@@ -64,11 +64,16 @@
     <ClCompile Include="showmoreinfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="changeconfigpath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="config.json" />
     <None Include="Lessons.json" />
     <None Include="README.md" />
+    <None Include="TimeTable-Qt.pro" />
+    <None Include="TimeTable-Qt.pri" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CSVEditor.h">
@@ -117,6 +122,9 @@
     <QtMoc Include="showmoreinfo.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="changeconfigpath.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="importfromfile.ui">
@@ -129,6 +137,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="showmoreinfo.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="changeconfigpath.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

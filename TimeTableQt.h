@@ -16,6 +16,7 @@ class TimeTableQt : public QWidget
 public:
     TimeTableQt(QWidget *parent = nullptr);
     ~TimeTableQt();
+    bool mInitializeWindow();
     WindowSettings windowsettings{ ".\\Config.json" };
     TimeTable timetable{ windowsettings.msLessonInfoFile };
 private:
@@ -42,4 +43,5 @@ private slots:
     void on_actionminimize_triggered();
     void on_actionshowall_triggered();
     void on_actionmoreinfo_triggered();
+    void on_actionChangeConfig_triggered();
 };
