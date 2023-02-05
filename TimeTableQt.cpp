@@ -31,10 +31,10 @@ TimeTableQt::TimeTableQt(QWidget *parent)
     time_calendar = new QTimer(this);
     connect(time_calendar, SIGNAL(timeout()), this, SLOT(UpdateWindow()));
     time_calendar->start(500);
-    flags = windowFlags();
-    setWindowFlags(flags | Qt::WindowStaysOnTopHint);
     setWindowFlags(Qt::WindowMinMaxButtonsHint | Qt::FramelessWindowHint);
     setAttribute(Qt::WA_TranslucentBackground);
+    flags = windowFlags();
+    setWindowFlags(flags | Qt::WindowStaysOnTopHint);
     mInitializeWindow();
     
 }
