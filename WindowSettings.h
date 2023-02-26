@@ -24,7 +24,7 @@ public:
 	int mGetWindowSettings();
 	int mGetTextItem(const std::string& Item, std::string& input);
 	//int mPrintText(HDC& hdc, TimeTable& timetable);
-	int mPrintText(QPainter& painter, TimeTable& timetable);
+	//int mPrintText(QPainter& painter, TimeTable& timetable);
 	bool mChangeConfigPath(const std::string& path);
 	//LPMENUITEMINFO mSwitchMenuItemCheck(HWND& hWnd, HMENU& hMenu, DWORD MenuItem);
 	int miWindowHeight{ 120 };

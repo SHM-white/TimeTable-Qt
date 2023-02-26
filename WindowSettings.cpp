@@ -18,6 +18,7 @@ int WindowSettings::mGetWindowSettings()
 	};
 	Json::Reader reader;
 	Json::Value root;
+	root["emitUTF8"] = true;
 	if (reader.parse(in, root)) {
 		Json::Value Settings = root["Settings"]["Window"];
 		miWindowHeight = Settings["WindowSize"][1].asInt();
@@ -66,29 +67,29 @@ int WindowSettings::mGetTextItem(const std::string& Item, std::string& input)
 	return 1;
 }
 //绘制主窗口文字
-int WindowSettings::mPrintText(QPainter& painter, TimeTable& timetable) {
-	int i = 1;
-	for (TextFormat a : msTextFormat) {
-		QFont font;
-		painter.setPen(a.color);
-		font.setFamily(a.msFontName.c_str());
-		font.setPointSize(a.miTextSize);
-		painter.setFont(font);
-		std::string Text;
-		if (i == miLessonInLine) {
-			Text = timetable.mGetCurrentTime(a.msTextFormat) + timetable.mGetCurrentLesson(msLessonNull);
-		}
-		else if (i == miCountDownDayInLine) {
-			Text = timetable.mGetCountDown(mCountDownDay, a.msTextFormat);
-		}
-		else {
-			Text = timetable.mGetCurrentTime(a.msTextFormat);
-		}
-		painter.drawText(a.mpTextLocation.x, a.mpTextLocation.y, Text.c_str());
-		i++;
-	}
-	return 0;
-}
+//int WindowSettings::mPrintText(QPainter& painter, TimeTable& timetable) {
+//	int i = 1;
+//	for (TextFormat a : msTextFormat) {
+//		QFont font;
+//		painter.setPen(a.color);
+//		font.setFamily(a.msFontName.c_str());
+//		font.setPointSize(a.miTextSize);
+//		painter.setFont(font);
+//		std::string Text;
+//		if (i == miLessonInLine) {
+//			Text = timetable.mGetCurrentTime(a.msTextFormat) + timetable.mGetCurrentLesson(msLessonNull);
+//		}
+//		else if (i == miCountDownDayInLine) {
+//			Text = timetable.mGetCountDown(mCountDownDay, a.msTextFormat);
+//		}
+//		else {
+//			Text = timetable.mGetCurrentTime(a.msTextFormat);
+//		}
+//		painter.drawText(a.mpTextLocation.x, a.mpTextLocation.y, QString::fromStdString(Text));
+//		i++;
+//	}
+//	return 0;
+//}
 
 bool WindowSettings::mChangeConfigPath(const std::string& path)
 {

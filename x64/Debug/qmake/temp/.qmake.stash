@@ -1,13 +1,13 @@
 QMAKE_CXX.QT_COMPILER_STDCXX = 199711L
-QMAKE_CXX.QMAKE_MSC_VER = 1934
-QMAKE_CXX.QMAKE_MSC_FULL_VER = 193431937
+QMAKE_CXX.QMAKE_MSC_VER = 1935
+QMAKE_CXX.QMAKE_MSC_FULL_VER = 193532215
 QMAKE_CXX.COMPILER_MACROS = \
     QT_COMPILER_STDCXX \
     QMAKE_MSC_VER \
     QMAKE_MSC_FULL_VER
 QMAKE_CXX.INCDIRS = \
-    "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.34.31933\\include" \
-    "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.34.31933\\atlmfc\\include" \
+    "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.35.32215\\include" \
+    "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.35.32215\\atlmfc\\include" \
     "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\VS\\include" \
     "C:\\Windows Kits\\10\\Include\\10.0.22621.0\\ucrt" \
     "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\VS\\UnitTest\\include" \
@@ -19,8 +19,8 @@ QMAKE_CXX.INCDIRS = \
     C:\\libraries\\jsoncpp\\include \
     C:\\Users\\SHM_white\\vcpkg\\installed\\x64-windows\\include
 QMAKE_CXX.LIBDIRS = \
-    "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.34.31933\\lib\\x64" \
-    "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.34.31933\\atlmfc\\lib\\x64" \
+    "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.35.32215\\lib\\x64" \
+    "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.35.32215\\atlmfc\\lib\\x64" \
     "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\VS\\lib\\x64" \
     "C:\\Windows Kits\\10\\lib\\10.0.22621.0\\ucrt\\x64" \
     "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\VS\\UnitTest\\lib" \
