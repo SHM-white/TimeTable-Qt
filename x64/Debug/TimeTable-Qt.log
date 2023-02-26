@@ -1,3 +1,27 @@
-﻿  changeconfigpath.cpp
+﻿  about.cpp
+  changeconfigpath.cpp
   importfromfile.cpp
-  TimeTable-Qt.vcxproj -> D:\Documents\source\repos\TimeTable-Qt\x64\Debug\TimeTable-Qt.exe
+  Lesson.cpp
+D:\Documents\source\repos\TimeTable-Qt\TimeTable-Qt\Lesson.cpp(47,66): error C2572: “Lesson::GetValue”: 重定义默认参数 : 参数 1
+D:\Documents\source\repos\TimeTable-Qt\TimeTable-Qt\Lesson.h(26,20): message : 参见“Lesson::GetValue”的声明
+  showalllessons.cpp
+  showmoreinfo.cpp
+  WindowSettings.cpp
+  CSVEditor.cpp
+  TextFormat.cpp
+  Timetable.cpp
+  TimeTableQt.cpp
+D:\Documents\source\repos\TimeTable-Qt\TimeTable-Qt\Timetable.cpp(188,45): error C3889: 对类类型“std::ranges::_Transform_fn”的对象的调用: 未找到匹配的调用运算符
+C:\Qt\6.4.2\msvc2019_64\include\algorithm(3126,53): message : 可能是“std::ranges::in_out_result<_It,_Out> std::ranges::_Transform_fn::operator ()(_It,_Se,_Out,_Fn,_Pj) const” (编译源文件 Timetable.cpp)
+D:\Documents\source\repos\TimeTable-Qt\TimeTable-Qt\Timetable.cpp(188,45): message : “std::ranges::in_out_result<_It,_Out> std::ranges::_Transform_fn::operator ()(_It,_Se,_Out,_Fn,_Pj) const”: 应输入 5 个参数，却提供了 1 个
+C:\Qt\6.4.2\msvc2019_64\include\algorithm(3138,75): message : 或    “std::ranges::in_out_result<conditional<std::ranges::borrowed_range<_Rng>,unknown-type,std::ranges::dangling>::type,_Out> std::ranges::_Transform_fn::operator ()(_Rng &&,_Out,_Fn,_Pj) const” (编译源文件 Timetable.cpp)
+D:\Documents\source\repos\TimeTable-Qt\TimeTable-Qt\Timetable.cpp(188,45): message : “std::ranges::in_out_result<conditional<std::ranges::borrowed_range<_Rng>,unknown-type,std::ranges::dangling>::type,_Out> std::ranges::_Transform_fn::operator ()(_Rng &&,_Out,_Fn,_Pj) const”: 应输入 4 个参数，却提供了 1 个
+C:\Qt\6.4.2\msvc2019_64\include\algorithm(3151,61): message : 或    “std::ranges::in_in_out_result<_It1,_It2,_Out> std::ranges::_Transform_fn::operator ()(_It1,_Se1,_It2,_Se2,_Out,_Fn,_Pj1,_Pj2) const” (编译源文件 Timetable.cpp)
+D:\Documents\source\repos\TimeTable-Qt\TimeTable-Qt\Timetable.cpp(188,45): message : “std::ranges::in_in_out_result<_It1,_It2,_Out> std::ranges::_Transform_fn::operator ()(_It1,_Se1,_It2,_Se2,_Out,_Fn,_Pj1,_Pj2) const”: 应输入 8 个参数，却提供了 1 个
+C:\Qt\6.4.2\msvc2019_64\include\algorithm(3169,105): message : 或    “std::ranges::in_in_out_result<conditional<std::ranges::borrowed_range<_Rng>,unknown-type,std::ranges::dangling>::type,conditional<std::ranges::borrowed_range<_Rng2>,unknown-type,std::ranges::dangling>::type,_Out> std::ranges::_Transform_fn::operator ()(_Rng1 &&,_Rng2 &&,_Out,_Fn,_Pj1,_Pj2) const” (编译源文件 Timetable.cpp)
+D:\Documents\source\repos\TimeTable-Qt\TimeTable-Qt\Timetable.cpp(188,45): message : “std::ranges::in_in_out_result<conditional<std::ranges::borrowed_range<_Rng>,unknown-type,std::ranges::dangling>::type,conditional<std::ranges::borrowed_range<_Rng2>,unknown-type,std::ranges::dangling>::type,_Out> std::ranges::_Transform_fn::operator ()(_Rng1 &&,_Rng2 &&,_Out,_Fn,_Pj1,_Pj2) const”: 应输入 6 个参数，却提供了 1 个
+D:\Documents\source\repos\TimeTable-Qt\TimeTable-Qt\Timetable.cpp(188,17): error C3889: 对类类型“std::ranges::_Sort_fn”的对象的调用: 未找到匹配的调用运算符
+C:\Qt\6.4.2\msvc2019_64\include\algorithm(7842,23): message : 可能是“_It std::ranges::_Sort_fn::operator ()(_It,_Se,_Pr,_Pj) const” (编译源文件 Timetable.cpp)
+D:\Documents\source\repos\TimeTable-Qt\TimeTable-Qt\Timetable.cpp(188,17): message : “_It std::ranges::_Sort_fn::operator ()(_It,_Se,_Pr,_Pj) const”: 应输入 4 个参数，却提供了 1 个
+C:\Qt\6.4.2\msvc2019_64\include\algorithm(7854,45): message : 或    “conditional<std::ranges::borrowed_range<_Rng>,unknown-type,std::ranges::dangling>::type std::ranges::_Sort_fn::operator ()(_Rng &&,_Pr,_Pj) const” (编译源文件 Timetable.cpp)
+  main.cpp

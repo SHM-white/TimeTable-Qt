@@ -23,10 +23,10 @@ public:
 	WindowSettings() = delete;
 	int mGetWindowSettings();
 	int mGetTextItem(const std::string& Item, std::string& input);
-    //int mPrintText(HDC& hdc, TimeTable& timetable);
-    int mPrintText(QPainter& painter,TimeTable& timetable);
+	//int mPrintText(HDC& hdc, TimeTable& timetable);
+	int mPrintText(QPainter& painter, TimeTable& timetable);
 	bool mChangeConfigPath(const std::string& path);
-    //LPMENUITEMINFO mSwitchMenuItemCheck(HWND& hWnd, HMENU& hMenu, DWORD MenuItem);
+	//LPMENUITEMINFO mSwitchMenuItemCheck(HWND& hWnd, HMENU& hMenu, DWORD MenuItem);
 	int miWindowHeight{ 120 };
 	int miWindowWeight{ 250 };
 	int miWindowX{ 20 };
@@ -36,11 +36,12 @@ public:
 	std::vector<TextFormat> msTextFormat;
 	std::string msLessonNull;
 	std::string msLessonInfoFile{ ".\\Lessons.json" };
-	std::string msBackGroundImg{""};
+	std::string msBackGroundImg{ "" };
 	COLORREF mcBackGroundColor{ 0x00ffffff };
 	int miBackGroundColor[4]{ 255,255,255,0 };
 	bool bAcrylicEffect{ false };
-    tm mCountDownDay;
+	bool Utf8{ true };
+	tm mCountDownDay;
 private:
 	std::string msSettingPath{ ".\\Config.json" };
 };

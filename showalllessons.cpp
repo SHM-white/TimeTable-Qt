@@ -21,7 +21,7 @@ void ShowAllLessons::mFlashList()
         pParent->timetable.mGetLesson(in, Days[this->ui->comboBox->currentIndex()]);
     }
     for (auto a : in) {
-        result = QString::fromLocal8Bit(a.c_str());
+        result = QString::fromStdString(a);
         QStandardItem* item = new QStandardItem(result);
         ItemModel->appendRow(item);
     }
