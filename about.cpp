@@ -11,7 +11,7 @@ About::About(QWidget *parent) :
     TimeTableQt* p = (TimeTableQt*)parentWidget();
     std::string about;
     p->windowsettings.mGetTextItem("About", about);
-    QString qabout{ QString::fromLocal8Bit(about) };
+    QString qabout{ QString::fromStdString(about) };
     this->ui->textEdit->setText(qabout);
 }
 

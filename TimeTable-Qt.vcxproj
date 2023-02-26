@@ -109,6 +109,7 @@
     <ClCompile Include="about.cpp" />
     <ClCompile Include="changeconfigpath.cpp" />
     <ClCompile Include="importfromfile.cpp" />
+    <ClCompile Include="Lesson.cpp" />
     <ClCompile Include="showalllessons.cpp" />
     <ClCompile Include="showmoreinfo.cpp" />
     <ClCompile Include="WindowSettings.cpp" />

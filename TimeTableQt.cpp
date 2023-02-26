@@ -49,7 +49,7 @@ bool TimeTableQt::mInitializeWindow()
     this->setGeometry(windowsettings.miWindowX, windowsettings.miWindowY, windowsettings.miWindowWeight, windowsettings.miWindowHeight);
     this->setFixedSize(windowsettings.miWindowWeight, windowsettings.miWindowHeight);
 
-    QString picpath = QString::fromLocal8Bit(windowsettings.msBackGroundImg.c_str());
+    QString picpath = QString::fromStdString(windowsettings.msBackGroundImg);
     pic = QPixmap(picpath);
     pic = pic.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 
@@ -88,7 +88,6 @@ void TimeTableQt::ShowShadow()
 
 void TimeTableQt::showEvent(QShowEvent* event)
 {
-    //ShowShadow();
     QWidget::showEvent(event);
 }
 
@@ -106,7 +105,7 @@ void TimeTableQt::paintEvent(QPaintEvent*)
     for (TextFormat a : windowsettings.msTextFormat) {
         QFont font;
         painter.setPen(QColor(GetRValue(a.color),GetGValue(a.color),GetBValue(a.color)));
-        font.setFamily(QString::fromLocal8Bit(a.msFontName.c_str(),a.msFontName.size()));
+        font.setFamily(QString::fromStdString(a.msFontName));
         font.setPointSize(a.miTextSize);
         painter.setFont(font);
         std::string Text;
@@ -120,7 +119,7 @@ void TimeTableQt::paintEvent(QPaintEvent*)
             Text = timetable.mGetCurrentTime(a.msTextFormat);
         }
         
-        QString qtext = QString::fromLocal8Bit(Text.c_str(), Text.size());
+        QString qtext = QString::fromStdString(Text);
         painter.drawText(a.mpTextLocation.x, a.mpTextLocation.y, qtext);
         i++;
         

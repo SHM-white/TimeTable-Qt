@@ -1,3 +1,18 @@
-﻿  changeconfigpath.cpp
+﻿  about.cpp
+  changeconfigpath.cpp
   importfromfile.cpp
+  Lesson.cpp
+  showalllessons.cpp
+  showmoreinfo.cpp
+  WindowSettings.cpp
+  CSVEditor.cpp
+  Timetable.cpp
+  TimeTableQt.cpp
+  main.cpp
+  moc_TimeTableQt.cpp
+  moc_about.cpp
+  moc_changeconfigpath.cpp
+  moc_importfromfile.cpp
+  moc_showalllessons.cpp
+  moc_showmoreinfo.cpp
   TimeTable-Qt.vcxproj -> D:\Documents\source\repos\TimeTable-Qt\x64\Debug\TimeTable-Qt.exe
