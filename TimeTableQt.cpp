@@ -73,6 +73,12 @@ bool TimeTableQt::mInitializeWindow()
     return true;
 }
 
+std::string TimeTableQt::translateUtfToAnsi(const std::string& input)
+{
+    QString tmp = QString::fromUtf8(input);
+    return tmp.toLocal8Bit().data();
+}
+
 void TimeTableQt::ShowShadow()
 {
     BOOL bEnable = true;
@@ -110,16 +116,16 @@ void TimeTableQt::paintEvent(QPaintEvent*)
         painter.setFont(font);
         std::string Text;
         if (i == windowsettings.miLessonInLine) {
-            Text = timetable.mGetCurrentTime(a.msTextFormat) + timetable.mGetCurrentLesson(windowsettings.msLessonNull);
+            Text = timetable.mGetCurrentTime(translateUtfToAnsi(a.msTextFormat)) + timetable.mGetCurrentLesson(translateUtfToAnsi(windowsettings.msLessonNull));
         }
         else if (i == windowsettings.miCountDownDayInLine) {
-            Text = timetable.mGetCountDown(windowsettings.mCountDownDay, a.msTextFormat);
+            Text = timetable.mGetCountDown(windowsettings.mCountDownDay, translateUtfToAnsi(a.msTextFormat));
         }
         else {
-            Text = timetable.mGetCurrentTime(a.msTextFormat);
+            Text = timetable.mGetCurrentTime(translateUtfToAnsi(a.msTextFormat));
         }
         
-        QString qtext = QString::fromStdString(Text);
+        QString qtext = QString::fromLocal8Bit(Text);
         painter.drawText(a.mpTextLocation.x, a.mpTextLocation.y, qtext);
         i++;
         

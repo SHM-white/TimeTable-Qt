@@ -24,7 +24,7 @@ public:
 	int mImportLessonsFromCsv(const std::string& path, const std::string& TargetFileName);
 	int sort();
 	std::string mGetCountDown(tm tmIn, const std::string& TimeFormat);
-	std::string mGetCurrentLesson(std::string& LessonNull);
+	std::string mGetCurrentLesson(const std::string& LessonNull);
 	std::string mGetCurrentTime(const std::string& TextFormat);
 	int mGetCurrentTime(tm& tmTime);
 	const std::string& mGetLessonInfoPath();

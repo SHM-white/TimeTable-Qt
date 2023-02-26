@@ -19,6 +19,7 @@ public:
     bool mInitializeWindow();
     WindowSettings windowsettings{ ".\\Config.json" };
     TimeTable timetable{ windowsettings.msLessonInfoFile };
+    static std::string translateUtfToAnsi(const std::string& input);
 private:
     Qt::WindowFlags flags;
     QPixmap pic;

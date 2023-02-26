@@ -117,7 +117,7 @@ int TimeTable::mGetTodayMoreInfo(std::vector<std::string>& input, const std::str
 	return 1;
 }
 //获取当前时间的课程
-std::string TimeTable::mGetCurrentLesson(std::string& LessonNull)
+std::string TimeTable::mGetCurrentLesson(const std::string& LessonNull)
 {
 	std::string timeCurrentTime{ mGetCurrentTime("%H%M") };
 	int iCurrentTime = mTimeToMin(atoi(timeCurrentTime.c_str()));
@@ -232,7 +232,7 @@ std::string TimeTable::mGetCountDown(tm tmIn, const std::string& TimeFormat)
 	}
 	gmtime_s(&tmIn, &timeIn);
 	char tmp[256];
-	snprintf(tmp, sizeof(tmp) - 1, TimeFormat.c_str(), tmIn.tm_mon, tmIn.tm_mday - 1, tmIn.tm_hour, tmIn.tm_min, tmIn.tm_sec);
+	snprintf(tmp, sizeof(tmp) - 1, TimeFormat.c_str(),  tmIn.tm_yday, tmIn.tm_hour, tmIn.tm_min, tmIn.tm_sec);
 	//vsprintf_s(tmp, sizeof(tmp), TimeFormat.c_str(), tmIn.tm_mon, tmIn.tm_mday-1, tmIn.tm_hour, tmIn.tm_min, tmIn.tm_sec);
 	return tmp;
 }
