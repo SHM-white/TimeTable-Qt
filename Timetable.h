@@ -15,6 +15,8 @@ public:
 	TimeTable() = delete;
 	TimeTable(std::string path) : mLessonInfoPath{ path } {};
 	int mAddLesson(const std::string& week, const std::string& Lesson, const std::string& sBegin, const std::string& sEnd, const std::string& TargetFilePath);
+	int mAddLesson(const Lesson& lesson);
+	int mAddLesson(const Lesson& lesson, const std::string& TargetFilePath);
 	int mAddLesson(const std::string& week, const std::string& Lesson, const std::string& sBegin, const std::string& sEnd);
 	int mAddMoreInfo(const std::string& week, const std::string& Info);
 	int mGetLesson(std::vector<std::string>& input);
@@ -26,6 +28,10 @@ public:
 	int sort(const std::string& lessonpath);
 	int insert(size_t index, const Lesson& lesson, const std::string& targetFile);
 	int insert(size_t index, const Lesson& lesson);
+	int deleteLesson(size_t index, const std::string& day);
+	int deleteLesson(size_t index, const std::string& day,const std::string& lessonPath);
+	int changeLesson(size_t index, const std::string& day,const Lesson& lesson);
+	int changeLesson(size_t index, const std::string& day, const Lesson& lesson, const std::string& lessonPath);
 	std::string mGetCountDown(tm tmIn, const std::string& TimeFormat);
 	std::string mGetCurrentLesson(const std::string& LessonNull);
 	std::string mGetCurrentTime(const std::string& TextFormat);

@@ -113,6 +113,7 @@
     <ClCompile Include="changeconfigpath.cpp" />
     <ClCompile Include="importfromfile.cpp" />
     <ClCompile Include="Lesson.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="settings.cpp" />
     <ClCompile Include="showalllessons.cpp" />
     <ClCompile Include="showmoreinfo.cpp" />
@@ -130,10 +131,6 @@
     <ClCompile Include="TextFormat.cpp" />
     <ClCompile Include="Timetable.cpp" />
     <ClCompile Include="TimeTableQt.cpp" />
-    <ClCompile Include="main.cpp">
-      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdcpp20</LanguageStandard>
-      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Release|x64'">stdcpp20</LanguageStandard>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="config.json" />

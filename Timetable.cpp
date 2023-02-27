@@ -51,6 +51,14 @@ int TimeTable::mAddLesson(const std::string& week, const std::string& Lesson, co
 	os.clear();
 	return 1;
 }
+int TimeTable::mAddLesson(const Lesson& lesson)
+{
+	return mAddLesson(lesson,mLessonInfoPath);
+}
+int TimeTable::mAddLesson(const Lesson& lesson, const std::string& TargetFilePath)
+{
+	return mAddLesson(lesson.mGetDay(), lesson.mGetName(),lesson.mGetBeginTimeAsString(), lesson.mGetEndTimeAsString(), TargetFilePath);
+}
 //添加更多信息，有空也加个重载
 int TimeTable::mAddMoreInfo(const std::string& Days, const std::string& Info)
 {
@@ -228,9 +236,81 @@ int TimeTable::mGetCurrentTime(tm& tmTime)
 	localtime_s(&tmTime, &timep);
 	return 0;
 }
+//暂未实现
 int TimeTable::insert(size_t index, const Lesson& lesson)
 {
 	return insert(index,lesson,mLessonInfoPath);
+}
+//删除课程
+int TimeTable::deleteLesson(size_t index, const std::string& day, const std::string& lessonPath)
+{
+	std::ifstream in(lessonPath, std::ios::in);
+	if (!in.is_open())
+	{
+		return 0;
+	};
+	Json::Reader reader;
+	Json::Value root;
+	if (!reader.parse(in, root)) {
+		in.close();
+		return 0;
+	}
+	std::fstream os(lessonPath, std::ios::out | std::ios::trunc);
+	if (!os.is_open()) { return 0; }
+
+	Json::Value& valueLessons = root[day]["Lessons"];
+	valueLessons.removeIndex(index, &valueLessons);
+	//for (const auto& i : Days) {
+	//	if (i == "Null") { continue; }
+	//	Json::Value& valueLessons = root[i]["Lessons"];
+	//	std::vector<Lesson> vectorLessons;
+	//	for (const auto& value : valueLessons) {
+	//		vectorLessons.push_back(Lesson(i, value[0].asString(), value[1].asInt(), value[2].asInt()));
+	//	}
+	//	//auto ILessons = Lessons | std::views::transform([i](const Json::Value& value) {return Lesson(i, value[0].asString(), value[1].asInt(), value[2].asInt()); });
+	//	std::sort(vectorLessons.begin(), vectorLessons.end());
+	//	valueLessons.clear();
+	//	for (const auto& lesson : vectorLessons) {
+	//		valueLessons.append(Json::Value().append(lesson.mGetName()).append(lesson.mGetBeginTime()).append(lesson.mGetEndTime()));
+	//	}
+	//}
+
+	Json::StyledWriter sw;
+	os << sw.write(root);
+	os.close();
+	return 1;
+}
+int TimeTable::changeLesson(size_t index, const std::string& day, const Lesson& lesson)
+{
+	return changeLesson(index,day,lesson,mLessonInfoPath);
+}
+int TimeTable::changeLesson(size_t index, const std::string& day, const Lesson& lesson, const std::string& lessonPath)
+{
+	std::ifstream in(lessonPath, std::ios::in);
+	if (!in.is_open())
+	{
+		return 0;
+	};
+	Json::Reader reader;
+	Json::Value root;
+	if (!reader.parse(in, root)) {
+		in.close();
+		return 0;
+	}
+	std::fstream os(lessonPath, std::ios::out | std::ios::trunc);
+	if (!os.is_open()) { return 0; }
+	
+	Json::Value& valueLessons = root[day]["Lessons"];
+	valueLessons[(int)index] = lesson.GetJsonValue();
+
+	Json::StyledWriter sw;
+	os << sw.write(root);
+	os.close();
+	return 1;
+}
+int TimeTable::deleteLesson(size_t index, const std::string& day)
+{
+	return deleteLesson(index,day,mLessonInfoPath);
 }
 //获取当前时间至指定时间的倒计时
 std::string TimeTable::mGetCountDown(tm tmIn, const std::string& TimeFormat)

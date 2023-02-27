@@ -37,9 +37,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CSVEditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -71,6 +68,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="settings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

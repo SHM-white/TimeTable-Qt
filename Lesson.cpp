@@ -25,6 +25,16 @@ Lesson::Lesson(const std::string& Name, int begin, int end)
 	mSetValue(Name, begin, end);
 }
 
+const std::string Lesson::mGetBeginTimeAsString() const
+{
+	return std::to_string(iBeginTime);
+}
+
+const std::string Lesson::mGetEndTimeAsString() const
+{
+	return std::to_string(iEndTime);
+}
+
 int Lesson::mSetValue(const std::string& Day, const std::string& s, int b, int e)
 {
 	iBeginTime = b;
@@ -47,6 +57,13 @@ int Lesson::mSetValue(const std::string& s, int b, int e)
 const std::string Lesson::GetValue(const std::string& seprator) const
 {
 	auto result{ std::format("{0}{4}{1}{4}{2}{4}{3}",sDay, sName,iBeginTime,iEndTime,seprator) };
+	return result;
+}
+
+const Json::Value Lesson::GetJsonValue() const
+{
+	Json::Value result;
+	result.append(sName).append(iBeginTime).append(iEndTime);
 	return result;
 }
 

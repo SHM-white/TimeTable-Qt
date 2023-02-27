@@ -6,7 +6,7 @@
 #include<vector>
 #include "resource.h"
 #include<Windows.h>
-#include <QPainter>
+//#include <QPainter>
 #include"TextFormat.h"
 #include "Timetable.h"
 
