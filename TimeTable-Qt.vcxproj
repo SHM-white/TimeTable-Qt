@@ -113,6 +113,7 @@
     <ClCompile Include="changeconfigpath.cpp" />
     <ClCompile Include="importfromfile.cpp" />
     <ClCompile Include="Lesson.cpp" />
+    <ClCompile Include="settings.cpp" />
     <ClCompile Include="showalllessons.cpp" />
     <ClCompile Include="showmoreinfo.cpp" />
     <ClCompile Include="WindowSettings.cpp" />
@@ -120,6 +121,7 @@
     <QtUic Include="about.ui" />
     <QtUic Include="changeconfigpath.ui" />
     <QtUic Include="importfromfile.ui" />
+    <QtUic Include="settings.ui" />
     <QtUic Include="showalllessons.ui" />
     <QtUic Include="showmoreinfo.ui" />
     <QtUic Include="TimeTableQt.ui" />
@@ -149,6 +151,7 @@
     <QtMoc Include="showalllessons.h" />
     <QtMoc Include="showmoreinfo.h" />
     <ClInclude Include="resource1.h" />
+    <QtMoc Include="settings.h" />
     <ClInclude Include="TextFormat.h" />
     <ClInclude Include="Timetable.h" />
     <ClInclude Include="WindowSettings.h" />

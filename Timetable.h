@@ -23,6 +23,9 @@ public:
 	int mGetTodayMoreInfo(std::vector<std::string>& input, const std::string week);
 	int mImportLessonsFromCsv(const std::string& path, const std::string& TargetFileName);
 	int sort();
+	int sort(const std::string& lessonpath);
+	int insert(size_t index, const Lesson& lesson, const std::string& targetFile);
+	int insert(size_t index, const Lesson& lesson);
 	std::string mGetCountDown(tm tmIn, const std::string& TimeFormat);
 	std::string mGetCurrentLesson(const std::string& LessonNull);
 	std::string mGetCurrentTime(const std::string& TextFormat);

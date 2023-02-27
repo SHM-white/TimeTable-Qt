@@ -23,6 +23,7 @@ public:
 private:
     Qt::WindowFlags flags;
     QPixmap pic;
+    int timeCounter{ 0 };
     bool m_bDrag{ false };
     Ui::TimeTableQtClass ui;
     QTimer* time_calendar;

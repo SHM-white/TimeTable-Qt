@@ -53,6 +53,7 @@ bool TimeTableQt::mInitializeWindow()
     pic = QPixmap(picpath);
     pic = pic.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 
+#ifdef Q_OS_WIN
     if (windowsettings.bAcrylicEffect) {
 
         HWND hMoudle = (HWND)(winId());
@@ -62,13 +63,13 @@ bool TimeTableQt::mInitializeWindow()
         fun pSetBlur = (fun)GetProcAddress(hDLL, "setAcrylicEffect");
         pSetBlur((HWND)(winId()));
     }
-    
+#endif // Q_OS_WIN
 
     this->ui.menubar->setVisible(false);
     MenuRD.setX(this->ui.menubar->width());
     MenuRD.setY(this->ui.menubar->height());
     this->setMouseTracking(true);
-    Sleep(500);//等待dll加载完成后显示窗口
+    //Sleep(500);//等待dll加载完成后显示窗口
     show();
     return true;
 }
@@ -114,18 +115,21 @@ void TimeTableQt::paintEvent(QPaintEvent*)
         font.setFamily(QString::fromStdString(a.msFontName));
         font.setPointSize(a.miTextSize);
         painter.setFont(font);
-        std::string Text;
+        //std::string Text;
+        QString qtext;
         if (i == windowsettings.miLessonInLine) {
-            Text = timetable.mGetCurrentTime(translateUtfToAnsi(a.msTextFormat)) + timetable.mGetCurrentLesson(translateUtfToAnsi(windowsettings.msLessonNull));
+            qtext = QString::fromLocal8Bit(timetable.mGetCurrentTime(translateUtfToAnsi(a.msTextFormat))) + QString::fromStdString(timetable.mGetCurrentLesson(translateUtfToAnsi(windowsettings.msLessonNull)));
+            
         }
         else if (i == windowsettings.miCountDownDayInLine) {
-            Text = timetable.mGetCountDown(windowsettings.mCountDownDay, translateUtfToAnsi(a.msTextFormat));
+            qtext = QString::fromLocal8Bit(timetable.mGetCountDown(windowsettings.mCountDownDay, translateUtfToAnsi(a.msTextFormat)));
+            
         }
         else {
-            Text = timetable.mGetCurrentTime(translateUtfToAnsi(a.msTextFormat));
+            qtext = QString::fromLocal8Bit(timetable.mGetCurrentTime(translateUtfToAnsi(a.msTextFormat)));
         }
         
-        QString qtext = QString::fromLocal8Bit(Text);
+        //qtext = QString::fromLocal8Bit(Text);
         painter.drawText(a.mpTextLocation.x, a.mpTextLocation.y, qtext);
         i++;
         
@@ -152,13 +156,16 @@ void TimeTableQt::mouseMoveEvent(QMouseEvent* event)
         QPoint distance = event->globalPos() - mouseStartPoint;
         this->move(windowTopLeftPoint + distance);
     }
-    QPoint CurrentPos = event->pos();
-    if (CurrentPos.y() < MenuRD.y()) {
-        this->ui.menubar->setVisible(true);
+    if (timeCounter < 1) {
+        timeCounter = 4;
     }
-    else {
-        this->ui.menubar->setVisible(false);
-    }
+    //QPoint CurrentPos = event->pos();
+    //if (CurrentPos.y() < MenuRD.y()) {
+    //    this->ui.menubar->setVisible(true);
+    //}
+    //else {
+    //    this->ui.menubar->setVisible(false);
+    //}
     
 }
 
@@ -172,6 +179,16 @@ void TimeTableQt::mouseReleaseEvent(QMouseEvent* event)
 }
 
 void TimeTableQt::UpdateWindow() {
+    if (timeCounter > 3) {
+        this->ui.menubar->setVisible(true);
+        timeCounter = 3;
+    }
+    else if (timeCounter < 1) {
+        this->ui.menubar->setVisible(false);
+    }
+    else {
+        timeCounter -= 1;
+    }
     update();
 }
 

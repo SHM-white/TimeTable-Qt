@@ -172,10 +172,14 @@ int TimeTable::mImportLessonsFromCsv(const std::string& path, const std::string&
 	}
 	return 0;
 }
-//排序
 int TimeTable::sort()
 {
-	std::ifstream in(mLessonInfoPath, std::ios::in);
+	return sort(mLessonInfoPath);
+}
+//排序
+int TimeTable::sort(const std::string& lessonpath)
+{
+	std::ifstream in(lessonpath, std::ios::in);
 	if (!in.is_open())
 	{
 		return 0;
@@ -186,7 +190,7 @@ int TimeTable::sort()
 		in.close();
 		return 0; 
 	}
-	std::fstream os(mLessonInfoPath, std::ios::out | std::ios::trunc);
+	std::fstream os(lessonpath, std::ios::out | std::ios::trunc);
 	if (!os.is_open()) { return 0; }
 	for (const auto& i : Days) {
 		if (i == "Null") { continue; }
@@ -207,6 +211,10 @@ int TimeTable::sort()
 	os.close();
 	return 1;
 }
+int TimeTable::insert(size_t index, const Lesson& lesson, const std::string& targetFile)
+{
+	return 0;
+}
 //获取课程信息地址
 const std::string& TimeTable::mGetLessonInfoPath()
 {
@@ -219,6 +227,10 @@ int TimeTable::mGetCurrentTime(tm& tmTime)
 	time(&timep);
 	localtime_s(&tmTime, &timep);
 	return 0;
+}
+int TimeTable::insert(size_t index, const Lesson& lesson)
+{
+	return insert(index,lesson,mLessonInfoPath);
 }
 //获取当前时间至指定时间的倒计时
 std::string TimeTable::mGetCountDown(tm tmIn, const std::string& TimeFormat)
