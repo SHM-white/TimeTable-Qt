@@ -22,6 +22,8 @@ public:
 	};
 	WindowSettings() = delete;
 	int mGetWindowSettings();
+	int save();
+	int save(const std::string& ConfigPath);
 	int mGetTextItem(const std::string& Item, std::string& input);
 	//int mPrintText(HDC& hdc, TimeTable& timetable);
 	//int mPrintText(QPainter& painter, TimeTable& timetable);

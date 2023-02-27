@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>617</width>
-    <height>278</height>
+    <width>620</width>
+    <height>290</height>
    </rect>
   </property>
   <property name="font">
@@ -23,257 +23,475 @@
    <iconset resource="TimeTableQt.qrc">
     <normaloff>:/TimeTableQt/123.ico</normaloff>:/TimeTableQt/123.ico</iconset>
   </property>
-  <widget class="QWidget" name="">
-   <property name="geometry">
-    <rect>
-     <x>11</x>
-     <y>11</y>
-     <width>591</width>
-     <height>251</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" name="horizontalLayout">
-    <item>
-     <widget class="QListView" name="listView"/>
-    </item>
-    <item>
-     <layout class="QVBoxLayout" name="verticalLayout_4">
-      <item>
-       <widget class="QTabWidget" name="tabWidget">
-        <property name="currentIndex">
-         <number>0</number>
-        </property>
-        <widget class="QWidget" name="tab">
-         <attribute name="title">
-          <string>课程</string>
-         </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout">
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_3">
-              <item>
-               <widget class="QPushButton" name="pushButton_4">
+  <layout class="QHBoxLayout" name="horizontalLayout_16">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QListView" name="listView"/>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QTabWidget" name="tabWidget">
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <widget class="QWidget" name="tab">
+          <attribute name="title">
+           <string>课程</string>
+          </attribute>
+          <layout class="QHBoxLayout" name="horizontalLayout_17">
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <item>
+                <widget class="QPushButton" name="pushButton_4">
+                 <property name="text">
+                  <string>排序</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_6">
+                 <property name="text">
+                  <string>删除</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QComboBox" name="comboBox">
+               <item>
                 <property name="text">
-                 <string>排序</string>
+                 <string>Mon</string>
                 </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="pushButton_6">
+               </item>
+               <item>
                 <property name="text">
-                 <string>删除</string>
+                 <string>Tue</string>
                 </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <widget class="QComboBox" name="comboBox">
-              <item>
-               <property name="text">
+               </item>
+               <item>
+                <property name="text">
+                 <string>Wed</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Thu</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Fri</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Sat</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Sun</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
+               <item>
+                <widget class="QLineEdit" name="lineEdit"/>
+               </item>
+               <item>
+                <widget class="QTimeEdit" name="timeEdit">
+                 <property name="time">
+                  <time>
+                   <hour>6</hour>
+                   <minute>0</minute>
+                   <second>0</second>
+                  </time>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QTimeEdit" name="timeEdit_2">
+                 <property name="time">
+                  <time>
+                   <hour>22</hour>
+                   <minute>0</minute>
+                   <second>0</second>
+                  </time>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_4">
+               <item>
+                <widget class="QPushButton" name="pushButton_7">
+                 <property name="text">
+                  <string>修改</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_2">
+                 <property name="text">
+                  <string>添加</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="tab_3">
+          <attribute name="title">
+           <string>信息</string>
+          </attribute>
+          <layout class="QHBoxLayout" name="horizontalLayout_18">
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_6">
+               <item>
+                <widget class="QPushButton" name="pushButton_8">
+                 <property name="text">
+                  <string>删除</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_9">
+                 <property name="text">
+                  <string>排序</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QComboBox" name="comboBox_2">
+               <property name="currentText">
                 <string>Mon</string>
                </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Tue</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Wed</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Thu</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Fri</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Sat</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Sun</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_2">
-              <item>
-               <widget class="QLineEdit" name="lineEdit"/>
-              </item>
-              <item>
-               <widget class="QTimeEdit" name="timeEdit">
-                <property name="time">
-                 <time>
-                  <hour>6</hour>
-                  <minute>0</minute>
-                  <second>0</second>
-                 </time>
+               <item>
+                <property name="text">
+                 <string>Mon</string>
                 </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QTimeEdit" name="timeEdit_2">
-                <property name="time">
-                 <time>
-                  <hour>22</hour>
-                  <minute>0</minute>
-                  <second>0</second>
-                 </time>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Tue</string>
                 </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pushButton_7">
-              <property name="text">
-               <string>PushButton</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pushButton_2">
-              <property name="text">
-               <string>添加</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="tab_3">
-         <attribute name="title">
-          <string>信息</string>
-         </attribute>
-         <widget class="QWidget" name="">
-          <property name="geometry">
-           <rect>
-            <x>70</x>
-            <y>40</y>
-            <width>152</width>
-            <height>87</height>
-           </rect>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_2">
-           <item>
-            <widget class="QComboBox" name="comboBox_2">
-             <property name="currentText">
-              <string>Mon</string>
-             </property>
-             <item>
-              <property name="text">
-               <string>Mon</string>
-              </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Wed</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Thu</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Fri</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Sat</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Sun</string>
+                </property>
+               </item>
+              </widget>
              </item>
              <item>
-              <property name="text">
-               <string>Tue</string>
-              </property>
+              <widget class="QLineEdit" name="lineEdit_2"/>
              </item>
              <item>
-              <property name="text">
-               <string>Wed</string>
-              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_5">
+               <item>
+                <widget class="QPushButton" name="pushButton_5">
+                 <property name="text">
+                  <string>修改</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton">
+                 <property name="text">
+                  <string>添加</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
-             <item>
-              <property name="text">
-               <string>Thu</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Fri</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Sat</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Sun</string>
-              </property>
-             </item>
-            </widget>
+            </layout>
            </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="tab_4">
+          <attribute name="title">
+           <string>窗口</string>
+          </attribute>
+          <layout class="QHBoxLayout" name="horizontalLayout_19">
            <item>
-            <widget class="QLineEdit" name="lineEdit_2"/>
+            <layout class="QVBoxLayout" name="verticalLayout_9">
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_8">
+               <item>
+                <layout class="QVBoxLayout" name="verticalLayout_5">
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_9">
+                   <item>
+                    <widget class="QLabel" name="label_3">
+                     <property name="text">
+                      <string>窗口位置</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_4">
+                     <property name="text">
+                      <string>X</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QSpinBox" name="spinBox"/>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_5">
+                     <property name="text">
+                      <string>Y</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QSpinBox" name="spinBox_2"/>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_10">
+                   <item>
+                    <widget class="QLabel" name="label_7">
+                     <property name="text">
+                      <string>文字位置</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_8">
+                     <property name="text">
+                      <string>X</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QSpinBox" name="spinBox_3"/>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_9">
+                     <property name="text">
+                      <string>Y</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QSpinBox" name="spinBox_4"/>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QVBoxLayout" name="verticalLayout_6">
+                 <item>
+                  <widget class="QLineEdit" name="lineEdit_5"/>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_11">
+                   <item>
+                    <widget class="QSpinBox" name="spinBox_5"/>
+                   </item>
+                   <item>
+                    <widget class="QFontComboBox" name="fontComboBox"/>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_7">
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_14">
+                 <item>
+                  <widget class="QLabel" name="label_14">
+                   <property name="text">
+                    <string>无课程时显示</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="lineEdit_6"/>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_13">
+                   <item>
+                    <widget class="QLabel" name="label_11">
+                     <property name="text">
+                      <string>位于第</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QSpinBox" name="spinBox_8"/>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_12">
+                     <property name="text">
+                      <string>项</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_15">
+                 <item>
+                  <widget class="QLabel" name="label_13">
+                   <property name="text">
+                    <string>倒数日</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QDateTimeEdit" name="dateTimeEdit"/>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_12">
+                   <item>
+                    <widget class="QLabel" name="label_6">
+                     <property name="text">
+                      <string>位于第</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QSpinBox" name="spinBox_7"/>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_10">
+                     <property name="text">
+                      <string>项</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </item>
+            </layout>
            </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="tab_2">
+          <attribute name="title">
+           <string>配置文件</string>
+          </attribute>
+          <layout class="QHBoxLayout" name="horizontalLayout_20">
            <item>
-            <widget class="QPushButton" name="pushButton">
-             <property name="text">
-              <string>添加</string>
-             </property>
-            </widget>
+            <layout class="QVBoxLayout" name="verticalLayout_3">
+             <item>
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string>配置文件路径</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_7">
+               <item>
+                <widget class="QLineEdit" name="lineEdit_3"/>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_10">
+                 <property name="text">
+                  <string>...</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>课程信息路径</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_8">
+               <item>
+                <widget class="QLineEdit" name="lineEdit_4"/>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_11">
+                 <property name="text">
+                  <string>...</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButton_3">
+               <property name="text">
+                <string>确定</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>
         </widget>
-        <widget class="QWidget" name="tab_2">
-         <attribute name="title">
-          <string>窗口</string>
-         </attribute>
-         <widget class="QLineEdit" name="lineEdit_3">
-          <property name="geometry">
-           <rect>
-            <x>30</x>
-            <y>10</y>
-            <width>113</width>
-            <height>21</height>
-           </rect>
-          </property>
-         </widget>
-         <widget class="QDateTimeEdit" name="dateTimeEdit">
-          <property name="geometry">
-           <rect>
-            <x>30</x>
-            <y>100</y>
-            <width>194</width>
-            <height>22</height>
-           </rect>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="pushButton_3">
-          <property name="geometry">
-           <rect>
-            <x>30</x>
-            <y>160</y>
-            <width>75</width>
-            <height>24</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>PushButton</string>
-          </property>
-         </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_close">
+         <property name="text">
+          <string>关闭</string>
+         </property>
+         <property name="default">
+          <bool>true</bool>
+         </property>
         </widget>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton_5">
-        <property name="text">
-         <string>PushButton</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-   </layout>
-  </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+  </layout>
  </widget>
  <resources>
   <include location="TimeTableQt.qrc"/>
