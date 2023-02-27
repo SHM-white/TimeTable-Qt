@@ -95,8 +95,8 @@ int WindowSettings::save(const std::string& ConfigPath)
 			.append(format.msFontName)
 			.append(format.msFontName)
 			.append(Json::Value()
-				.append(format.mpTextLocation.x)
-				.append(format.mpTextLocation.y)
+				.append((int)format.mpTextLocation.x)
+				.append((int)format.mpTextLocation.y)
 				.append(format.miTextSize)
 				.append(color));
 		Settings["TextFormat"].append(formatItem);

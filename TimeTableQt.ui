@@ -60,6 +60,7 @@
     </property>
     <addaction name="actioninport"/>
     <addaction name="actionChangeConfig"/>
+    <addaction name="actionSettings"/>
     <addaction name="separator"/>
     <addaction name="actionshowall"/>
     <addaction name="actionmoreinfo"/>
@@ -140,6 +141,11 @@
    </property>
    <property name="iconText">
     <string>更改配置文件</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>设置</string>
    </property>
   </action>
  </widget>

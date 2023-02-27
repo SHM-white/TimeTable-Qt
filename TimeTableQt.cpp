@@ -4,6 +4,7 @@
 #include "showalllessons.h"
 #include "showmoreinfo.h"
 #include "changeconfigpath.h"
+#include "settings.h"
 #include <string>
 #include <windef.h>
 #include <QDialog>
@@ -249,4 +250,11 @@ void TimeTableQt::on_actionChangeConfig_triggered()
     ChangeConfigPath* dialog = new ChangeConfigPath(this);
     dialog->show();
 }
+
+void TimeTableQt::on_actionSettings_triggered()
+{
+    Settings* dialog= new Settings(this);
+    dialog->show();
+}
+
 
