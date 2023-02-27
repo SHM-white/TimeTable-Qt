@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <ranges>
 #include "CSVEditor.h"
+#include "Lesson.h"
 
 //TimeTable类的实现函数
 //添加课程的4参数重载函数，兼容旧代码（其实就是懒），默认写入成员变量保存的路径

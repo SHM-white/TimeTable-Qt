@@ -1,14 +1,14 @@
 #include "Lesson.h"
 #include <compare>
 
-auto Lesson::operator<=>(const Lesson& another) const
-{
-	auto result{ this->mGetName() <=> another.mGetName() };
-	if (result == std::strong_ordering::equivalent) {
-		result = this->mGetBeginTime() <=> another.mGetBeginTime();
-	}
-	return result;
-}
+//auto Lesson::operator<=>(const Lesson& another) const
+//{
+//	auto result{ this->mGetName() <=> another.mGetName() };
+//	if (result == std::strong_ordering::equivalent) {
+//		result = this->mGetBeginTime() <=> another.mGetBeginTime();
+//	}
+//	return result;
+//}
 
 Lesson::Lesson(const std::string& Day, const std::string& Name, int begin, int end)
 {
