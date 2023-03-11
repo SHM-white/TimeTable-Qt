@@ -10,6 +10,7 @@ CONFIG += c++20
 
 SOURCES += \
     CSVEditor.cpp \
+    Lesson.cpp \
     TextFormat.cpp \
     Timetable.cpp \
     WindowSettings.cpp \

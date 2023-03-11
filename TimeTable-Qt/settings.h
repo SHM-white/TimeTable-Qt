@@ -2,7 +2,12 @@
 #define SETTINGS_H
 
 #include <QDialog>
+#include <QStringListModel>
+#include <QStandardItemModel>
+#include <QModelIndex>
 #include "TimeTableQt.h"
+#include <string>
+#include <vector>
 
 namespace Ui {
 class Settings;
@@ -25,9 +30,15 @@ private slots:
 
     void on_pushButton_order_clicked();
 
+    void on_checkBox_stateChanged(int arg1);
+
+    void on_pushButton_close_clicked();
+
 private:
     Ui::Settings *ui;
-    QWidget* pParent;
+    TimeTableQt* pParent;
+    std::string Days[7]{ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+    QStandardItemModel* ItemModel = nullptr;
 };
 
 #endif // SETTINGS_H

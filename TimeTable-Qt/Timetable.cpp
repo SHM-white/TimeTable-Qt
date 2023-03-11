@@ -10,6 +10,8 @@
 #include <ranges>
 #include "CSVEditor.h"
 #include "Lesson.h"
+#include <stdlib.h>
+#include <functional>
 
 //TimeTable类的实现函数
 //添加课程的4参数重载函数，兼容旧代码（其实就是懒），默认写入成员变量保存的路径
@@ -31,14 +33,9 @@ int TimeTable::mAddLesson(const std::string& week, const std::string& Lesson, co
 	os.open(TargetFilePath, std::ios::in);
 	if (!os.is_open()) {
 		os.close();
-		os.clear();
 		return 0;
 	}
-	if (!reader.parse(os, root)) {
-		os.close();
-		os.clear();
-		return 0;
-	}
+	reader.parse(os, root);
 	os.close();
 	os.clear();
 	os.open(TargetFilePath, std::ios::out | std::ios::trunc);
@@ -80,11 +77,11 @@ int TimeTable::mAddMoreInfo(const std::string& Days, const std::string& Info)
 	return 0;
 }
 //转换时间为分钟数便于比较大小
-int TimeTable::mTimeToMin(int input)
+int TimeTable::mHHMMToMin(int input)
 {
 	return (input - input % 100) / 100 * 60 + input % 100;
 }
-//暂时替换文件路径，同时返回旧的文件路径，只有内部函数能调用
+//暂时替换文件路径，同时返回旧的文件路径
 std::string TimeTable::mReplacePath(const std::string& Path)
 {
 	std::string old = mLessonInfoPath;
@@ -129,7 +126,7 @@ int TimeTable::mGetTodayMoreInfo(std::vector<std::string>& input, const std::str
 std::string TimeTable::mGetCurrentLesson(const std::string& LessonNull)
 {
 	std::string timeCurrentTime{ mGetCurrentTime("%H%M") };
-	int iCurrentTime = mTimeToMin(atoi(timeCurrentTime.c_str()));
+	int iCurrentTime = mHHMMToMin(atoi(timeCurrentTime.c_str()));
 	if (!((CurrentLesson.mGetBeginTime() <= iCurrentTime) && (iCurrentTime <= CurrentLesson.mGetEndTime()))) {
 		Json::Reader reader;
 		Json::Value root;
@@ -144,8 +141,8 @@ std::string TimeTable::mGetCurrentLesson(const std::string& LessonNull)
 			for (unsigned int i = 0; i < Lessons.size(); ++i) {
 				std::string sBeginTime = Lessons[i][1].asString();
 				std::string sEndTime = Lessons[i][2].asString();
-				int iBeginTime = mTimeToMin(atoi(sBeginTime.c_str()));
-				int iEndTime = mTimeToMin(atoi(sEndTime.c_str()));
+				int iBeginTime = mHHMMToMin(atoi(sBeginTime.c_str()));
+				int iEndTime = mHHMMToMin(atoi(sEndTime.c_str()));
 				if ((iBeginTime <= iCurrentTime) && (iEndTime >= iCurrentTime)) {
 					in.close();
 					CurrentLesson.mSetValue(Lessons[i][0].asString(), iBeginTime, iEndTime);
@@ -181,14 +178,14 @@ int TimeTable::mImportLessonsFromCsv(const std::string& path, const std::string&
 	}
 	return 0;
 }
-int TimeTable::sort()
+int TimeTable::sortLessons(const std::string& Day)
 {
-	return sort(mLessonInfoPath);
+	return sortLessons(mLessonInfoPath,Day);
 }
 //排序
-int TimeTable::sort(const std::string& lessonpath)
+int TimeTable::sortLessons(const std::string& lessonPath, const std::string& Day)
 {
-	std::ifstream in(lessonpath, std::ios::in);
+	std::ifstream in(lessonPath, std::ios::in);
 	if (!in.is_open())
 	{
 		return 0;
@@ -199,35 +196,57 @@ int TimeTable::sort(const std::string& lessonpath)
 		in.close();
 		return 0; 
 	}
-	std::fstream os(lessonpath, std::ios::out | std::ios::trunc);
+	std::fstream os(lessonPath, std::ios::out | std::ios::trunc);
 	if (!os.is_open()) { return 0; }
+	
+	std::vector<Lesson> vectorLessons;
+
 	for (const auto& i : Days) {
+		if ((Day != i) && (Day != "All")) { continue; }
 		if (i == "Null") { continue; }
 		Json::Value& valueLessons = root[i]["Lessons"];
-		std::vector<Lesson> vectorLessons;
+		vectorLessons.clear();
 		for (const auto& value : valueLessons) {
-			vectorLessons.push_back(Lesson(i, value[0].asString(), value[1].asInt(), value[2].asInt()));
+			vectorLessons.push_back(
+				Lesson(i,
+					value[0].asString(),
+					atoi(value[1].asString().c_str()),
+					atoi(value[2].asString().c_str())
+				)
+			);
 		}
-		//auto ILessons = Lessons | std::views::transform([i](const Json::Value& value) {return Lesson(i, value[0].asString(), value[1].asInt(), value[2].asInt()); });
-		std::sort(vectorLessons.begin(),vectorLessons.end());
+		std::sort(vectorLessons.begin(), vectorLessons.end(), [&](const Lesson& lesson1, const Lesson& lesson2) {return lesson1.mGetName() < lesson2.mGetName(); });
 		valueLessons.clear();
+		valueLessons = Json::Value(Json::arrayValue);
 		for (const auto& lesson : vectorLessons) {
-			valueLessons.append(Json::Value().append(lesson.mGetName()).append(lesson.mGetBeginTime()).append(lesson.mGetEndTime()));
+			Json::Value a;
+			a.append(lesson.mGetName());
+			a.append(std::to_string(lesson.mGetBeginTime()));
+			a.append(std::to_string(lesson.mGetEndTime()));
+			valueLessons.append(a);
 		}
 	}
+	
+
 	Json::StyledWriter sw;
 	os << sw.write(root);
 	os.close();
 	return 1;
 }
-int TimeTable::insert(size_t index, const Lesson& lesson, const std::string& targetFile)
-{
-	return 0;
-}
+
+//int TimeTable::insert(size_t index, const Lesson& lesson, const std::string& targetFile)
+//{
+//	return 0;
+//}
 //获取课程信息地址
 const std::string& TimeTable::mGetLessonInfoPath()
 {
 	return mLessonInfoPath;
+}
+int TimeTable::mMinToHHMM(int input)
+{
+	int Hour = (input - input % 60) / 60;
+	return Hour*100+input%60;
 }
 //获取当前时间并存入传入的结构中
 int TimeTable::mGetCurrentTime(tm& tmTime)
@@ -238,10 +257,10 @@ int TimeTable::mGetCurrentTime(tm& tmTime)
 	return 0;
 }
 //暂未实现
-int TimeTable::insert(size_t index, const Lesson& lesson)
-{
-	return insert(index,lesson,mLessonInfoPath);
-}
+//int TimeTable::insert(size_t index, const Lesson& lesson)
+//{
+//	return insert(index,lesson,mLessonInfoPath);
+//}
 //删除课程
 int TimeTable::deleteLesson(size_t index, const std::string& day, const std::string& lessonPath)
 {
@@ -260,21 +279,31 @@ int TimeTable::deleteLesson(size_t index, const std::string& day, const std::str
 	if (!os.is_open()) { return 0; }
 
 	Json::Value& valueLessons = root[day]["Lessons"];
-	valueLessons.removeIndex(index, &valueLessons);
-	//for (const auto& i : Days) {
-	//	if (i == "Null") { continue; }
-	//	Json::Value& valueLessons = root[i]["Lessons"];
-	//	std::vector<Lesson> vectorLessons;
-	//	for (const auto& value : valueLessons) {
-	//		vectorLessons.push_back(Lesson(i, value[0].asString(), value[1].asInt(), value[2].asInt()));
-	//	}
-	//	//auto ILessons = Lessons | std::views::transform([i](const Json::Value& value) {return Lesson(i, value[0].asString(), value[1].asInt(), value[2].asInt()); });
-	//	std::sort(vectorLessons.begin(), vectorLessons.end());
-	//	valueLessons.clear();
-	//	for (const auto& lesson : vectorLessons) {
-	//		valueLessons.append(Json::Value().append(lesson.mGetName()).append(lesson.mGetBeginTime()).append(lesson.mGetEndTime()));
-	//	}
-	//}
+	std::vector<Lesson> vectorLessons;
+	vectorLessons.clear();
+	for (const auto& value : valueLessons) {
+		vectorLessons.push_back(
+			Lesson(day,
+				value[0].asString(),
+				atoi(value[1].asString().c_str()),
+				atoi(value[2].asString().c_str())
+			)
+		);
+	}
+
+	vectorLessons.erase(vectorLessons.begin() + index);
+
+	//write back to json value
+	valueLessons.clear();
+	valueLessons = Json::Value(Json::arrayValue);
+	for (const auto& lesson : vectorLessons) {
+		Json::Value a;
+		a.append(lesson.mGetName());
+		a.append(std::to_string(lesson.mGetBeginTime()));
+		a.append(std::to_string(lesson.mGetEndTime()));
+		valueLessons.append(a);
+	}
+	
 
 	Json::StyledWriter sw;
 	os << sw.write(root);
@@ -326,7 +355,6 @@ std::string TimeTable::mGetCountDown(tm tmIn, const std::string& TimeFormat)
 	gmtime_s(&tmIn, &timeIn);
 	char tmp[256];
 	snprintf(tmp, sizeof(tmp) - 1, TimeFormat.c_str(),  tmIn.tm_yday, tmIn.tm_hour, tmIn.tm_min, tmIn.tm_sec);
-	//vsprintf_s(tmp, sizeof(tmp), TimeFormat.c_str(), tmIn.tm_mon, tmIn.tm_mday-1, tmIn.tm_hour, tmIn.tm_min, tmIn.tm_sec);
 	return tmp;
 }
 
@@ -339,7 +367,6 @@ int TimeTable::mGetLesson(std::vector<std::string>& input, const std::string& we
 	{
 		return 0;
 	};
-	//std::string Days[]{ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
 	if (reader.parse(in, root)) {
 		const Json::Value Lessons = root[week]["Lessons"];
 		for (unsigned int i = 0; i < Lessons.size(); ++i) {

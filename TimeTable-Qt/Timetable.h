@@ -24,26 +24,29 @@ public:
 	int mGetTodayMoreInfo(std::vector<std::string>& input);
 	int mGetTodayMoreInfo(std::vector<std::string>& input, const std::string week);
 	int mImportLessonsFromCsv(const std::string& path, const std::string& TargetFileName);
-	int sort();
-	int sort(const std::string& lessonpath);
-	int insert(size_t index, const Lesson& lesson, const std::string& targetFile);
-	int insert(size_t index, const Lesson& lesson);
+	int sortLessons(const std::string& Day = "All");
+	int sortLessons(const std::string& lessonpath, const std::string& Day);
+	//int sortInfos(const std::string& Day = "All");
+	//int sortInfos(const std::string& InfoPath, const std::string& Day = "All");
+	//int insert(size_t index, const Lesson& lesson, const std::string& targetFile);
+	//int insert(size_t index, const Lesson& lesson);
 	int deleteLesson(size_t index, const std::string& day);
 	int deleteLesson(size_t index, const std::string& day,const std::string& lessonPath);
 	int changeLesson(size_t index, const std::string& day,const Lesson& lesson);
 	int changeLesson(size_t index, const std::string& day, const Lesson& lesson, const std::string& lessonPath);
 	std::string mGetCountDown(tm tmIn, const std::string& TimeFormat);
 	std::string mGetCurrentLesson(const std::string& LessonNull);
-	std::string mGetCurrentTime(const std::string& TextFormat);
-	int mGetCurrentTime(tm& tmTime);
+	std::string mReplacePath(const std::string& Path);
+	static std::string mGetCurrentTime(const std::string& TextFormat);
+	static int mGetCurrentTime(tm& tmTime);
 	const std::string& mGetLessonInfoPath();
-	static int mTimeToMin(int input);
+	static int mHHMMToMin(int input);
+	static int mMinToHHMM(int input);
 	const std::string Days[8]{ "Null","Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
 private:
 	Lesson CurrentLesson;
 	std::vector<Lesson> Lessons;
 	std::string mLessonInfoPath{ "Lessons.json" };
-	std::string mReplacePath(const std::string& Path);
 };
 
 

@@ -32,7 +32,7 @@ public:
 	int mSetValue(const std::string& s, int b, int e);
 	const std::string GetValue(const std::string& seprator="\t") const;
 	const Json::Value GetJsonValue() const;
-	//auto operator<=>(const Lesson& another) const;
+	std::strong_ordering operator<=>(const Lesson& another) const;
 	bool operator<(const Lesson& another) const;
 	bool operator==(const Lesson& another) const = default;
 	void operator=(const Lesson& another);

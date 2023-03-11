@@ -25,10 +25,7 @@ public:
 	int save();
 	int save(const std::string& ConfigPath);
 	int mGetTextItem(const std::string& Item, std::string& input);
-	//int mPrintText(HDC& hdc, TimeTable& timetable);
-	//int mPrintText(QPainter& painter, TimeTable& timetable);
-	bool mChangeConfigPath(const std::string& path);
-	//LPMENUITEMINFO mSwitchMenuItemCheck(HWND& hWnd, HMENU& hMenu, DWORD MenuItem);
+	const std::string mChangeConfigPath(const std::string& path);
 	int miWindowHeight{ 120 };
 	int miWindowWeight{ 250 };
 	int miWindowX{ 20 };

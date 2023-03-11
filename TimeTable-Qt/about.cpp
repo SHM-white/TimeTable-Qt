@@ -2,6 +2,8 @@
 #include "ui_about.h"
 #include "TimeTableQt.h"
 #include <QDesktopServices>
+#include <qmessagebox.h>
+#include <exception>
 
 About::About(QWidget *parent) :
     QDialog(parent),
@@ -22,7 +24,57 @@ About::~About()
 
 void About::on_pushButton_clicked()
 {
-    close();
+#ifdef QT_DEBUG
+
+    if (ui->textEdit->toPlainText().length() == 0) {
+        TimeTableQt* pParent = (TimeTableQt*)parentWidget();
+        std::string origin1 = pParent->windowsettings.mChangeConfigPath(".\\test_config.json");
+        std::string origin2;
+        try
+        {
+            QMessageBox::information(this, QString("Test"), QString("开始测试所有函数"), QMessageBox::Ok);
+            pParent->windowsettings.mGetWindowSettings();
+            origin2 = pParent->timetable.mReplacePath(pParent->windowsettings.msLessonInfoFile);
+            QMessageBox::information(this, QString("Test"), QString("windowsettings.mGetWindowSettings()"), QMessageBox::Ok);
+            pParent->windowsettings.save();
+            QMessageBox::information(this, QString("Test"), QString("windowsettings.save()"), QMessageBox::Ok);
+            pParent->timetable.mAddLesson(Lesson("Mon", "6", 1000, 1100));
+            pParent->timetable.mAddLesson(Lesson("Mon", "2", 1000, 1100));
+            pParent->timetable.mAddLesson(Lesson("Mon", "8", 1000, 1100));
+            pParent->timetable.mAddLesson(Lesson("Mon", "4", 1000, 1100));
+            QMessageBox::information(this, QString("Test"), QString("timetable.mAddLesson"), QMessageBox::Ok);
+            pParent->timetable.changeLesson(0, "Mon", Lesson("Mon", "16", 1000, 1100));
+            QMessageBox::information(this, QString("Test"), QString("timetable.changeLesson()"), QMessageBox::Ok);
+
+            pParent->timetable.sortLessons();
+            QMessageBox::information(this, QString("Test"), QString("timetable.sortLessons()"), QMessageBox::Ok);
+
+            pParent->timetable.deleteLesson(1, "Mon");
+            QMessageBox::information(this, QString("Test"), QString("timetable.deleteLesson()"), QMessageBox::Ok);
+
+            pParent->timetable.mAddMoreInfo("Mon", "asdfgjzxcvbn test" + TimeTable::mGetCurrentTime("%H%M"));
+            QMessageBox::information(this, QString("Test"), QString("timetable.mAddMoreInfo()"), QMessageBox::Ok);
+
+        }
+        catch(std::exception& ex){
+            QMessageBox::warning(this, QString("error"), QString::fromStdString(ex.what()));
+            pParent->windowsettings.mChangeConfigPath(origin1);
+            pParent->timetable.mReplacePath(origin2);
+            throw;
+        }
+        pParent->windowsettings.mChangeConfigPath(origin1);
+        pParent->timetable.mReplacePath(origin2);
+        QMessageBox::information(this, QString("Test"), QString("success!"), QMessageBox::Ok);
+
+    }
+    else {
+#endif // DEBUG
+
+        close();
+#ifdef QT_DEBUG
+    }
+#endif // DEBUG
+ 
 }
 
 

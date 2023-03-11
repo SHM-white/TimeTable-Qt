@@ -2,16 +2,11 @@
 //
 
 #include <iostream>
-#include <WindowSettings.h>
-#include <Timetable.h>
-#include <Lesson.h>
 
 int main()
 {
-    WindowSettings windowsettings("Config.json");
-    TimeTable timetable(windowsettings.msLessonInfoFile);
-    Lesson lesson("Mon", "test", 0000, 0000);
-    timetable.mAddLesson(lesson);
+    int label = 114514;
+    std::cout << "Hello World" << label << std::endl;
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单

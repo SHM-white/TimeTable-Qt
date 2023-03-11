@@ -1,14 +1,14 @@
 #include "Lesson.h"
 #include <compare>
 
-//auto Lesson::operator<=>(const Lesson& another) const
-//{
-//	auto result{ this->mGetName() <=> another.mGetName() };
-//	if (result == std::strong_ordering::equivalent) {
-//		result = this->mGetBeginTime() <=> another.mGetBeginTime();
-//	}
-//	return result;
-//}
+std::strong_ordering Lesson::operator<=>(const Lesson& another) const
+{
+	auto result{ this->mGetName() <=> another.mGetName() };
+	if (result == std::strong_ordering::equivalent) {
+		result = this->mGetBeginTime() <=> another.mGetBeginTime();
+	}
+	return result;
+}
 
 Lesson::Lesson(const std::string& Day, const std::string& Name, int begin, int end)
 {
@@ -63,7 +63,9 @@ const std::string Lesson::GetValue(const std::string& seprator) const
 const Json::Value Lesson::GetJsonValue() const
 {
 	Json::Value result;
-	result.append(sName).append(iBeginTime).append(iEndTime);
+	result.append(sName);
+	result.append(std::to_string(iBeginTime));
+	result.append(std::to_string(iEndTime));
 	return result;
 }
 
