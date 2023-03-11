@@ -59,6 +59,9 @@ test_of_time/[Oo]bj/
 test_of_time/[Oo]ut/
 test_of_time/[Ll]og/
 test_of_time/[Ll]ogs/
+build-TimeTable-Qt-Desktop_Qt_6_4_2_MinGW_64_bit-Debug/
+build-TimeTable-Qt-Desktop_Qt_6_4_2_MSVC2019_64bit-Debug/
+build-TimeTable-Qt-Desktop_Qt_6_4_2_MSVC2019_64bit-Release/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/

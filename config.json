@@ -1,25 +1,22 @@
 {
-   "About" : "该程序的目的是取代每天写在黑板上的课表和值日表等信息，可以放在教室的电脑上，也可网课期间自己使用\r\n如有bug或建议请到GitHub反馈",
+   "About" : "�ó����Ŀ����ȡ��ÿ��д�ںڰ��ϵĿα���ֵ�ձ�����Ϣ�����Է��ڽ��ҵĵ����ϣ�Ҳ�������ڼ��Լ�ʹ��\r\n����bug�����뵽GitHub����",
    "Settings" : {
       "Window" : {
          "LessonNull" : "",
-         "BackGroundColor" : [0,0,255,1],
-         "BackGroundImg" : "alpha_test.png",
+         "BackGroundColor" : [255,255,255],
          "LessonInLine" : 2,
          "TextFormat" : [ 
-            ["当前时间：%a-%H:%M:%S","微软雅黑",[2,22],15,[0,0,0]],
-            ["当前课程：","微软雅黑",[2,44],15,[0,0,0]],
-            ["距离春节还有：","微软雅黑",[2,66],15,[0,0,0]],
-            ["%03d天-%02d:%02d:%02d","微软雅黑",[2,88],15,[255,0,0]]
+            ["��ǰʱ�䣺%a-%H:%M:%S","΢���ź�",[2,43],15,[0,0,0]],
+            ["��ǰ�γ̣�","΢���ź�",[2,64],15,[0,0,0]],
+            ["���봺�ڻ��У�","΢���ź�",[2,84],15,[0,0,0]],
+            ["%02d��%02d��-%02d:%02d:%02d","΢���ź�",[2,104],15,[255,0,0]]
          ],
-         "WindowSize" : [ 250,96 ],
-         "WindowLocation" : [ 1200, 40 ],
+         "WindowSize" : [ 250,110 ],
+         "WindowLocation" : [ 1200, 20 ],
          "LessonInfoFile" : "Lessons.json",
          "CountDownDay" : [ 2023 , 1 , 22 , 0 , 0 , 0],
-         "CountDownDayInLine" : 4,
-         "AcrylicEffect":false
+         "CountDownDayInLine" : 4
       }
    },
-   "futures" : "饼：\r\n1.将支持从xlsx（csv）和txt文件导入\r\n2.更多的自定义选项，如背景颜色（目前有点小问题）\r\n3.（然后应该暂时没有了）\r\n（开源库好烦啊，还是自己写个类读csv吧）\r\n4.值日班长等信息将支持在主窗口显示",
-   "emitUTF8": true
+   "futures" : "����\r\n1.��֧�ִ�xlsx��csv����txt�ļ�����\r\n2.������Զ���ѡ��米����ɫ��Ŀǰ�е�С���⣩\r\n3.��Ȼ��Ӧ����ʱû���ˣ�\r\n����Դ��÷����������Լ�д�����csv�ɣ�\r\n4.ֵ�հ೤����Ϣ��֧������������ʾ"
 }
