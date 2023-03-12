@@ -59,7 +59,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidget">
          <property name="currentIndex">
-          <number>1</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="tab_lessons">
           <attribute name="title">
@@ -492,7 +492,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QSpinBox" name="spinBox_WindowLocationY"/>
+                <widget class="QSpinBox" name="spinBox_windowLocationY"/>
                </item>
               </layout>
              </item>
@@ -523,7 +523,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QSpinBox" name="spinBox_WindowSizeY"/>
+                <widget class="QSpinBox" name="spinBox_windowSizeY"/>
                </item>
               </layout>
              </item>
@@ -541,7 +541,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QLineEdit" name="lineEdit_6"/>
+                <widget class="QLineEdit" name="lineEdit_lessonNull"/>
                </item>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_13">
@@ -654,6 +654,13 @@
               </layout>
              </item>
              <item>
+              <widget class="QPushButton" name="pushButton_applyConfigPath">
+               <property name="text">
+                <string>确定</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QLabel" name="label_2">
                <property name="text">
                 <string>课程信息路径</string>
@@ -675,7 +682,7 @@
               </layout>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_applyPath">
+              <widget class="QPushButton" name="pushButton_applyLessonPath">
                <property name="text">
                 <string>确定</string>
                </property>

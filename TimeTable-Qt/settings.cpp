@@ -2,6 +2,7 @@
 #include "ui_settings.h"
 #include "TimeTableQt.h"
 #include <qmessagebox.h>
+#include <qfiledialog.h>
 
 Settings::Settings(QWidget *parent) :
     QDialog(parent),
@@ -9,6 +10,7 @@ Settings::Settings(QWidget *parent) :
 {
     pParent = (TimeTableQt*)parentWidget();
     ui->setupUi(this);
+    InitializeWindow();
     std::string week = pParent->timetable.mGetCurrentTime(std::string("%a"));
     this->ui->comboBox_InfoDays->setCurrentText(QString::fromStdString(week));
     this->ui->comboBox_LessonDays->setCurrentText(QString::fromStdString(week));
@@ -19,6 +21,17 @@ Settings::Settings(QWidget *parent) :
 Settings::~Settings()
 {
     delete ui;
+}
+
+void Settings::InitializeWindow()
+{
+    this->ui->spinBox_windowLocationX->setValue(pParent->windowsettings.miWindowX);
+    this->ui->spinBox_windowLocationY->setValue(pParent->windowsettings.miWindowY);
+    this->ui->spinBox_DayCountInLine->setValue(pParent->windowsettings.miCountDownDayInLine);
+    this->ui->spinBox_lessonInLine->setValue(pParent->windowsettings.miLessonInLine);
+    this->ui->spinBox_windowSizeX->setValue(pParent->windowsettings.miWindowWeight);
+    this->ui->spinBox_windowSizeY->setValue(pParent->windowsettings.miWindowWeight);
+    
 }
 
 void Settings::FlashList(int index)
@@ -113,7 +126,8 @@ void Settings::on_pushButton_delete_clicked()
 void Settings::on_pushButton_order_clicked()
 {
     int index = this->ui->tabWidget->currentIndex();
-    switch (index) {
+    switch (index) 
+    {
     case 0:
         if (this->ui->checkBox->isChecked()) {
             pParent->timetable.sortLessons(std::string(this->ui->comboBox_LessonDays->currentText().toLocal8Bit()));
@@ -124,6 +138,7 @@ void Settings::on_pushButton_order_clicked()
         }
         break;
     default:
+        break;
     }
     
     FlashList();
@@ -166,7 +181,6 @@ void Settings::on_pushButton_addLesson_clicked()
 {
     QString result{ this->ui->comboBox_addLesson->currentText()};
     if (!result.isEmpty()) {
-        //std::string Days[]{ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
         std::string Lesson = result.toStdString();
         QTime tBegin = this->ui->timeEdit_begin->time();
         QTime tEnd = this->ui->timeEdit_end->time();
@@ -219,5 +233,45 @@ void Settings::on_pushButton_addInfo_clicked()
         pParent->timetable.mAddMoreInfo(Days[currentItem], info);
     }
     FlashList();
+}
+
+
+void Settings::on_pushButton_chooseConfig_clicked()
+{
+    QString openFileName = QFileDialog::getOpenFileName(this, QString("请选择需要打开json"), QString(".\\"), QString("JSON文件(*.json);;All(*.*)"));
+    if (openFileName.isEmpty()) {
+        QMessageBox::warning(this, QString("提示"), QString("未选择文件"));
+    }
+    else {
+        this->ui->lineEdit_ConfigPath->setText(openFileName);
+    }
+}
+
+
+void Settings::on_pushButton_chooseLessons_clicked()
+{
+    QString openFileName = QFileDialog::getOpenFileName(this, QString("请选择需要打开json"), QString(".\\"), QString("JSON文件(*.json);;All(*.*)"));
+    if (openFileName.isEmpty()) {
+        QMessageBox::warning(this, QString("提示"), QString("未选择文件"));
+    }
+    else {
+        this->ui->lineEdit_LessonPath->setText(openFileName);
+    }
+}
+
+
+void Settings::on_pushButton_applyConfigPath_clicked()
+{
+    pParent->windowsettings.mChangeConfigPath(this->ui->lineEdit_ConfigPath->text().toStdString());
+    pParent->windowsettings.mGetWindowSettings();
+    this->ui->lineEdit_LessonPath->setText(QString::fromStdString(pParent->windowsettings.msLessonInfoFile));
+    pParent->mInitializeWindow();
+}
+
+
+void Settings::on_pushButton_applyLessonPath_clicked()
+{
+    pParent->windowsettings.msLessonInfoFile = this->ui->lineEdit_LessonPath->text().toStdString();
+    pParent->timetable.mReplacePath(pParent->windowsettings.msLessonInfoFile);
 }
 

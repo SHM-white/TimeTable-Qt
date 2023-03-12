@@ -20,6 +20,7 @@ class Settings : public QDialog
 public:
     explicit Settings(QWidget *parent = nullptr);
     ~Settings();
+    void InitializeWindow();
     void FlashList(int index);
     void FlashList();
 
@@ -45,6 +46,14 @@ private slots:
     void on_listView_currentRowChanged(int currentRow);
 
     void on_pushButton_addInfo_clicked();
+
+    void on_pushButton_chooseConfig_clicked();
+
+    void on_pushButton_chooseLessons_clicked();
+
+    void on_pushButton_applyConfigPath_clicked();
+
+    void on_pushButton_applyLessonPath_clicked();
 
 private:
     Ui::Settings *ui;
