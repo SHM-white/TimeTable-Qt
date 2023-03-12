@@ -1,8 +1,11 @@
 ﻿#include "settings.h"
 #include "ui_settings.h"
 #include "TimeTableQt.h"
+#include <qdatetime.h>
 #include <qmessagebox.h>
 #include <qfiledialog.h>
+#include <qcolor.h>
+#include <qcolordialog.h>
 
 Settings::Settings(QWidget *parent) :
     QDialog(parent),
@@ -25,27 +28,26 @@ Settings::~Settings()
 
 void Settings::InitializeWindow()
 {
+    tm& structDate = pParent->windowsettings.mCountDownDay;
+    QDate date(structDate.tm_year + 1900, structDate.tm_mon + 1, structDate.tm_mday);
+    QTime time(structDate.tm_hour, structDate.tm_min, structDate.tm_sec);
+    QDateTime dateTime(date,time);
     this->ui->spinBox_windowLocationX->setValue(pParent->windowsettings.miWindowX);
     this->ui->spinBox_windowLocationY->setValue(pParent->windowsettings.miWindowY);
     this->ui->spinBox_DayCountInLine->setValue(pParent->windowsettings.miCountDownDayInLine);
     this->ui->spinBox_lessonInLine->setValue(pParent->windowsettings.miLessonInLine);
     this->ui->spinBox_windowSizeX->setValue(pParent->windowsettings.miWindowWeight);
     this->ui->spinBox_windowSizeY->setValue(pParent->windowsettings.miWindowWeight);
-    
+    this->ui->dateTimeEdit->setDateTime(dateTime);
 }
 
 void Settings::FlashList(int index)
 {
     this->ui->listView->clear();
     if (index == 0) {//Lessons
-        if (!(ItemModel == nullptr)) {
-            delete ItemModel;
-        }
         bool ShowAll = !this->ui->checkBox->isChecked();
-        ItemModel = new QStandardItemModel(this);
         QString result;
         std::vector<std::string> in;
-        this->ui->listView->clearMask();
         if (ShowAll) {
             for (const auto& day : Days) {
                 pParent->timetable.mGetLesson(in, day);
@@ -58,34 +60,28 @@ void Settings::FlashList(int index)
         for (const auto& a : in) {
             result = QString::fromStdString(a);
             QListWidgetItem* item = new QListWidgetItem(result);
-            //ItemModel->appendRow(item);
             this->ui->listView->addItem(item);
         }
-        //this->ui->listView->setModel(ItemModel);
     }
     else if(index==1){//Infos
-        if (!(ItemModel == nullptr)) {
-            delete ItemModel;
-        }
-        ItemModel = new QStandardItemModel(this);
         QString result;
         std::vector<std::string> in;
-        this->ui->listView->clearMask();
         pParent->timetable.mGetTodayMoreInfo(in, Days[this->ui->comboBox_InfoDays->currentIndex()]);
         for (const auto& a : in) {
             result = QString::fromStdString(a);
-            //QStandardItem* item = new QStandardItem(result);
             QListWidgetItem* item = new QListWidgetItem(result);
-            //ItemModel->appendRow(item);
             this->ui->listView->addItem(item);
         }
-        //this->ui->listView->setModel(ItemModel);
     }
-    else if (index == 2) {//Windows
 
-    }
-    else if(index==3){//path
-    
+    else if(index==3){//textFormat
+        QString result;
+        auto& textFormat = pParent->windowsettings.msTextFormat;
+        for (const auto& a : textFormat) {
+            result = QString::fromStdString(a.msTextFormat);
+            QListWidgetItem* item = new QListWidgetItem(result);
+            this->ui->listView->addItem(item);
+        }
     }
     this->ui->listView->setCurrentRow(0);
 
@@ -211,14 +207,29 @@ void Settings::on_pushButton_changeLesson_clicked()
 void Settings::on_listView_currentRowChanged(int currentRow)
 {
     if (currentRow < 0) {
-       return;
-    }
+        return;
+    } 
     int tab{ ui->tabWidget->currentIndex() };
-    if (tab == 0&&this->ui->checkBox->isChecked()) {
+    if (tab == 0&&this->ui->checkBox->isChecked()) //lessons
+    {
         Lesson lesson = pParent->timetable.mGetLesson(this->ui->comboBox_LessonDays->currentText().toStdString(), currentRow);
         this->ui->comboBox_addLesson->setCurrentText(QString::fromStdString(lesson.mGetName()));
         this->ui->timeEdit_begin->setTime(QTime(Lesson::getHourFromHHmm(lesson.mGetBeginTime()), Lesson::getMinFromHHmm(lesson.mGetBeginTime())));
         this->ui->timeEdit_end->setTime(QTime(Lesson::getHourFromHHmm(lesson.mGetEndTime()), Lesson::getMinFromHHmm(lesson.mGetEndTime())));
+    }
+    else if (tab == 1 || tab == 2)//info
+    {
+        //read info item and send to line edit
+        this->ui->lineEdit_changeInfo->setText(this->ui->listView->currentItem()->text());
+
+    }
+    else if (tab == 3) //textFormat
+    {
+        TextFormat& textFormat = pParent->windowsettings.msTextFormat[currentRow];
+        this->ui->lineEdit_color->setText(QString::fromStdString(ColorRefToHexString(textFormat.color)));
+        this->ui->lineEdit_textFormat->setText(QString::fromStdString(textFormat.msTextFormat));
+        this->ui->fontComboBox_textFont->setCurrentText(QString::fromStdString(textFormat.msFontName));
+        
     }
     
 }
@@ -273,5 +284,40 @@ void Settings::on_pushButton_applyLessonPath_clicked()
 {
     pParent->windowsettings.msLessonInfoFile = this->ui->lineEdit_LessonPath->text().toStdString();
     pParent->timetable.mReplacePath(pParent->windowsettings.msLessonInfoFile);
+}
+
+
+void Settings::on_pushButton_chooseBackGround_clicked()
+{
+    QString openFileName = QFileDialog::getOpenFileName(this, QString("请选择图片"), QString(".\\"), QString("图片文件(*.jpg;*.png);;All(*.*)"));
+    if (openFileName.isEmpty()) {
+        QMessageBox::warning(this, QString("提示"), QString("未选择文件"));
+    }
+    else {
+        this->ui->lineEdit_backGroundImg->setText(openFileName);
+    }
+}
+
+
+void Settings::on_pushButton_chooseColor_clicked()
+{
+    QColor color = QColorDialog::getColor();
+    COLORREF colorRef{ RGB(color.red(), color.green(), color.blue()) };
+    this->ui->lineEdit_color->setText(QString::fromStdString(ColorRefToHexString(colorRef)));
+}
+
+std::string Settings::ColorRefToHexString(COLORREF& color)
+{
+    int red = GetRValue(color);
+    int blue = GetBValue(color);
+    int green = GetGValue(color);
+    return std::string(std::format("#{:x}{:x}{:x}",blue,green,red));
+}
+
+COLORREF Settings::HexStringToColorRef(const std::string& input)
+{
+    int result;
+    int i = sscanf(input.c_str(), "#%X", &result);
+    return COLORREF(result);
 }
 

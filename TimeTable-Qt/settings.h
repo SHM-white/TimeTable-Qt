@@ -55,11 +55,16 @@ private slots:
 
     void on_pushButton_applyLessonPath_clicked();
 
+    void on_pushButton_chooseBackGround_clicked();
+
+    void on_pushButton_chooseColor_clicked();
+
 private:
     Ui::Settings *ui;
     TimeTableQt* pParent;
     std::string Days[7]{ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
-    QStandardItemModel* ItemModel = nullptr;
+    static std::string ColorRefToHexString(COLORREF& color);
+    static COLORREF HexStringToColorRef(const std::string& input);
 };
 
 #endif // SETTINGS_H

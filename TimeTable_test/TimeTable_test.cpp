@@ -2,11 +2,16 @@
 //
 
 #include <iostream>
+#include <Windows.h>
+#include <format>
 
 int main()
 {
-    int label = 114514;
-    std::cout << "Hello World" << label << std::endl;
+    COLORREF color{ 0x00112233 };
+    int red = GetRValue(color);
+    int blue = GetBValue(color);
+    int green = GetGValue(color);
+    std::cout << std::format("#{:x}{:x}{:x}", blue, green, red) << std::endl;
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
