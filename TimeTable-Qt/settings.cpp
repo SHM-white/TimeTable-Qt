@@ -301,7 +301,7 @@ void Settings::on_pushButton_chooseBackGround_clicked()
 
 void Settings::on_pushButton_chooseColor_clicked()
 {
-    QColor color = QColorDialog::getColor();
+    QColor color = QColorDialog::getColor(Qt::white,this);
     COLORREF colorRef{ RGB(color.red(), color.green(), color.blue()) };
     this->ui->lineEdit_color->setText(QString::fromStdString(ColorRefToHexString(colorRef)));
 }
