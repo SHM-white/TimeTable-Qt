@@ -39,6 +39,8 @@ void Settings::InitializeWindow()
     this->ui->spinBox_windowSizeX->setValue(pParent->windowsettings.miWindowWeight);
     this->ui->spinBox_windowSizeY->setValue(pParent->windowsettings.miWindowWeight);
     this->ui->dateTimeEdit->setDateTime(dateTime);
+    this->ui->lineEdit_ConfigPath->setText(QString::fromStdString(pParent->windowsettings.msSettingPath));
+    this->ui->lineEdit_LessonPath->setText(QString::fromStdString(pParent->windowsettings.msLessonInfoFile));
 }
 
 void Settings::FlashList(int index)
@@ -229,7 +231,9 @@ void Settings::on_listView_currentRowChanged(int currentRow)
         this->ui->lineEdit_color->setText(QString::fromStdString(ColorRefToHexString(textFormat.color)));
         this->ui->lineEdit_textFormat->setText(QString::fromStdString(textFormat.msTextFormat));
         this->ui->fontComboBox_textFont->setCurrentText(QString::fromStdString(textFormat.msFontName));
-        
+        this->ui->spinBox_ItemLocationX->setValue((int)textFormat.mpTextLocation.x);
+        this->ui->spinBox_ItemLocationY->setValue((int)textFormat.mpTextLocation.y);
+        this->ui->spinBox_FontSize->setValue(textFormat.miTextSize);
     }
     
 }
@@ -244,6 +248,8 @@ void Settings::on_pushButton_addInfo_clicked()
         pParent->timetable.mAddMoreInfo(Days[currentItem], info);
     }
     FlashList();
+    int count = this->ui->listView->count();
+    this->ui->listView->setCurrentRow(count - 1);
 }
 
 
@@ -311,13 +317,27 @@ std::string Settings::ColorRefToHexString(COLORREF& color)
     int red = GetRValue(color);
     int blue = GetBValue(color);
     int green = GetGValue(color);
-    return std::string(std::format("#{:x}{:x}{:x}",blue,green,red));
+    return std::string(std::format("#{:02x}{:02x}{:02x}",red,green,blue));
 }
 
 COLORREF Settings::HexStringToColorRef(const std::string& input)
 {
-    int result;
-    int i = sscanf(input.c_str(), "#%X", &result);
-    return COLORREF(result);
+    int red;
+    int blue;
+    int green;
+    int i = sscanf_s(input.c_str(), "#%02x%02x%02x", &red,&green,&blue);
+    return RGB(red,green,blue);
+}
+
+
+void Settings::on_pushButton_addFormat_clicked()
+{
+
+}
+
+
+void Settings::on_pushButton_changeFormat_clicked()
+{
+
 }
 

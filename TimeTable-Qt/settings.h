@@ -59,6 +59,10 @@ private slots:
 
     void on_pushButton_chooseColor_clicked();
 
+    void on_pushButton_addFormat_clicked();
+
+    void on_pushButton_changeFormat_clicked();
+
 private:
     Ui::Settings *ui;
     TimeTableQt* pParent;

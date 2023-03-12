@@ -1,6 +1,7 @@
 ﻿// TimeTable_test.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
 //
 
+
 #include <iostream>
 #include <Windows.h>
 #include <format>
@@ -8,10 +9,16 @@
 int main()
 {
     COLORREF color{ 0x00112233 };
-    int red = GetRValue(color);
+    /*int red = GetRValue(color);
     int blue = GetBValue(color);
     int green = GetGValue(color);
-    std::cout << std::format("#{:x}{:x}{:x}", blue, green, red) << std::endl;
+    std::cout << std::format("#{:x}{:x}{:x}", blue, green, red) << std::endl;*/
+    std::string input{ "#0022cc" };
+    int red;
+    int blue;
+    int green;
+    int i = sscanf_s(input.c_str(), "#%02x%02x%02x", &red, &green, &blue);
+    color = RGB(red, green, blue);
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单

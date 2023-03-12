@@ -41,6 +41,5 @@ public:
 	bool bAcrylicEffect{ false };
 	bool Utf8{ true };
 	tm mCountDownDay;
-private:
 	std::string msSettingPath{ ".\\Config.json" };
 };
