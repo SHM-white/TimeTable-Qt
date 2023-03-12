@@ -24,9 +24,9 @@ public:
 	const std::string& mGetDay() const { return sDay; }
 	const std::string& mGetName() const { return sName; }
 	int mGetBeginTime() const { return iBeginTime; }
+	int mGetEndTime() const { return iEndTime; }
 	const std::string mGetBeginTimeAsString() const;
 	const std::string mGetEndTimeAsString() const;
-	int mGetEndTime() const { return iEndTime; }
 	int mSetValue(const std::string& Day, const std::string& s, int b, int e);
 	int mSetValue(int Day, const std::string& s, int b, int e);
 	int mSetValue(const std::string& s, int b, int e);
@@ -37,6 +37,8 @@ public:
 	bool operator==(const Lesson& another) const = default;
 	void operator=(const Lesson& another);
 	const std::string Days[8]{ "Null","Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+	static int getHourFromHHmm(int input);
+	static int getMinFromHHmm(int input);
 private:
 	int iBeginTime{};
 	int iEndTime{};

@@ -26,10 +26,6 @@ public:
 	int mImportLessonsFromCsv(const std::string& path, const std::string& TargetFileName);
 	int sortLessons(const std::string& Day = "All");
 	int sortLessons(const std::string& lessonpath, const std::string& Day);
-	//int sortInfos(const std::string& Day = "All");
-	//int sortInfos(const std::string& InfoPath, const std::string& Day = "All");
-	//int insert(size_t index, const Lesson& lesson, const std::string& targetFile);
-	//int insert(size_t index, const Lesson& lesson);
 	int deleteLesson(size_t index, const std::string& day);
 	int deleteLesson(size_t index, const std::string& day,const std::string& lessonPath);
 	int changeLesson(size_t index, const std::string& day,const Lesson& lesson);
@@ -37,6 +33,7 @@ public:
 	std::string mGetCountDown(tm tmIn, const std::string& TimeFormat);
 	std::string mGetCurrentLesson(const std::string& LessonNull);
 	std::string mReplacePath(const std::string& Path);
+	Lesson mGetLesson(const std::string& week, int index);
 	static std::string mGetCurrentTime(const std::string& TextFormat);
 	static int mGetCurrentTime(tm& tmTime);
 	const std::string& mGetLessonInfoPath();

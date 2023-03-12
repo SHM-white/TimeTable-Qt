@@ -88,6 +88,19 @@ std::string TimeTable::mReplacePath(const std::string& Path)
 	mLessonInfoPath = Path;
 	return old;
 }
+Lesson TimeTable::mGetLesson(const std::string& week, int index)
+{
+	Json::Reader reader;
+	Json::Value root;
+	std::ifstream in(mLessonInfoPath, std::ios::in);
+	if ((!in.is_open())||(!reader.parse(in, root)))
+	{
+		return Lesson();
+	};
+	in.close();
+	const Json::Value Lessons = root[week]["Lessons"][index];
+	return 	Lesson(week, Lessons[0].asString(), atoi(Lessons[1].asString().c_str()), atoi(Lessons[2].asString().c_str()));
+}
 //获取所有的课程并返回至传入的数组
 int TimeTable::mGetLesson(std::vector<std::string>& input)
 {
@@ -215,7 +228,7 @@ int TimeTable::sortLessons(const std::string& lessonPath, const std::string& Day
 				)
 			);
 		}
-		std::sort(vectorLessons.begin(), vectorLessons.end(), [&](const Lesson& lesson1, const Lesson& lesson2) {return lesson1.mGetName() < lesson2.mGetName(); });
+		std::sort(vectorLessons.begin(), vectorLessons.end(), [](const Lesson& lesson1, const Lesson& lesson2) {return lesson1.mGetBeginTime() < lesson2.mGetBeginTime(); });
 		valueLessons.clear();
 		valueLessons = Json::Value(Json::arrayValue);
 		for (const auto& lesson : vectorLessons) {

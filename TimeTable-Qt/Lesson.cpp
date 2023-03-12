@@ -74,6 +74,16 @@ void Lesson::operator=(const Lesson& another)
 	mSetValue(another.sDay, another.mGetName(), another.mGetBeginTime(), another.mGetEndTime());
 }
 
+int Lesson::getHourFromHHmm(int input)
+{
+	return (input-input%100)/100;
+}
+
+int Lesson::getMinFromHHmm(int input)
+{
+	return input%100;
+}
+
 bool Lesson::operator<(const Lesson& another) const
 {
 	return this->mGetBeginTime()<another.mGetBeginTime();

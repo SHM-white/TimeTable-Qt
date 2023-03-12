@@ -34,6 +34,18 @@ private slots:
 
     void on_pushButton_close_clicked();
 
+    void on_comboBox_LessonDays_currentIndexChanged(int index);
+
+    void on_comboBox_InfoDays_currentTextChanged(const QString &arg1);
+
+    void on_pushButton_addLesson_clicked();
+
+    void on_pushButton_changeLesson_clicked();
+
+    void on_listView_currentRowChanged(int currentRow);
+
+    void on_pushButton_addInfo_clicked();
+
 private:
     Ui::Settings *ui;
     TimeTableQt* pParent;

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>843</width>
-    <height>472</height>
+    <width>770</width>
+    <height>517</height>
    </rect>
   </property>
   <property name="font">
@@ -29,10 +29,10 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_10">
        <item>
-        <widget class="QListView" name="listView">
+        <widget class="QListWidget" name="listView">
          <property name="minimumSize">
           <size>
-           <width>230</width>
+           <width>246</width>
            <height>0</height>
           </size>
          </property>
@@ -59,7 +59,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="tab_lessons">
           <attribute name="title">
@@ -137,7 +137,74 @@
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_2">
                <item>
-                <widget class="QLineEdit" name="lineEdit_addLesson"/>
+                <widget class="QComboBox" name="comboBox_addLesson">
+                 <property name="editable">
+                  <bool>true</bool>
+                 </property>
+                 <property name="currentText">
+                  <string>语文</string>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>语文</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>数学</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>英语</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>物理</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>化学</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>生物</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>历史</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>政治</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>地理</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>体育</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>艺术</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>信息技术</string>
+                  </property>
+                 </item>
+                </widget>
                </item>
                <item>
                 <widget class="QTimeEdit" name="timeEdit_begin">
@@ -167,6 +234,9 @@
               <layout class="QHBoxLayout" name="horizontalLayout_4">
                <item>
                 <widget class="QPushButton" name="pushButton_changeLesson">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="text">
                   <string>修改</string>
                  </property>
@@ -354,74 +424,7 @@
               </layout>
              </item>
              <item>
-              <widget class="QComboBox" name="comboBox_addLesson">
-               <property name="editable">
-                <bool>true</bool>
-               </property>
-               <property name="currentText">
-                <string>语文</string>
-               </property>
-               <item>
-                <property name="text">
-                 <string>语文</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>数学</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>英语</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>物理</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>化学</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>生物</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>历史</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>政治</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>地理</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>体育</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>艺术</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>信息技术</string>
-                </property>
-               </item>
-              </widget>
+              <widget class="QLineEdit" name="lineEdit_textFormat"/>
              </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_11">
@@ -436,7 +439,7 @@
                 <widget class="QFontComboBox" name="fontComboBox_textFont"/>
                </item>
                <item>
-                <widget class="QLineEdit" name="lineEdit"/>
+                <widget class="QLineEdit" name="lineEdit_color"/>
                </item>
               </layout>
              </item>
