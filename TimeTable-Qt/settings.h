@@ -21,6 +21,7 @@ public:
     explicit Settings(QWidget *parent = nullptr);
     ~Settings();
     void InitializeWindow();
+    void SaveSettings();
     void FlashList(int index);
     void FlashList();
 
@@ -62,6 +63,12 @@ private slots:
     void on_pushButton_addFormat_clicked();
 
     void on_pushButton_changeFormat_clicked();
+
+    void on_pushButton_applySettings_clicked();
+
+    void on_pushButton_cancelChange_clicked();
+
+    void on_pushButton_saveChange_clicked();
 
 private:
     Ui::Settings *ui;

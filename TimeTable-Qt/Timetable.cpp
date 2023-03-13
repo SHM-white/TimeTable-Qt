@@ -232,10 +232,7 @@ int TimeTable::sortLessons(const std::string& lessonPath, const std::string& Day
 		valueLessons.clear();
 		valueLessons = Json::Value(Json::arrayValue);
 		for (const auto& lesson : vectorLessons) {
-			Json::Value a;
-			a.append(lesson.mGetName());
-			a.append(std::to_string(lesson.mGetBeginTime()));
-			a.append(std::to_string(lesson.mGetEndTime()));
+			Json::Value a = lesson.GetJsonValue();
 			valueLessons.append(a);
 		}
 	}

@@ -1,5 +1,6 @@
 #include "Lesson.h"
 #include <compare>
+#include <format>
 
 std::strong_ordering Lesson::operator<=>(const Lesson& another) const
 {
@@ -64,8 +65,8 @@ const Json::Value Lesson::GetJsonValue() const
 {
 	Json::Value result;
 	result.append(sName);
-	result.append(std::to_string(iBeginTime));
-	result.append(std::to_string(iEndTime));
+	result.append(std::format("{:04}", iBeginTime));
+	result.append(std::format("{:04}", iEndTime));
 	return result;
 }
 

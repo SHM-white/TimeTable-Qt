@@ -71,7 +71,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidget">
          <property name="currentIndex">
-          <number>3</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="tab_lessons">
           <attribute name="title">
@@ -684,6 +684,24 @@
                 <widget class="QPushButton" name="pushButton_changeFormat">
                  <property name="text">
                   <string>修改</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_24">
+               <item>
+                <widget class="QPushButton" name="pushButton_cancelChange">
+                 <property name="text">
+                  <string>放弃</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_saveChange">
+                 <property name="text">
+                  <string>保存</string>
                  </property>
                 </widget>
                </item>
