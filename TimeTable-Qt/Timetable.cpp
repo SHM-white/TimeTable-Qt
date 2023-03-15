@@ -76,6 +76,11 @@ int TimeTable::mAddMoreInfo(const std::string& Days, const std::string& Info)
 	os.clear();
 	return 0;
 }
+int TimeTable::mReloadLesson()
+{
+	CurrentLesson = Lesson();
+	return 0;
+}
 //转换时间为分钟数便于比较大小
 int TimeTable::mHHMMToMin(int input)
 {
@@ -172,10 +177,16 @@ std::string TimeTable::mGetCurrentLesson(const std::string& LessonNull)
 
 std::string TimeTable::mGetCurrentTime(const std::string& TextFormat)
 {
+	//TextFormat.find("%0");
 	char tmp[256];
 	tm structm;
 	mGetCurrentTime(structm);
-	strftime(tmp, sizeof(tmp), TextFormat.c_str(), &structm);
+	try {
+		strftime(tmp, sizeof(tmp), TextFormat.c_str(), &structm);
+	}
+	catch (std::exception& ex) {
+		return "bad format";
+	}
 	return std::string(tmp);
 }
 //从csv导入课程至指定文件

@@ -19,6 +19,7 @@ public:
 	int mAddLesson(const Lesson& lesson, const std::string& TargetFilePath);
 	int mAddLesson(const std::string& week, const std::string& Lesson, const std::string& sBegin, const std::string& sEnd);
 	int mAddMoreInfo(const std::string& week, const std::string& Info);
+	int mReloadLesson();
 	int mGetLesson(std::vector<std::string>& input);
 	int mGetLesson(std::vector<std::string>& input, const std::string& week);
 	int mGetTodayMoreInfo(std::vector<std::string>& input);

@@ -37,7 +37,7 @@ void Settings::InitializeWindow()
     this->ui->spinBox_DayCountInLine->setValue(pParent->windowsettings.miCountDownDayInLine);
     this->ui->spinBox_lessonInLine->setValue(pParent->windowsettings.miLessonInLine);
     this->ui->spinBox_windowSizeX->setValue(pParent->windowsettings.miWindowWeight);
-    this->ui->spinBox_windowSizeY->setValue(pParent->windowsettings.miWindowWeight);
+    this->ui->spinBox_windowSizeY->setValue(pParent->windowsettings.miWindowHeight);
     this->ui->dateTimeEdit->setDateTime(dateTime);
     this->ui->lineEdit_ConfigPath->setText(QString::fromStdString(pParent->windowsettings.msSettingPath));
     this->ui->lineEdit_LessonPath->setText(QString::fromStdString(pParent->windowsettings.msLessonInfoFile));
@@ -46,6 +46,24 @@ void Settings::InitializeWindow()
 
 void Settings::SaveSettings()
 {
+    pParent->windowsettings.miWindowX = this->ui->spinBox_windowLocationX->value();
+    pParent->windowsettings.miWindowY = this->ui->spinBox_windowLocationY->value();
+    pParent->windowsettings.miCountDownDayInLine = this->ui->spinBox_DayCountInLine->value();
+    pParent->windowsettings.miLessonInLine = this->ui->spinBox_lessonInLine->value();
+    pParent->windowsettings.miWindowWeight = this->ui->spinBox_windowSizeX->value();
+    pParent->windowsettings.miWindowHeight = this->ui->spinBox_windowSizeY->value();
+    QDateTime datetime = this->ui->dateTimeEdit->dateTime();
+    tm& structDate = pParent->windowsettings.mCountDownDay;
+    structDate.tm_year = datetime.date().year() - 1900;
+    structDate.tm_mon = datetime.date().month() - 1;
+    structDate.tm_mday = datetime.date().daysInMonth();
+    structDate.tm_hour = datetime.time().hour();
+    structDate.tm_min = datetime.time().minute();
+    structDate.tm_sec = datetime.time().second();
+    pParent->windowsettings.msSettingPath = this->ui->lineEdit_ConfigPath->text().toStdString();
+    pParent->windowsettings.msLessonInfoFile = this->ui->lineEdit_LessonPath->text().toStdString();
+    pParent->windowsettings.msBackGroundImg = this->ui->lineEdit_backGroundImg->text().toStdString();
+
 }
 
 void Settings::FlashList(int index)
@@ -104,7 +122,7 @@ void Settings::on_tabWidget_currentChanged(int index)
     std::string week = pParent->timetable.mGetCurrentTime(std::string("%a"));
     this->ui->comboBox_InfoDays->setCurrentText(QString::fromStdString(week));
     this->ui->comboBox_LessonDays->setCurrentText(QString::fromStdString(week));
-
+    this->ui->checkBox->setChecked(true);
     FlashList(index);
 }
 
@@ -384,18 +402,20 @@ void Settings::on_pushButton_changeFormat_clicked()
 
 void Settings::on_pushButton_applySettings_clicked()
 {
-
+    SaveSettings();
+    pParent->mInitializeWindow();
 }
 
 
 void Settings::on_pushButton_cancelChange_clicked()
 {
-
+    pParent->windowsettings.mGetWindowSettings();
+    FlashList();
 }
 
 
 void Settings::on_pushButton_saveChange_clicked()
 {
-
+    pParent->windowsettings.save();
 }
 
