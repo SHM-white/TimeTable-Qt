@@ -83,20 +83,7 @@ int WindowSettings::save(const std::string& ConfigPath)
 	Settings["BackGroundImg"] = msBackGroundImg;
 	Settings["TextFormat"].clear();
 	for (auto format : msTextFormat) {
-		Json::Value formatItem;
-		Json::Value color;
-		Json::Value location;
-		color.append(GetRValue(format.color));
-		color.append(GetBValue(format.color));
-		color.append(GetGValue(format.color));
-		location.append((int)format.mpTextLocation.x);
-		location.append((int)format.mpTextLocation.y);
-		formatItem.append(format.msTextFormat);
-		formatItem.append(format.msFontName);
-		formatItem.append(location);
-		formatItem.append(format.miTextSize);
-		formatItem.append(color);
-		Settings["TextFormat"].append(formatItem);
+		Settings["TextFormat"].append(format.GetJsonValue());
 	}
 	Settings["AcrylicEffect"] = bAcrylicEffect;
 	Settings["CountDownDayInLine"] = miCountDownDayInLine;

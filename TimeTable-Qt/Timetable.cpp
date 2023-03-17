@@ -47,6 +47,7 @@ int TimeTable::mAddLesson(const std::string& week, const std::string& Lesson, co
 	os << sw.write(root);
 	os.close();
 	os.clear();
+	mReloadLesson();
 	return 1;
 }
 int TimeTable::mAddLesson(const Lesson& lesson)
@@ -318,17 +319,14 @@ int TimeTable::deleteLesson(size_t index, const std::string& day, const std::str
 	valueLessons.clear();
 	valueLessons = Json::Value(Json::arrayValue);
 	for (const auto& lesson : vectorLessons) {
-		Json::Value a;
-		a.append(lesson.mGetName());
-		a.append(std::to_string(lesson.mGetBeginTime()));
-		a.append(std::to_string(lesson.mGetEndTime()));
-		valueLessons.append(a);
+		valueLessons.append(lesson.GetJsonValue());
 	}
 	
 
 	Json::StyledWriter sw;
 	os << sw.write(root);
 	os.close();
+	mReloadLesson();
 	return 1;
 }
 int TimeTable::changeLesson(size_t index, const std::string& day, const Lesson& lesson)
@@ -357,6 +355,7 @@ int TimeTable::changeLesson(size_t index, const std::string& day, const Lesson& 
 	Json::StyledWriter sw;
 	os << sw.write(root);
 	os.close();
+	mReloadLesson();
 	return 1;
 }
 int TimeTable::deleteLesson(size_t index, const std::string& day)

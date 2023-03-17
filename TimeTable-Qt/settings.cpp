@@ -327,6 +327,7 @@ void Settings::on_pushButton_applyLessonPath_clicked()
 {
     pParent->windowsettings.msLessonInfoFile = this->ui->lineEdit_LessonPath->text().toStdString();
     pParent->timetable.mReplacePath(pParent->windowsettings.msLessonInfoFile);
+    pParent->timetable.mReloadLesson();
 }
 
 
@@ -403,6 +404,7 @@ void Settings::on_pushButton_changeFormat_clicked()
 void Settings::on_pushButton_applySettings_clicked()
 {
     SaveSettings();
+    pParent->windowsettings.save();
     pParent->mInitializeWindow();
 }
 

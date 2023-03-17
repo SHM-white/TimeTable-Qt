@@ -1,3 +1,5 @@
+#define EXPERENCE false
+
 #include "TimeTableQt.h"
 #include "importfromfile.h"
 #include "about.h"
@@ -13,6 +15,7 @@
 #include <QPixmap>
 #include <windows.h>
 
+#if EXPERENCE
 #ifdef Q_OS_WIN
 #include <WinUser.h>
 #include <windowsx.h>
@@ -23,6 +26,7 @@
 #pragma comment (lib,"Dwmapi.lib") // Adds missing library, fixes error LNK2019: unresolved external symbol __imp__DwmExtendFrameIntoClientArea
 #pragma comment (lib,"user32.lib")
 #endif
+#endif // EXPERENCE
 
 TimeTableQt::TimeTableQt(QWidget *parent)
     : QWidget(parent)
@@ -53,7 +57,8 @@ bool TimeTableQt::mInitializeWindow()
     QString picpath = QString::fromStdString(windowsettings.msBackGroundImg);
     pic = QPixmap(picpath);
     pic = pic.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-
+    
+#if EXPERENCE
 #ifdef Q_OS_WIN
     if (windowsettings.bAcrylicEffect) {
 
@@ -65,6 +70,10 @@ bool TimeTableQt::mInitializeWindow()
         pSetBlur((HWND)(winId()));
     }
 #endif // Q_OS_WIN
+
+#endif // EXPERENCE
+
+
 
     this->ui.menubar->setVisible(false);
     MenuRD.setX(this->ui.menubar->width());
@@ -83,6 +92,10 @@ std::string TimeTableQt::translateUtfToAnsi(const std::string& input)
 
 void TimeTableQt::ShowShadow()
 {
+
+#if EXPERENCE
+
+#ifdef Q_OS_WIN
     BOOL bEnable = true;
     ::DwmIsCompositionEnabled(&bEnable);
     if (bEnable)
@@ -92,6 +105,12 @@ void TimeTableQt::ShowShadow()
         MARGINS margins = { -1 };
         ::DwmExtendFrameIntoClientArea((HWND)winId(), &margins);
     }
+
+#endif // Q_OS_WIN
+
+
+#endif // EXPERENCE
+
 }
 
 void TimeTableQt::showEvent(QShowEvent* event)
@@ -102,12 +121,13 @@ void TimeTableQt::showEvent(QShowEvent* event)
 void TimeTableQt::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
+    painter.drawRect(rect());
     if (pic.isNull()|| windowsettings.bAcrylicEffect) {
         painter.fillRect(rect(), QColor(windowsettings.miBackGroundColor[0], windowsettings.miBackGroundColor[1], windowsettings.miBackGroundColor[2], windowsettings.miBackGroundColor[3]));
     }
     else {
         painter.fillRect(rect(), QColor(255, 255, 255, 1));
-        painter.drawPixmap(0, 0, this->width(), this->height(), pic);
+        painter.drawPixmap(0, 0, pic);
     }
     int i = 1;
     for (TextFormat a : windowsettings.msTextFormat) {
@@ -160,14 +180,7 @@ void TimeTableQt::mouseMoveEvent(QMouseEvent* event)
     if (timeCounter < 1) {
         timeCounter = 4;
     }
-    //QPoint CurrentPos = event->pos();
-    //if (CurrentPos.y() < MenuRD.y()) {
-    //    this->ui.menubar->setVisible(true);
-    //}
-    //else {
-    //    this->ui.menubar->setVisible(false);
-    //}
-    
+
 }
 
 void TimeTableQt::mouseReleaseEvent(QMouseEvent* event)

@@ -22,6 +22,7 @@ public:
 		color = Color;
 		return 0;
 	}
+	Json::Value GetJsonValue();
 	POINT mpTextLocation{ 0,0 };
 	int miTextSize{ 20 };
 	std::string msFontName{ "Consolas" };
