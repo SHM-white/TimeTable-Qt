@@ -149,7 +149,7 @@ void TimeTableQt::paintEvent(QPaintEvent*)
             qtext = QString::fromLocal8Bit(timetable.mGetCountDown(windowsettings.mCountDownDay, translateUtfToAnsi(a.msTextFormat)));
             break;
         case TextType::Info:
-            qtext = QString::fromLocal8Bit(timetable.mGetInfo());
+            qtext = QString::fromLocal8Bit(timetable.mGetCurrentTime(translateUtfToAnsi(a.msTextFormat))) + QString::fromStdString(timetable.mGetInfo());
             break;
         default:
             break;

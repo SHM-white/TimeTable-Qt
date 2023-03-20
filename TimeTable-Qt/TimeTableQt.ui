@@ -59,7 +59,6 @@
      <string>文件</string>
     </property>
     <addaction name="actioninport"/>
-    <addaction name="actionChangeConfig"/>
     <addaction name="actionSettings"/>
     <addaction name="separator"/>
     <addaction name="actionshowall"/>

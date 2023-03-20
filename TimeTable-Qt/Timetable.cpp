@@ -380,8 +380,7 @@ std::string TimeTable::mGetCountDown(tm tmIn, const std::string& TimeFormat)
 
 std::string TimeTable::mGetInfo()
 {
-	mGetInfo(mGetCurrentTime("%a"));
-	return std::string();
+	return mGetInfo(mGetCurrentTime("%a"));
 }
 
 std::string TimeTable::mGetInfo(const std::string& week)
@@ -397,7 +396,7 @@ std::string TimeTable::mGetInfo(const std::string& week)
 	}
 
 	if (count >= changeAfterTimes) {
-		if (currentItem >= Infos.size()) {
+		if (currentItem >= Infos.size()-1) {
 			currentItem = 0;
 		}
 		else
