@@ -269,7 +269,7 @@
          </widget>
          <widget class="QWidget" name="tab_infos">
           <attribute name="title">
-           <string>信息</string>
+           <string>值日信息</string>
           </attribute>
           <layout class="QHBoxLayout" name="horizontalLayout_18">
            <item>
@@ -495,7 +495,11 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QSpinBox" name="spinBox_lessonInLine"/>
+                  <widget class="QSpinBox" name="spinBox_lessonInLine">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                  </widget>
                  </item>
                  <item>
                   <widget class="QLabel" name="label_12">
@@ -530,7 +534,11 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QSpinBox" name="spinBox_DayCountInLine"/>
+                  <widget class="QSpinBox" name="spinBox_DayCountInLine">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                  </widget>
                  </item>
                  <item>
                   <widget class="QLabel" name="label_10">
@@ -659,6 +667,41 @@
               </layout>
              </item>
              <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_25">
+               <item>
+                <widget class="QRadioButton" name="radioButton_time">
+                 <property name="text">
+                  <string>时间</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioButton_lesson">
+                 <property name="text">
+                  <string>当前课程</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioButton_countDownDay">
+                 <property name="text">
+                  <string>倒计时</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioButton_info">
+                 <property name="text">
+                  <string>值日信息</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
               <spacer name="verticalSpacer_5">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
@@ -688,6 +731,13 @@
                 </widget>
                </item>
               </layout>
+             </item>
+             <item>
+              <widget class="Line" name="line">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
              </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_24">

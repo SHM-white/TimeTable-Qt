@@ -74,6 +74,7 @@ private:
     Ui::Settings *ui;
     TimeTableQt* pParent;
     std::string Days[7]{ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+    TextFormat ReadTextFormatFromUI();
     static std::string ColorRefToHexString(COLORREF& color);
     static COLORREF HexStringToColorRef(const std::string& input);
 };

@@ -136,21 +136,24 @@ void TimeTableQt::paintEvent(QPaintEvent*)
         font.setFamily(QString::fromStdString(a.msFontName));
         font.setPointSize(a.miTextSize);
         painter.setFont(font);
-        //std::string Text;
         QString qtext;
-        if (i == windowsettings.miLessonInLine) {
-            qtext = QString::fromLocal8Bit(timetable.mGetCurrentTime(translateUtfToAnsi(a.msTextFormat))) + QString::fromStdString(timetable.mGetCurrentLesson(translateUtfToAnsi(windowsettings.msLessonNull)));
-            
-        }
-        else if (i == windowsettings.miCountDownDayInLine) {
-            qtext = QString::fromLocal8Bit(timetable.mGetCountDown(windowsettings.mCountDownDay, translateUtfToAnsi(a.msTextFormat)));
-            
-        }
-        else {
+        switch (a.textType)
+        {
+        case TextType::CurrentTime:
             qtext = QString::fromLocal8Bit(timetable.mGetCurrentTime(translateUtfToAnsi(a.msTextFormat)));
+            break;
+        case TextType::CurrentLesson:
+            qtext = QString::fromLocal8Bit(timetable.mGetCurrentTime(translateUtfToAnsi(a.msTextFormat))) + QString::fromStdString(timetable.mGetCurrentLesson(translateUtfToAnsi(windowsettings.msLessonNull)));
+            break;
+        case TextType::CountDownDay:
+            qtext = QString::fromLocal8Bit(timetable.mGetCountDown(windowsettings.mCountDownDay, translateUtfToAnsi(a.msTextFormat)));
+            break;
+        case TextType::Info:
+            qtext = QString::fromLocal8Bit(timetable.mGetInfo());
+            break;
+        default:
+            break;
         }
-        
-        //qtext = QString::fromLocal8Bit(Text);
         painter.drawText(a.mpTextLocation.x, a.mpTextLocation.y, qtext);
         i++;
         

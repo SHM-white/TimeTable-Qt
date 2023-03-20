@@ -1,6 +1,7 @@
 ﻿#include "settings.h"
 #include "ui_settings.h"
 #include "TimeTableQt.h"
+#include "TextFormat.h"
 #include <qdatetime.h>
 #include <qmessagebox.h>
 #include <qfiledialog.h>
@@ -123,6 +124,12 @@ void Settings::on_tabWidget_currentChanged(int index)
     this->ui->comboBox_InfoDays->setCurrentText(QString::fromStdString(week));
     this->ui->comboBox_LessonDays->setCurrentText(QString::fromStdString(week));
     this->ui->checkBox->setChecked(true);
+    if (index == 0) {
+        this->ui->pushButton_order->setEnabled(true);
+    }
+    else {
+        this->ui->pushButton_order->setEnabled(false);
+    }
     FlashList(index);
 }
 
@@ -270,6 +277,36 @@ void Settings::on_listView_currentRowChanged(int currentRow)
         this->ui->spinBox_ItemLocationX->setValue((int)textFormat.mpTextLocation.x);
         this->ui->spinBox_ItemLocationY->setValue((int)textFormat.mpTextLocation.y);
         this->ui->spinBox_FontSize->setValue(textFormat.miTextSize);
+        switch (textFormat.textType)
+        {
+        case TextType::CurrentTime:
+            this->ui->radioButton_time->setChecked(true);
+            this->ui->radioButton_lesson->setChecked(false);
+            this->ui->radioButton_countDownDay->setChecked(false);
+            this->ui->radioButton_info->setChecked(false);
+            break;
+        case TextType::CurrentLesson:
+            this->ui->radioButton_time->setChecked(false);
+            this->ui->radioButton_lesson->setChecked(true);
+            this->ui->radioButton_countDownDay->setChecked(false);
+            this->ui->radioButton_info->setChecked(false);
+            break;
+        case TextType::CountDownDay:
+            this->ui->radioButton_time->setChecked(false);
+            this->ui->radioButton_lesson->setChecked(false);
+            this->ui->radioButton_countDownDay->setChecked(true);
+            this->ui->radioButton_info->setChecked(false);
+            break;
+        case TextType::Info:
+            this->ui->radioButton_time->setChecked(false);
+            this->ui->radioButton_lesson->setChecked(false);
+            this->ui->radioButton_countDownDay->setChecked(false);
+            this->ui->radioButton_info->setChecked(true);
+            break;
+
+        default:
+            break;
+        }
     }
     
 }
@@ -350,6 +387,33 @@ void Settings::on_pushButton_chooseColor_clicked()
     this->ui->lineEdit_color->setText(QString::fromStdString(ColorRefToHexString(colorRef)));
 }
 
+TextFormat Settings::ReadTextFormatFromUI()
+{
+    TextType type{ 0 };
+    if (this->ui->radioButton_time->isChecked()) {
+        type = TextType::CurrentTime;
+    }
+    else if (this->ui->radioButton_lesson->isChecked()) {
+        type = TextType::CurrentLesson;
+    }
+    else if (this->ui->radioButton_countDownDay->isChecked()) {
+        type = TextType::CountDownDay;
+    }
+    else if (this->ui->radioButton_info->isChecked()) {
+        type = TextType::Info;
+    }
+    TextFormat format{
+        this->ui->spinBox_ItemLocationX->value(),
+        this->ui->spinBox_ItemLocationY->value(),
+        this->ui->spinBox_FontSize->value(),
+        this->ui->fontComboBox_textFont->currentText().toStdString(),
+        this->ui->lineEdit_textFormat->text().toStdString(),
+        HexStringToColorRef(this->ui->lineEdit_color->text().toStdString()),
+        type
+    };
+    return format;
+}
+
 std::string Settings::ColorRefToHexString(COLORREF& color)
 {
     int red = GetRValue(color);
@@ -370,14 +434,7 @@ COLORREF Settings::HexStringToColorRef(const std::string& input)
 
 void Settings::on_pushButton_addFormat_clicked()
 {
-    TextFormat format{ 
-        this->ui->spinBox_ItemLocationX->value(),
-        this->ui->spinBox_ItemLocationY->value(),
-        this->ui->spinBox_FontSize->value(),
-        this->ui->fontComboBox_textFont->currentText().toStdString(),
-        this->ui->lineEdit_textFormat->text().toStdString(),
-        HexStringToColorRef(this->ui->lineEdit_color->text().toStdString()) 
-    };
+    TextFormat format = ReadTextFormatFromUI();
     pParent->windowsettings.msTextFormat.push_back(format);
     FlashList();
     this->ui->listView->setCurrentRow(this->ui->listView->count()-1);
@@ -386,14 +443,7 @@ void Settings::on_pushButton_addFormat_clicked()
 
 void Settings::on_pushButton_changeFormat_clicked()
 {
-    TextFormat format{
-        this->ui->spinBox_ItemLocationX->value(),
-        this->ui->spinBox_ItemLocationY->value(),
-        this->ui->spinBox_FontSize->value(),
-        this->ui->fontComboBox_textFont->currentText().toStdString(),
-        this->ui->lineEdit_textFormat->text().toStdString(),
-        HexStringToColorRef(this->ui->lineEdit_color->text().toStdString())
-    };
+    TextFormat format = ReadTextFormatFromUI();
     pParent->windowsettings.msTextFormat[this->ui->listView->currentRow()] = format;
     int row = this->ui->listView->currentRow();
     FlashList();

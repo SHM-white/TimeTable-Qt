@@ -13,6 +13,7 @@
 //WindowSettings类，用于保存设置，包含与窗口绘图有关函数
 class WindowSettings {
 public:
+	const int minVersion[3]{ 2,3,0 };
 	WindowSettings(const std::string path)
 		:msSettingPath{ path }
 	{

@@ -15,5 +15,6 @@ Json::Value TextFormat::GetJsonValue()
 	formatItem.append(location);
 	formatItem.append(miTextSize);
 	formatItem.append(valueColor);
+	formatItem.append((int)textType);
 	return formatItem;
 }

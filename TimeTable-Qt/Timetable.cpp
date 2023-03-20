@@ -378,6 +378,41 @@ std::string TimeTable::mGetCountDown(tm tmIn, const std::string& TimeFormat)
 	return tmp;
 }
 
+std::string TimeTable::mGetInfo()
+{
+	mGetInfo(mGetCurrentTime("%a"));
+	return std::string();
+}
+
+std::string TimeTable::mGetInfo(const std::string& week)
+{
+	static std::vector<std::string> Infos;
+	Infos.clear();
+	mGetTodayMoreInfo(Infos, week);
+	static int count{ 0 };
+	static int currentItem{ 0 };
+	const int changeAfterTimes{ 10 };
+	if (Infos.empty()) {
+		return "";
+	}
+
+	if (count >= changeAfterTimes) {
+		if (currentItem >= Infos.size()) {
+			currentItem = 0;
+		}
+		else
+		{
+			++currentItem;
+		}
+		count = 0;
+	}
+	else
+	{
+		++count;
+	}
+	return Infos[currentItem];
+}
+
 int TimeTable::mGetLesson(std::vector<std::string>& input, const std::string& week)
 {
 	Json::Reader reader;

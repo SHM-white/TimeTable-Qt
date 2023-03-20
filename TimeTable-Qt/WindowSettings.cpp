@@ -19,7 +19,17 @@ int WindowSettings::mGetWindowSettings()
 	Json::Reader reader;
 	Json::Value root;
 	//root["emitUTF8"] = true;
+	Json::Value version;
 	if (reader.parse(in, root)) {
+		version = root["version"];
+	}
+	bool versionIsEnough{ true };
+	{
+		for (int i = 0; i < 3; i++) {
+			versionIsEnough &= (version[i] >= minVersion[i]);
+		}
+	}
+	if (versionIsEnough) {
 		Json::Value Settings = root["Settings"]["Window"];
 		miWindowHeight = Settings["WindowSize"][1].asInt();
 		miWindowWeight = Settings["WindowSize"][0].asInt();
@@ -36,7 +46,7 @@ int WindowSettings::mGetWindowSettings()
 		msTextFormat.clear();
 		for (int i = 0; i < (int)Settings["TextFormat"].size(); i++) {
 			Json::Value Format = Settings["TextFormat"][i];
-			TextFormat textformat(Format[2][0].asInt(), Format[2][1].asInt(), Format[3].asInt(), Format[1].asString(), Format[0].asString(), RGB(Format[4][0].asInt(), Format[4][1].asInt(), Format[4][2].asInt()));
+			TextFormat textformat(Format[2][0].asInt(), Format[2][1].asInt(), Format[3].asInt(), Format[1].asString(), Format[0].asString(), RGB(Format[4][0].asInt(), Format[4][1].asInt(), Format[4][2].asInt()),(TextType)Format[5].asInt());
 			msTextFormat.push_back(textformat);
 		}
 		miCountDownDayInLine = Settings["CountDownDayInLine"].asInt();

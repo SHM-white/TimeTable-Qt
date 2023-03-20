@@ -32,6 +32,8 @@ public:
 	int changeLesson(size_t index, const std::string& day,const Lesson& lesson);
 	int changeLesson(size_t index, const std::string& day, const Lesson& lesson, const std::string& lessonPath);
 	std::string mGetCountDown(tm tmIn, const std::string& TimeFormat);
+	std::string mGetInfo();
+	std::string mGetInfo(const std::string& week);
 	std::string mGetCurrentLesson(const std::string& LessonNull);
 	std::string mReplacePath(const std::string& Path);
 	Lesson mGetLesson(const std::string& week, int index);

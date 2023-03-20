@@ -63,7 +63,6 @@
     <addaction name="actionSettings"/>
     <addaction name="separator"/>
     <addaction name="actionshowall"/>
-    <addaction name="actionmoreinfo"/>
    </widget>
    <widget class="QMenu" name="menuhelp">
     <property name="title">
