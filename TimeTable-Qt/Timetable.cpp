@@ -1,17 +1,18 @@
-﻿
+﻿#include <ctime>
 #include "Timetable.h"
 #include <Windows.h>
 #include <fstream>
 #include <vector>
 #include <strsafe.h>
 #include "include\json\json.h"
-#include<format>
+#include <format>
 #include <algorithm>
 #include <ranges>
 #include "CSVEditor.h"
 #include "Lesson.h"
 #include <stdlib.h>
 #include <functional>
+#include <regex>
 
 //TimeTable类的实现函数
 //添加课程的4参数重载函数，兼容旧代码（其实就是懒），默认写入成员变量保存的路径
@@ -179,16 +180,19 @@ std::string TimeTable::mGetCurrentLesson(const std::string& LessonNull)
 std::string TimeTable::mGetCurrentTime(const std::string& TextFormat)
 {
 	//TextFormat.find("%0");
-	char tmp[256];
+	std::string result;
+	const std::string pattern{ "%[^aAbBcCdDeFgGhHIjmMnprRStTuUVwWxXyYzZ%]" };
 	tm structm;
+	result.resize(100);
 	mGetCurrentTime(structm);
-	try {
-		strftime(tmp, sizeof(tmp), TextFormat.c_str(), &structm);
+	if (!std::regex_match(TextFormat, std::regex(pattern))) {
+		strftime(&result[0], result.size(), TextFormat.c_str(), &structm);
 	}
-	catch (std::exception& ex) {
+	else
+	{
 		return "bad format";
 	}
-	return std::string(tmp);
+	return result;
 }
 //从csv导入课程至指定文件
 int TimeTable::mImportLessonsFromCsv(const std::string& path, const std::string& TargetFileName)
