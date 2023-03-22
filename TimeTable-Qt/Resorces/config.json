@@ -1,0 +1,45 @@
+{
+   "version":[2,3,0],
+   "About" : "该程序的目的是取代每天写在黑板上的课表和值日表等信息，可以放在教室的电脑上，也可网课期间自己使用\r\n如有bug或建议请到GitHub反馈",
+   "Settings" : {
+      "Window" : {
+         "AcrylicEffect" : false,
+         "BackGroundColor" : [ 0, 0, 0, 1 ],
+         "BackGroundImg" : "BackGround.png",
+         "CountDownDay" : [ 2024, 1, 31, 0, 0, 0 ],
+         "CountDownDayInLine" : 4,
+         "LessonInLine" : 2,
+         "LessonInfoFile" : "Lessons.json",
+         "LessonNull" : "",
+         "TextFormat" : [
+            [
+               "%a-%H:%M:%S",
+               "微软雅黑",
+               [ 4, 24 ],
+               20,
+               [ 0, 0, 0 ],
+               0
+            ],
+            [
+               "当前课程：",
+               "微软雅黑",
+               [ 4, 48 ],
+               20,
+               [ 0, 0, 0 ],
+               1
+            ],
+            [
+               "距离春节%03d天%02d小时",
+               "微软雅黑",
+               [ 12, 31 ],
+               20,
+               [ 0, 0, 0 ],
+               2
+            ]
+         ],
+         "WindowLocation" : [ 1100, 40 ],
+         "WindowSize" : [ 230, 55 ]
+      }
+   },
+   "futures" : "饼：\r\n1.将支持从xlsx（csv）和txt文件导入\r\n2.更多的自定义选项，如背景颜色（目前有点小问题）\r\n3.（然后应该暂时没有了）\r\n（开源库好烦啊，还是自己写个类读csv吧）\r\n4.值日班长等信息将支持在主窗口显示"
+}
