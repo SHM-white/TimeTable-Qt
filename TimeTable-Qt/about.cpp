@@ -33,6 +33,8 @@ void About::on_pushButton_clicked()
         try
         {
             QMessageBox::information(this, QString("Test"), QString("开始测试所有函数"), QMessageBox::Ok);
+            pParent->timetable.mGetCurrentTime("%00中文");
+            QMessageBox::information(this, QString("Test"), QString("timetable.mGetCurrentTime(\"%0\")"), QMessageBox::Ok);
             pParent->windowsettings.mGetWindowSettings();
             origin2 = pParent->timetable.mReplacePath(pParent->windowsettings.msLessonInfoFile);
             QMessageBox::information(this, QString("Test"), QString("windowsettings.mGetWindowSettings()"), QMessageBox::Ok);

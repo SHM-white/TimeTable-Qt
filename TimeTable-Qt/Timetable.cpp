@@ -181,11 +181,15 @@ std::string TimeTable::mGetCurrentTime(const std::string& TextFormat)
 {
 	//TextFormat.find("%0");
 	std::string result;
-	const std::string pattern{ "%[^aAbBcCdDeFgGhHIjmMnprRStTuUVwWxXyYzZ%]" };
+	const std::string pattern{  };
 	tm structm;
 	result.resize(100);
 	mGetCurrentTime(structm);
-	if (!std::regex_match(TextFormat, std::regex(pattern))) {
+	auto location = TextFormat.find('%',0);
+	if (location >= TextFormat.size()) {
+		location = 0;
+	}
+	if (!std::regex_match(TextFormat.begin()+location, TextFormat.begin()+location+2, std::regex("%[^aAbBcCdDeFgGhHIjmMnprRStTuUVwWxXyYzZ%]|%[0-9]{1,}[a-zA-Z]"))) {
 		strftime(&result[0], result.size(), TextFormat.c_str(), &structm);
 	}
 	else

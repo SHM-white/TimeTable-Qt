@@ -138,7 +138,7 @@ void Settings::on_pushButton_delete_clicked()
 {
     int row = this->ui->listView->currentRow();
     if (
-        (row > 0)
+        (row >= 0)
         && (row < this->ui->listView->count())
         ) 
     {
@@ -155,7 +155,7 @@ void Settings::on_pushButton_delete_clicked()
             break;
         }
         FlashList();
-        this->ui->listView->setCurrentRow(row);
+        this->ui->listView->setCurrentRow(max(row - 1, 0));
     }
 }
 
@@ -234,7 +234,7 @@ void Settings::on_pushButton_changeLesson_clicked()
     QString result{ this->ui->comboBox_addLesson->currentText() };
     if (
         (!result.isEmpty())
-        && (this->ui->listView->currentRow() > 0)
+        && (this->ui->listView->currentRow() >= 0)
         && (this->ui->listView->currentRow() < this->ui->listView->count())
         )
     {
@@ -382,9 +382,11 @@ void Settings::on_pushButton_chooseBackGround_clicked()
 
 void Settings::on_pushButton_chooseColor_clicked()
 {
-    QColor color = QColorDialog::getColor(Qt::white,this);
-    COLORREF colorRef{ RGB(color.red(), color.green(), color.blue()) };
-    this->ui->lineEdit_color->setText(QString::fromStdString(ColorRefToHexString(colorRef)));
+    QColor color = QColorDialog::getColor(this->ui->lineEdit_color->text(), this);
+    if (color.isValid()) {
+        COLORREF colorRef{ RGB(color.red(), color.green(), color.blue()) };
+        this->ui->lineEdit_color->setText(QString::fromStdString(ColorRefToHexString(colorRef)));
+    }
 }
 
 TextFormat Settings::ReadTextFormatFromUI()
