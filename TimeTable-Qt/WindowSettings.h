@@ -4,9 +4,7 @@
 #include<string_view>
 #include<format>
 #include<vector>
-#include "resource.h"
 #include<Windows.h>
-//#include <QPainter>
 #include"TextFormat.h"
 #include "Timetable.h"
 
@@ -34,11 +32,11 @@ public:
 	int miLessonInLine{ 1 };
 	int miCountDownDayInLine{ 10 };
 	std::vector<TextFormat> msTextFormat;
-	std::string msLessonNull;
+	std::string msLessonNull{""};
 	std::string msLessonInfoFile{ ".\\Lessons.json" };
 	std::string msBackGroundImg{ "" };
 	COLORREF mcBackGroundColor{ 0x00ffffff };
-	int miBackGroundColor[4]{ 255,255,255,0 };
+	int miBackGroundColor[4]{ 255,255,255,1 };
 	bool bAcrylicEffect{ false };
 	bool Utf8{ true };
 	tm mCountDownDay;

@@ -15,6 +15,7 @@ About::About(QWidget *parent) :
     p->windowsettings.mGetTextItem("About", about);
     QString qabout{ QString::fromStdString(about) };
     this->ui->textEdit->setText(qabout);
+    this->ui->label_3->setText(QString::fromStdString(std::format("v{}.{}.{}-SE", p->windowsettings.minVersion[0], p->windowsettings.minVersion[1], p->windowsettings.minVersion[2])));
 }
 
 About::~About()
@@ -33,7 +34,7 @@ void About::on_pushButton_clicked()
         try
         {
             QMessageBox::information(this, QString("Test"), QString("开始测试所有函数"), QMessageBox::Ok);
-            pParent->timetable.mGetCurrentTime("%00中文");
+            pParent->timetable.mGetCurrentTime("");
             QMessageBox::information(this, QString("Test"), QString("timetable.mGetCurrentTime(\"%0\")"), QMessageBox::Ok);
             pParent->windowsettings.mGetWindowSettings();
             origin2 = pParent->timetable.mReplacePath(pParent->windowsettings.msLessonInfoFile);
