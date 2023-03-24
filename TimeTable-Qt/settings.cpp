@@ -35,8 +35,8 @@ void Settings::InitializeWindow()
     QDateTime dateTime(date,time);
     this->ui->spinBox_windowLocationX->setValue(pParent->windowsettings.miWindowX);
     this->ui->spinBox_windowLocationY->setValue(pParent->windowsettings.miWindowY);
-    this->ui->spinBox_DayCountInLine->setValue(pParent->windowsettings.miCountDownDayInLine);
-    this->ui->spinBox_lessonInLine->setValue(pParent->windowsettings.miLessonInLine);
+    //this->ui->spinBox_DayCountInLine->setValue(pParent->windowsettings.miCountDownDayInLine);
+    //this->ui->spinBox_lessonInLine->setValue(pParent->windowsettings.miLessonInLine);
     this->ui->spinBox_windowSizeX->setValue(pParent->windowsettings.miWindowWeight);
     this->ui->spinBox_windowSizeY->setValue(pParent->windowsettings.miWindowHeight);
     this->ui->dateTimeEdit->setDateTime(dateTime);
@@ -49,8 +49,8 @@ void Settings::SaveSettings()
 {
     pParent->windowsettings.miWindowX = this->ui->spinBox_windowLocationX->value();
     pParent->windowsettings.miWindowY = this->ui->spinBox_windowLocationY->value();
-    pParent->windowsettings.miCountDownDayInLine = this->ui->spinBox_DayCountInLine->value();
-    pParent->windowsettings.miLessonInLine = this->ui->spinBox_lessonInLine->value();
+    //pParent->windowsettings.miCountDownDayInLine = this->ui->spinBox_DayCountInLine->value();
+    //pParent->windowsettings.miLessonInLine = this->ui->spinBox_lessonInLine->value();
     pParent->windowsettings.miWindowWeight = this->ui->spinBox_windowSizeX->value();
     pParent->windowsettings.miWindowHeight = this->ui->spinBox_windowSizeY->value();
     QDateTime datetime = this->ui->dateTimeEdit->dateTime();
