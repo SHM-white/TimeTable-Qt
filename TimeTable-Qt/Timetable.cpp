@@ -174,22 +174,22 @@ std::string TimeTable::mGetCurrentLesson(const std::string& LessonNull)
 
 std::string TimeTable::mGetCurrentTime(const std::string& TextFormat)
 {
-	std::string result;
+	char result[100];
 	tm structm;
-	result.resize(100);
+
 	mGetCurrentTime(structm);
 	auto location = TextFormat.find('%',0);
 	if (location >= TextFormat.size()) {
 		location = 0;
 	}
 	if (TextFormat.size()>=2 && !std::regex_match(TextFormat.begin() + location, TextFormat.begin() + location + 2, std::regex("%[^aAbBcCdDeFgGhHIjmMnprRStTuUVwWxXyYzZ%]|%[0-9]{1,}[a-zA-Z]"))) {
-		strftime(&result[0], result.size(), TextFormat.c_str(), &structm);
+		strftime(result, sizeof(result), TextFormat.c_str(), &structm);
 	}
 	else
 	{
 		return TextFormat;
 	}
-	return result;
+	return std::string(result);
 }
 //从csv导入课程至指定文件
 int TimeTable::mImportLessonsFromCsv(const std::string& path, const std::string& TargetFileName)
@@ -416,7 +416,7 @@ std::string TimeTable::mGetInfo()
 
 std::string TimeTable::mGetInfo(const std::string& week)
 {
-	static std::vector<std::string> Infos;
+	std::vector<std::string> Infos;
 	Infos.clear();
 	mGetTodayMoreInfo(Infos, week);
 	static int count{ 0 };
