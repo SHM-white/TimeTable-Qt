@@ -27,6 +27,7 @@ OutputBaseFilename=TimeTable-Qt-SE-Setup
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
+PrivilegesRequired=admin
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
