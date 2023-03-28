@@ -30,7 +30,7 @@ void ImportFromFile::on_buttonBox_accepted()
 
 void ImportFromFile::on_pushButton_clicked()
 {
-    QString openfilename = QFileDialog::getOpenFileName(this, QString("请选择需要打开的csv文件"), QString(".\\"), QString("ANSI编码的csv文件(*.csv);;All(*.*)"));
+    QString openfilename = QFileDialog::getOpenFileName(this, QString("请选择需要打开的csv文件"), QString(".\\"), QString("CSV UTF-8(逗号分隔)(*.csv);;All(*.*)"));
     if (openfilename.isEmpty()) {
         QMessageBox::warning(this, QString("提示"), QString("未选择文件"));
     }

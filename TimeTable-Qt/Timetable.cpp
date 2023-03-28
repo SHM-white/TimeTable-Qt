@@ -1,17 +1,18 @@
-﻿
+﻿#include <ctime>
 #include "Timetable.h"
 #include <Windows.h>
 #include <fstream>
 #include <vector>
 #include <strsafe.h>
 #include "include\json\json.h"
-#include<format>
+#include <format>
 #include <algorithm>
 #include <ranges>
 #include "CSVEditor.h"
 #include "Lesson.h"
 #include <stdlib.h>
 #include <functional>
+#include <regex>
 
 //TimeTable类的实现函数
 //添加课程的4参数重载函数，兼容旧代码（其实就是懒），默认写入成员变量保存的路径
@@ -25,30 +26,13 @@ int TimeTable::mAddLesson(const std::string& week, const std::string& Lesson, co
 	if (!((bool)week.size() && (bool)Lesson.size() && (bool)sBegin.size() && (bool)sEnd.size() && (bool)TargetFilePath.size())) {
 		return 0;
 	}
-	Json::Reader reader;
-	Json::Value root;
-	Json::StyledWriter sw;
-	std::fstream os;
+	Json::Value root = GetRootJsonValue(TargetFilePath);
 	Json::Value Current;
-	os.open(TargetFilePath, std::ios::in);
-	if (!os.is_open()) {
-		os.close();
-		return 0;
-	}
-	reader.parse(os, root);
-	os.close();
-	os.clear();
-	os.open(TargetFilePath, std::ios::out | std::ios::trunc);
 	Current.append(Lesson);
 	Current.append(sBegin);
 	Current.append(sEnd);
 	root[week]["Lessons"].append(Current);
-	os.seekp(std::ios::beg);
-	os << sw.write(root);
-	os.close();
-	os.clear();
-	mReloadLesson();
-	return 1;
+	return SaveJson(TargetFilePath,root);
 }
 int TimeTable::mAddLesson(const Lesson& lesson)
 {
@@ -106,6 +90,18 @@ Lesson TimeTable::mGetLesson(const std::string& week, int index)
 	in.close();
 	const Json::Value Lessons = root[week]["Lessons"][index];
 	return 	Lesson(week, Lessons[0].asString(), atoi(Lessons[1].asString().c_str()), atoi(Lessons[2].asString().c_str()));
+}
+Json::Value TimeTable::GetRootJsonValue(const std::string& TargetPath)
+{
+	Json::Reader reader;
+	Json::Value root;
+	std::ifstream in(mLessonInfoPath, std::ios::in);
+	if (!in.is_open())
+	{
+		return 0;
+	};
+	reader.parse(in, root);
+	return root;
 }
 //获取所有的课程并返回至传入的数组
 int TimeTable::mGetLesson(std::vector<std::string>& input)
@@ -178,17 +174,22 @@ std::string TimeTable::mGetCurrentLesson(const std::string& LessonNull)
 
 std::string TimeTable::mGetCurrentTime(const std::string& TextFormat)
 {
-	//TextFormat.find("%0");
-	char tmp[256];
+	char result[100];
 	tm structm;
+
 	mGetCurrentTime(structm);
-	try {
-		strftime(tmp, sizeof(tmp), TextFormat.c_str(), &structm);
+	auto location = TextFormat.find('%',0);
+	if (location >= TextFormat.size()) {
+		location = 0;
 	}
-	catch (std::exception& ex) {
-		return "bad format";
+	if (TextFormat.size()>=2 && !std::regex_match(TextFormat.begin() + location, TextFormat.begin() + location + 2, std::regex("%[^aAbBcCdDeFgGhHIjmMnprRStTuUVwWxXyYzZ%]|%[0-9]{1,}[a-zA-Z]"))) {
+		strftime(result, sizeof(result), TextFormat.c_str(), &structm);
 	}
-	return std::string(tmp);
+	else
+	{
+		return TextFormat;
+	}
+	return std::string(result);
 }
 //从csv导入课程至指定文件
 int TimeTable::mImportLessonsFromCsv(const std::string& path, const std::string& TargetFileName)
@@ -329,6 +330,25 @@ int TimeTable::deleteLesson(size_t index, const std::string& day, const std::str
 	mReloadLesson();
 	return 1;
 }
+int TimeTable::deleteInfo(size_t index, const std::string& day)
+{
+	return deleteInfo(index, day, mLessonInfoPath);
+}
+int TimeTable::deleteInfo(size_t index, const std::string& day, const std::string& lessonPath)
+{
+	Json::Value root = GetRootJsonValue(lessonPath);
+	std::vector<std::string> vectorInfos;
+	Json::Value& valueInfos = root[day]["Infos"];
+	for (const auto& a : valueInfos) {
+		vectorInfos.push_back(a.asString());
+	}
+	vectorInfos.erase(vectorInfos.begin()+index);
+	valueInfos.clear();
+	for (const auto& a : vectorInfos) {
+		valueInfos.append(a);
+	}
+	return SaveJson(lessonPath,root);
+}
 int TimeTable::changeLesson(size_t index, const std::string& day, const Lesson& lesson)
 {
 	return changeLesson(index,day,lesson,mLessonInfoPath);
@@ -351,6 +371,17 @@ int TimeTable::changeLesson(size_t index, const std::string& day, const Lesson& 
 	
 	Json::Value& valueLessons = root[day]["Lessons"];
 	valueLessons[(int)index] = lesson.GetJsonValue();
+
+	Json::StyledWriter sw;
+	os << sw.write(root);
+	os.close();
+	mReloadLesson();
+	return 1;
+}
+int TimeTable::SaveJson(const std::string& TargetPath, const Json::Value& root)
+{
+	std::fstream os(TargetPath, std::ios::out | std::ios::trunc);
+	if (!os.is_open()) { return 0; }
 
 	Json::StyledWriter sw;
 	os << sw.write(root);
@@ -385,7 +416,7 @@ std::string TimeTable::mGetInfo()
 
 std::string TimeTable::mGetInfo(const std::string& week)
 {
-	static std::vector<std::string> Infos;
+	std::vector<std::string> Infos;
 	Infos.clear();
 	mGetTodayMoreInfo(Infos, week);
 	static int count{ 0 };
