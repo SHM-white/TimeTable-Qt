@@ -29,14 +29,18 @@ public:
 	int sortLessons(const std::string& lessonpath, const std::string& Day);
 	int deleteLesson(size_t index, const std::string& day);
 	int deleteLesson(size_t index, const std::string& day,const std::string& lessonPath);
+	int deleteInfo(size_t index, const std::string& day);
+	int deleteInfo(size_t index, const std::string& day, const std::string& lessonPath);
 	int changeLesson(size_t index, const std::string& day,const Lesson& lesson);
 	int changeLesson(size_t index, const std::string& day, const Lesson& lesson, const std::string& lessonPath);
+	int SaveJson(const std::string& TargetPath, const Json::Value& root);
 	std::string mGetCountDown(tm tmIn, const std::string& TimeFormat);
 	std::string mGetInfo();
 	std::string mGetInfo(const std::string& week);
 	std::string mGetCurrentLesson(const std::string& LessonNull);
 	std::string mReplacePath(const std::string& Path);
 	Lesson mGetLesson(const std::string& week, int index);
+	Json::Value GetRootJsonValue(const std::string& TargetPath);
 	static std::string mGetCurrentTime(const std::string& TextFormat);
 	static int mGetCurrentTime(tm& tmTime);
 	const std::string& mGetLessonInfoPath();

@@ -122,7 +122,11 @@ void TimeTableQt::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
     painter.drawRect(rect());
-    if (pic.isNull()|| windowsettings.bAcrylicEffect) {
+    if (pic.isNull()
+#if EXPERENCE
+        || windowsettings.bAcrylicEffect
+#endif        
+        ) {
         painter.fillRect(rect(), QColor(windowsettings.miBackGroundColor[0], windowsettings.miBackGroundColor[1], windowsettings.miBackGroundColor[2], windowsettings.miBackGroundColor[3]));
     }
     else {

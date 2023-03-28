@@ -8,7 +8,7 @@
          "CountDownDay" : [ 2023, 1, 22, 0, 0, 0 ],
          "CountDownDayInLine" : 4,
          "LessonInLine" : 2,
-         "LessonInfoFile" : "test_lesson.json",
+         "LessonInfoFile" : "Lessons.json",
          "LessonNull" : "",
          "TextFormat" : [
             [
@@ -16,28 +16,32 @@
                "微软雅黑",
                [ 2, 22 ],
                15,
-               [ 0, 0, 0 ]
+               [ 0, 0, 0 ],
+               0
             ],
             [
                "当前课程：",
                "微软雅黑",
                [ 2, 44 ],
                15,
-               [ 0, 0, 0 ]
+               [ 0, 0, 0 ],
+               1
             ],
             [
                "距离春节还有：",
                "微软雅黑",
                [ 2, 66 ],
                15,
-               [ 0, 0, 0 ]
+               [ 0, 0, 0 ],
+               0
             ],
             [
                "%03d天-%02d:%02d:%02d",
                "微软雅黑",
                [ 2, 88 ],
                15,
-               [ 255, 0, 0 ]
+               [ 255, 0, 0 ],
+               2
             ]
          ],
          "WindowLocation" : [ 1200, 40 ],

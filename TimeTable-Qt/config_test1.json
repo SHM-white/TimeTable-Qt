@@ -3,51 +3,51 @@
    "Settings" : {
       "Window" : {
          "AcrylicEffect" : false,
-         "BackGroundColor" : [ 0, 0, 0, 1 ],
-         "BackGroundImg" : "BackGround.png",
-         "CountDownDay" : [ 2024, 1, 31, 0, 0, 0 ],
+         "BackGroundColor" : [ 0, 0, 255, 1 ],
+         "BackGroundImg" : "alpha_test.png",
+         "CountDownDay" : [ 2023, 1, 22, 0, 0, 0 ],
          "CountDownDayInLine" : 4,
          "LessonInLine" : 2,
          "LessonInfoFile" : "Lessons.json",
          "LessonNull" : "",
          "TextFormat" : [
             [
-               "%a-%H:%M:%S",
+               "当前时间：%a-%H:%M:%S",
                "微软雅黑",
-               [ 4, 22 ],
-               18,
+               [ 2, 22 ],
+               15,
                [ 0, 0, 0 ],
                0
             ],
             [
                "当前课程：",
                "微软雅黑",
-               [ 4, 44 ],
-               18,
+               [ 2, 44 ],
+               15,
                [ 0, 0, 0 ],
                1
             ],
             [
-               "距离春节%03d天%02d小时",
+               "距离春节还有：",
                "微软雅黑",
-               [ 4, 66 ],
-               18,
+               [ 2, 66 ],
+               15,
                [ 0, 0, 0 ],
-               2
+               0
             ],
             [
-               "值日信息：",
+               "%03d天-%02d:%02d:%02d",
                "微软雅黑",
-               [ 4, 88 ],
-               18,
-               [ 0, 0, 0 ],
-               3
+               [ 2, 88 ],
+               15,
+               [ 255, 0, 0 ],
+               2
             ]
          ],
-         "WindowLocation" : [ 1100, 40 ],
-         "WindowSize" : [ 250, 95 ]
+         "WindowLocation" : [ 1200, 40 ],
+         "WindowSize" : [ 250, 96 ]
       }
    },
-   "futures" : "饼：\r\n1.将支持从xlsx（csv）和txt文件导入\r\n2.更多的自定义选项，如背景颜色（目前有点小问题）\r\n3.（然后应该暂时没有了）\r\n（开源库好烦啊，还是自己写个类读csv吧）\r\n4.值日班长等信息将支持在主窗口显示",
+   "emitUTF8" : true,
    "version" : [ 2, 3, 0 ]
 }
