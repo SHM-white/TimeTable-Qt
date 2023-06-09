@@ -8,6 +8,8 @@
 #include"TextFormat.h"
 #include "Timetable.h"
 
+#include "ToWString.h"
+
 //WindowSettings类，用于保存设置，包含与窗口绘图有关函数
 class WindowSettings {
 public:
@@ -15,7 +17,7 @@ public:
 	WindowSettings(const std::string path)
 		:msSettingPath{ path }
 	{
-		msLessonNull = std::format("找不到{}", msSettingPath);
+		msLessonNull = std::format(TEXT("找不到{}"), msSettingPath);
 		msTextFormat.push_back(TextFormat());
 		mGetWindowSettings();
 	};
@@ -23,7 +25,8 @@ public:
 	int mGetWindowSettings();
 	int save();
 	int save(const std::string& ConfigPath);
-	int mGetTextItem(const std::string& Item, std::string& input);
+	int mGetTextItem(const std::string& Item, std::string& input);	
+	std::vector<int> mGetChangedItem();
 	const std::string mChangeConfigPath(const std::string& path);
 	int miWindowHeight{ 120 };
 	int miWindowWeight{ 250 };
@@ -32,13 +35,15 @@ public:
 	int miLessonInLine{ 1 };
 	int miCountDownDayInLine{ 10 };
 	std::vector<TextFormat> msTextFormat;
-	std::string msLessonNull{""};
-	std::string msLessonInfoFile{ ".\\Lessons.json" };
-	std::string msBackGroundImg{ "" };
+	std::string msLessonNull{ TEXT("") };
+	std::string msLessonInfoFile{ TEXT(".\\Lessons.json") };
+	std::string msBackGroundImg{ TEXT("") };
 	COLORREF mcBackGroundColor{ 0x00ffffff };
 	int miBackGroundColor[4]{ 255,255,255,1 };
 	bool bAcrylicEffect{ false };
 	bool Utf8{ true };
 	tm mCountDownDay;
-	std::string msSettingPath{ ".\\Config.json" };
+	std::string msSettingPath{ TEXT(".\\Config.json") };
+private:
+	std::vector<int> changedItems;
 };

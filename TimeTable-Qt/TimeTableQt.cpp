@@ -1,4 +1,5 @@
-#define EXPERENCE false
+﻿#define EXPERENCE false
+#define AUTO_RUN_KEY	"HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
 
 #include "TimeTableQt.h"
 #include "importfromfile.h"
@@ -13,6 +14,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPixmap>
+#include <qsettings.h>
 #include <windows.h>
 
 #if EXPERENCE
@@ -277,4 +279,20 @@ void TimeTableQt::on_actionSettings_triggered()
     dialog->show();
 }
 
+
+
+void TimeTableQt::on_actionBootAtPowerOn_triggered()
+{
+    QString application_name = QApplication::applicationName();//获取应用名称
+    QSettings* settings = new QSettings(AUTO_RUN_KEY, QSettings::NativeFormat);//创建QSetting, 需要添加QSetting头文件
+
+    if (this->ui.actionBootAtPowerOn->isChecked()) {
+        QString application_path = QApplication::applicationFilePath();//找到应用的目录
+        settings->setValue(application_name, application_path.replace("/", "\\"));//写入注册表
+    }
+    else
+    {
+        settings->remove(application_name);		//从注册表中删除
+    }
+}
 

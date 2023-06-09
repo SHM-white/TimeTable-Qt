@@ -1,4 +1,4 @@
-#include "WindowSettings.h"
+﻿#include "WindowSettings.h"
 #include "Timetable.h"
 #include <Windows.h>
 #include <fstream>
@@ -125,6 +125,12 @@ int WindowSettings::mGetTextItem(const std::string& Item, std::string& input)
 	}
 	in.close();
 	return 1;
+}
+
+std::vector<int> WindowSettings::mGetChangedItem()
+{
+
+	return changedItems;
 }
 
 

@@ -47,4 +47,5 @@ private slots:
     void on_actionmoreinfo_triggered();
     void on_actionChangeConfig_triggered();
     void on_actionSettings_triggered();
+    void on_actionBootAtPowerOn_triggered();
 };
