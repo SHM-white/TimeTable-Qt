@@ -5,7 +5,7 @@
          "AcrylicEffect" : false,
          "BackGroundColor" : [ 0, 0, 0, 1 ],
          "BackGroundImg" : "BackGround.png",
-         "CountDownDay" : [ 2024, 1, 31, 0, 0, 0 ],
+         "CountDownDay" : [ 2024, 6, 7, 0, 0, 0 ],
          "CountDownDayInLine" : 4,
          "LessonInLine" : 2,
          "LessonInfoFile" : "Lessons.json",
@@ -28,7 +28,7 @@
                1
             ],
             [
-               "距离春节%03d天%02d小时",
+               "距离高考%03d天%02d小时",
                "微软雅黑",
                [ 4, 66 ],
                18,

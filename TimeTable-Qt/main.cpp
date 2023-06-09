@@ -1,4 +1,4 @@
-#include "TimeTableQt.h"
+﻿#include "TimeTableQt.h"
 #include <QtWidgets/QApplication>
 
 

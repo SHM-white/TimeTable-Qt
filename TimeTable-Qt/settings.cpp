@@ -57,7 +57,7 @@ void Settings::SaveSettings()
     tm& structDate = pParent->windowsettings.mCountDownDay;
     structDate.tm_year = datetime.date().year() - 1900;
     structDate.tm_mon = datetime.date().month() - 1;
-    structDate.tm_mday = datetime.date().daysInMonth();
+    structDate.tm_mday = datetime.date().day();
     structDate.tm_hour = datetime.time().hour();
     structDate.tm_min = datetime.time().minute();
     structDate.tm_sec = datetime.time().second();
