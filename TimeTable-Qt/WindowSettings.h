@@ -13,7 +13,7 @@
 //WindowSettings类，用于保存设置，包含与窗口绘图有关函数
 class WindowSettings {
 public:
-	const int minVersion[3]{ 2,3,0 };
+	const int minVersion[3]{ 2,4,0 };
 	const int currentVersion[3]{ 2,4,0 };
 	WindowSettings(const std::string path)
 		:msSettingPath{ path }
@@ -30,6 +30,8 @@ public:
 	const std::string mChangeConfigPath(const std::string& path);
 	int miWindowHeight{ 120 };
 	int miWindowWeight{ 250 };
+	int miAllLessonWindowX{ 300 };
+	int miAllLessonWindowY{ 20 };
 	int miWindowX{ 20 };
 	int miWindowY{ 20 };
 	int miLessonInLine{ 1 };

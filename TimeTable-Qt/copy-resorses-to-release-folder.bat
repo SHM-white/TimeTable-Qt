@@ -1,2 +1,2 @@
-echo "å¤åˆ¶æ–‡ä»¶"
-xcopy .\Resource\ ..\x64\Release\ /e /l /y
+@echo "¸´ÖÆÎÄ¼ş"
+@copy .\Resource\ ..\x64\Release\ /e /l /y

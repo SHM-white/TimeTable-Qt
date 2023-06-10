@@ -116,7 +116,7 @@ void Settings::FlashList(int index)
         }
         for (auto i : pParent->windowsettings.changedItems) {
             if (i < pParent->windowsettings.msTextFormat.size()) {
-                this->ui->listView->item(i)->setBackground(QBrush(QColor(128, 128, 0)));
+                this->ui->listView->item(i)->setBackground(QBrush(QColor(255, 245, 70)));
             }
             else if(!hasAddLastItem){
                 this->ui->listView->addItem("");

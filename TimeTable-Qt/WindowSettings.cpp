@@ -35,6 +35,8 @@ int WindowSettings::mGetWindowSettings()
 		miWindowWeight = Settings["WindowSize"][0].asInt();
 		miWindowX = Settings["WindowLocation"][0].asInt();
 		miWindowY = Settings["WindowLocation"][1].asInt();
+		miAllLessonWindowX = Settings["WindowLocation"][2].asInt();
+		miAllLessonWindowY = Settings["WindowLocation"][3].asInt();
 		miLessonInLine = Settings["LessonInLine"].asInt();
 		msLessonNull = Settings["LessonNull"].asString();
 		msLessonInfoFile = Settings["LessonInfoFile"].asString();
@@ -57,6 +59,9 @@ int WindowSettings::mGetWindowSettings()
 		mCountDownDay.tm_min = Settings["CountDownDay"][4].asInt();
 		mCountDownDay.tm_sec = Settings["CountDownDay"][5].asInt();
 		bAcrylicEffect = Settings["AcrylicEffect"].asBool();
+	}
+	else {
+		msTextFormat.push_back(TextFormat(0, 0, 10, "微软雅黑", "error", 0x000000, TextType::CurrentTime));
 	}
 	return 1;
 }
@@ -83,6 +88,8 @@ int WindowSettings::save(const std::string& ConfigPath)
 	Settings["WindowLocation"].clear();
 	Settings["WindowLocation"].append(miWindowX);
 	Settings["WindowLocation"].append(miWindowY);
+	Settings["WindowLocation"].append(miAllLessonWindowX);
+	Settings["WindowLocation"].append(miAllLessonWindowY);
 	Settings["LessonInLine"] = miLessonInLine;
 	Settings["LessonNull"] = msLessonNull;
 	Settings["LessonInfoFile"] = msLessonInfoFile;
