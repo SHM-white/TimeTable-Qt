@@ -169,7 +169,7 @@ int TimeTable::mImportLessonsFromCsv(const std::string& path, const std::string&
 	CSVEditor CsvEditor{ path };
 	int a{ 0 };
 	if (CsvEditor.mGetCsvData()) {
-		for (int i{ 0 }; i < CsvEditor.mGetLineCount(); i++) {
+		for (int i{ 1 }; i < CsvEditor.mGetLineCount(); i++) {//jump line 1
 			a = mAddLesson(CsvEditor[i][0], CsvEditor[i][1], CsvEditor[i][2], CsvEditor[i][3], TargetFileName);
 		}
 		return a;

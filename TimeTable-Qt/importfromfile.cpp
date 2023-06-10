@@ -1,4 +1,4 @@
-#include "importfromfile.h"
+﻿#include "importfromfile.h"
 #include "ui_importfromfile.h"
 #include "TimeTableQt.h"
 #include <qfiledialog.h>

@@ -1,4 +1,4 @@
-#ifndef IMPORTFROMFILE_H
+﻿#ifndef IMPORTFROMFILE_H
 #define IMPORTFROMFILE_H
 
 #include <QDialog>

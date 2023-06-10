@@ -1,4 +1,4 @@
-#include "CSVEditor.h"
+﻿#include "CSVEditor.h"
 #include "Timetable.h"
 #include <Windows.h>
 #include <fstream>
@@ -18,6 +18,7 @@ int CSVEditor::mGetCsvData()
 {
     std::fstream in;
 	std::string line;
+	in.clear();
     in.open(mCsvPath, std::ios::in);
     if (!in.is_open()) {
 		in.close();
