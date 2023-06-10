@@ -2,6 +2,7 @@
 #define TODAYALLLESSONS_H
 
 #include <QWidget>
+#include <qtimer.h>
 #include "TimeTableQt.h"
 
 namespace Ui {
@@ -17,6 +18,7 @@ public:
     ~TodayAllLessons();
 
 private:
+    QTimer* time_calendar;
     Ui::TodayAllLessons *ui;
     void paintEvent(QPaintEvent*) override;
     TimeTableQt* pParent;

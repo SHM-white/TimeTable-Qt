@@ -130,9 +130,12 @@ void TimeTableQt::ShowShadow()
 
 }
 
-void TimeTableQt::showEvent(QShowEvent* event)
+void TimeTableQt::closeEvent(QCloseEvent* event)
 {
-    QWidget::showEvent(event);
+    if (allLessonWindow != nullptr) {
+        allLessonWindow->close();
+    }
+    event->accept();
 }
 
 void TimeTableQt::paintEvent(QPaintEvent*)

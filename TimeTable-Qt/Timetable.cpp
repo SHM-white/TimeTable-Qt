@@ -140,35 +140,7 @@ int TimeTable::mGetTodayMoreInfo(std::vector<std::string>& input, const std::str
 //获取当前时间的课程
 std::string TimeTable::mGetCurrentLesson(const std::string& LessonNull)
 {
-	std::string timeCurrentTime{ mGetCurrentTime("%H%M") };
-	int iCurrentTime = mHHMMToMin(atoi(timeCurrentTime.c_str()));
-	if (!((CurrentLesson.mGetBeginTime() <= iCurrentTime) && (iCurrentTime <= CurrentLesson.mGetEndTime()))) {
-		Json::Reader reader;
-		Json::Value root;
-		std::ifstream in(mLessonInfoPath, std::ios::in);
-		if (!in.is_open())
-		{
-			return std::string("Can't find ") + mLessonInfoPath;
-		};
-		if (reader.parse(in, root)) {
-			std::string week{ mGetCurrentTime("%a") };
-			const Json::Value Lessons = root[week]["Lessons"];
-			for (unsigned int i = 0; i < Lessons.size(); ++i) {
-				std::string sBeginTime = Lessons[i][1].asString();
-				std::string sEndTime = Lessons[i][2].asString();
-				int iBeginTime = mHHMMToMin(atoi(sBeginTime.c_str()));
-				int iEndTime = mHHMMToMin(atoi(sEndTime.c_str()));
-				if ((iBeginTime <= iCurrentTime) && (iEndTime >= iCurrentTime)) {
-					in.close();
-					CurrentLesson.mSetValue(Lessons[i][0].asString(), iBeginTime, iEndTime);
-					return CurrentLesson.mGetName();
-				}
-			}
-			CurrentLesson.mSetValue(LessonNull, 0, 0);
-		}
-		in.close();
-		in.clear();
-	}
+	int lessonIndex = mGetCurrentLesson(0);
 	return CurrentLesson.mGetName();
 }
 
@@ -388,6 +360,29 @@ int TimeTable::SaveJson(const std::string& TargetPath, const Json::Value& root)
 	os.close();
 	mReloadLesson();
 	return 1;
+}
+int TimeTable::mGetCurrentLesson(int)
+{
+	static int currentIndex{ 0 };
+	std::string timeCurrentTime{ mGetCurrentTime("%H%M") };
+	int iCurrentTime = mHHMMToMin(atoi(timeCurrentTime.c_str()));
+	if (!((CurrentLesson.mGetBeginTime() <= iCurrentTime) && (iCurrentTime <= CurrentLesson.mGetEndTime()))) {
+		Json::Value root = GetRootJsonValue(mLessonInfoPath);
+		std::string week{ mGetCurrentTime("%a") };
+		const Json::Value Lessons = root[week]["Lessons"];
+		for (unsigned int i = 0; i < Lessons.size(); ++i) {
+			std::string sBeginTime = Lessons[i][1].asString();
+			std::string sEndTime = Lessons[i][2].asString();
+			int iBeginTime = mHHMMToMin(atoi(sBeginTime.c_str()));
+			int iEndTime = mHHMMToMin(atoi(sEndTime.c_str()));
+			if ((iBeginTime <= iCurrentTime) && (iEndTime >= iCurrentTime)) {
+				CurrentLesson.mSetValue(Lessons[i][0].asString(), iBeginTime, iEndTime);
+				currentIndex = i;
+				break;
+			}
+		}
+	}
+	return currentIndex;
 }
 int TimeTable::deleteLesson(size_t index, const std::string& day)
 {

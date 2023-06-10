@@ -32,7 +32,7 @@ private:
     QPoint windowTopLeftPoint;
     QPoint MenuRD;
     void ShowShadow();
-    void showEvent(QShowEvent* event) override;
+    void closeEvent(QCloseEvent* event) override;
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
