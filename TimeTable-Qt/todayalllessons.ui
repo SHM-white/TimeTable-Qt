@@ -11,9 +11,15 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>当日所有课程</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="TimeTableQt.qrc">
+    <normaloff>:/TimeTableQt/123.ico</normaloff>:/TimeTableQt/123.ico</iconset>
   </property>
  </widget>
- <resources/>
+ <resources>
+  <include location="TimeTableQt.qrc"/>
+ </resources>
  <connections/>
 </ui>
