@@ -4,6 +4,7 @@
 #include <QtWidgets/QWidget>
 #include <qtimer.h>
 #include <qpixmap.h>
+#include "todayalllessons.h"
 #include "ui_TimeTableQt.h"
 #include "WindowSettings.h"
 

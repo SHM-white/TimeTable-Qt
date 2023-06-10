@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include<string>
 #include<string_view>
@@ -22,6 +22,7 @@ public:
 	int mReloadLesson();
 	int mGetLesson(std::vector<std::string>& input);
 	int mGetLesson(std::vector<std::string>& input, const std::string& week);
+	int mGetLesson(std::vector<Lesson>& input, const std::string& week);
 	int mGetTodayMoreInfo(std::vector<std::string>& input);
 	int mGetTodayMoreInfo(std::vector<std::string>& input, const std::string week);
 	int mImportLessonsFromCsv(const std::string& path, const std::string& TargetFileName);

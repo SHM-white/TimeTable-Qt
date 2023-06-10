@@ -10,11 +10,11 @@
 
 
 TodayAllLessons::TodayAllLessons(QWidget *parent) :
-    QWidget(parent),
+    QWidget(nullptr),
     ui(new Ui::TodayAllLessons)
 {
     ui->setupUi(this);
-    pParent = (TimeTableQt*)parentWidget();
+    pParent = (TimeTableQt*)parent;
     setWindowFlags(Qt::WindowMinMaxButtonsHint | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     setAttribute(Qt::WA_TranslucentBackground);
 

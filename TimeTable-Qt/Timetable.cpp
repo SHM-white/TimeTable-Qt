@@ -95,7 +95,7 @@ Json::Value TimeTable::GetRootJsonValue(const std::string& TargetPath)
 {
 	Json::Reader reader;
 	Json::Value root;
-	std::ifstream in(mLessonInfoPath, std::ios::in);
+	std::ifstream in(TargetPath, std::ios::in);
 	if (!in.is_open())
 	{
 		return 0;
@@ -445,21 +445,22 @@ std::string TimeTable::mGetInfo(const std::string& week)
 
 int TimeTable::mGetLesson(std::vector<std::string>& input, const std::string& week)
 {
-	Json::Reader reader;
-	Json::Value root;
-	std::ifstream in(mLessonInfoPath, std::ios::in);
-	if (!in.is_open())
-	{
-		return 0;
-	};
-	if (reader.parse(in, root)) {
-		const Json::Value Lessons = root[week]["Lessons"];
-		for (unsigned int i = 0; i < Lessons.size(); ++i) {
-			std::string result{ week + "\t" + Lessons[i][0].asString() + "\t" + Lessons[i][1].asString() + "\t" + Lessons[i][2].asString() };
-			input.push_back(result);
-		}
+	std::vector<Lesson> lessons;
+	mGetLesson(lessons, week);
+	for (const auto& i : lessons) {
+		input.push_back(i.GetValue("\t"));
 	}
-	in.close();
-	in.clear();
 	return 1;
+}
+
+int TimeTable::mGetLesson(std::vector<Lesson>& input, const std::string& week)
+{
+	Json::Value root = GetRootJsonValue(mLessonInfoPath);
+	const Json::Value Lessons = root[week]["Lessons"];
+	for (unsigned int i = 0; i < Lessons.size(); ++i) {
+		Lesson lesson{ week, Lessons[i][0].asString(), atoi(Lessons[i][1].asString().c_str()), atoi(Lessons[i][2].asString().c_str()) };
+		input.push_back(lesson);
+	}
+	return 1;
+
 }

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include<string>
 #include<string_view>
@@ -20,6 +20,7 @@ public:
 	Lesson(const std::string& Name, int begin, int end);
 	Lesson(Lesson& another) = default;
 	Lesson(Lesson&& another) = default;
+	Lesson(const Lesson& another) = default;
 	Lesson() {}
 	const std::string& mGetDay() const { return sDay; }
 	const std::string& mGetName() const { return sName; }
@@ -35,7 +36,7 @@ public:
 	std::strong_ordering operator<=>(const Lesson& another) const;
 	bool operator<(const Lesson& another) const;
 	bool operator==(const Lesson& another) const = default;
-	void operator=(const Lesson& another);
+	Lesson& operator=(const Lesson& another);
 	const std::string Days[8]{ "Null","Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
 	static int getHourFromHHmm(int input);
 	static int getMinFromHHmm(int input);

@@ -306,7 +306,14 @@ void TimeTableQt::on_actionBootAtPowerOn_triggered()
 
 void TimeTableQt::on_actionshowTodayAll_triggered()
 {
-    TodayAllLessons* window = new TodayAllLessons();
-    window->show();
+    TodayAllLessons* allLessonWindow = new TodayAllLessons(this);
+    allLessonWindow->show();
+    if (this->ui.actionshowTodayAll->isChecked()) {
+        allLessonWindow->show();
+    }
+    else
+    {
+        allLessonWindow->hide();
+    }
 }
 

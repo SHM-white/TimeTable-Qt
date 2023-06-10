@@ -70,9 +70,10 @@ const Json::Value Lesson::GetJsonValue() const
 	return result;
 }
 
-void Lesson::operator=(const Lesson& another)
+Lesson& Lesson::operator=(const Lesson& another)
 {
 	mSetValue(another.sDay, another.mGetName(), another.mGetBeginTime(), another.mGetEndTime());
+	return *this;
 }
 
 int Lesson::getHourFromHHmm(int input)
