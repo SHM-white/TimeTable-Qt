@@ -474,9 +474,9 @@ void Settings::on_pushButton_changeFormat_clicked()
     TextFormat format = ReadTextFormatFromUI();
     pParent->windowsettings.msTextFormat[this->ui->listView->currentRow()] = format;
     int row = this->ui->listView->currentRow();
+    pParent->windowsettings.changedItems.push_back(row);
     FlashList();
     this->ui->listView->setCurrentRow(row);
-    pParent->windowsettings.changedItems.push_back(row);
 }
 
 
