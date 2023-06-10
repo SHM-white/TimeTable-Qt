@@ -3,7 +3,7 @@
 
 
 #define MyAppName "TimeTable-Qt"
-#define MyAppVersion "2.3.0"
+#define MyAppVersion "2.4.0"
 #define MyAppPublisher "SHM_white"
 #define MyAppURL "https://github.com/SHM-white/TimeTable-Qt"
 #define MyAppExeName "TimeTable-Qt.exe"
@@ -19,7 +19,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={autopf}\{#MyAppName}
+DefaultDirName=C:\{#MyAppName}
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
