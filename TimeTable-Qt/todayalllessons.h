@@ -18,8 +18,15 @@ public:
 
 private:
     Ui::TodayAllLessons *ui;
-    void paintEvent(QPaintEvent* event) override;
+    void paintEvent(QPaintEvent*) override;
     TimeTableQt* pParent;
+    QPoint mouseStartPoint;
+    QPoint windowTopLeftPoint;
+    bool m_bDrag{ false };
+    void mousePressEvent(QMouseEvent* event) override;
+    void mouseMoveEvent(QMouseEvent* event) override;
+    void mouseReleaseEvent(QMouseEvent* event) override;
+    void closeEvent(QCloseEvent* event) override;
 };
 
 #endif // TODAYALLLESSONS_H

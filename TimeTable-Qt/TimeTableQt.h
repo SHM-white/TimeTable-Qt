@@ -21,12 +21,12 @@ public:
     WindowSettings windowsettings{ ".\\Config.json" };
     TimeTable timetable{ windowsettings.msLessonInfoFile };
     static std::string translateUtfToAnsi(const std::string& input);
+    Ui::TimeTableQtClass ui;
 private:
     Qt::WindowFlags flags;
     QPixmap pic;
     int timeCounter{ 0 };
     bool m_bDrag{ false };
-    Ui::TimeTableQtClass ui;
     QTimer* time_calendar;
     QPoint mouseStartPoint;
     QPoint windowTopLeftPoint;
