@@ -4,9 +4,9 @@
 #include <QtWidgets/QWidget>
 #include <qtimer.h>
 #include <qpixmap.h>
-#include "todayalllessons.h"
 #include "ui_TimeTableQt.h"
 #include "WindowSettings.h"
+//#include "todayalllessons.h"
 
 class QMouseEvent;
 

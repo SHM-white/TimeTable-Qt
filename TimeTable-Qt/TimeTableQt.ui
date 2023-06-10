@@ -156,6 +156,12 @@
    </property>
   </action>
   <action name="actionshowTodayAll">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>显示所有</string>
    </property>

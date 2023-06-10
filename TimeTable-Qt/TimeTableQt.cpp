@@ -1,4 +1,6 @@
-﻿#define EXPERENCE false
+﻿#pragma once
+
+#define EXPERENCE false
 #define AUTO_RUN_KEY	"HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
 
 #include "TimeTableQt.h"
@@ -31,6 +33,8 @@
 #endif
 #endif // EXPERENCE
 
+TodayAllLessons* allLessonWindow;
+
 TimeTableQt::TimeTableQt(QWidget *parent)
     : QWidget(parent)
 {
@@ -59,6 +63,11 @@ TimeTableQt::~TimeTableQt()
 
 bool TimeTableQt::mInitializeWindow()
 {
+    if (allLessonWindow == nullptr) {
+        allLessonWindow = new TodayAllLessons(this);
+    }
+    allLessonWindow->show();
+
     this->setGeometry(windowsettings.miWindowX, windowsettings.miWindowY, windowsettings.miWindowWeight, windowsettings.miWindowHeight);
     this->setFixedSize(windowsettings.miWindowWeight, windowsettings.miWindowHeight);
 
@@ -306,14 +315,15 @@ void TimeTableQt::on_actionBootAtPowerOn_triggered()
 
 void TimeTableQt::on_actionshowTodayAll_triggered()
 {
-    TodayAllLessons* allLessonWindow = new TodayAllLessons(this);
-    allLessonWindow->show();
     if (this->ui.actionshowTodayAll->isChecked()) {
+        if (allLessonWindow == nullptr) {
+            allLessonWindow = new TodayAllLessons(this);
+        }
         allLessonWindow->show();
     }
     else
     {
-        allLessonWindow->hide();
+        allLessonWindow->close();
     }
 }
 
