@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include<string>
 #include<string_view>
 #include<format>
@@ -31,7 +31,7 @@ public:
 		textType = type;
 		return 0;
 	}
-	Json::Value GetJsonValue();
+	Json::Value GetJsonValue() const;
 	POINT mpTextLocation{ 0,0 };
 	int miTextSize{ 20 };
 	std::string msFontName{ "Consolas" };

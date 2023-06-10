@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 //#pragma execution_character_set("utf-8")
 
 #include <QtWidgets/QWidget>
@@ -48,4 +48,5 @@ private slots:
     void on_actionChangeConfig_triggered();
     void on_actionSettings_triggered();
     void on_actionBootAtPowerOn_triggered();
+    void on_actionshowTodayAll_triggered();
 };

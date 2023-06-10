@@ -1,6 +1,6 @@
-#include "TextFormat.h"
+﻿#include "TextFormat.h"
 
-Json::Value TextFormat::GetJsonValue()
+Json::Value TextFormat::GetJsonValue() const
 {
 	Json::Value formatItem;
 	Json::Value valueColor;

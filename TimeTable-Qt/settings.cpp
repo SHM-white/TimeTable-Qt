@@ -8,6 +8,9 @@
 #include <qcolor.h>
 #include <qcolordialog.h>
 
+#undef max
+#undef min
+
 Settings::Settings(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Settings)
@@ -69,6 +72,9 @@ void Settings::SaveSettings()
 
 void Settings::FlashList(int index)
 {
+    bool hasAddLastItem{ false };
+    auto count = this->ui->listView->count();
+    int row = this->ui->listView->currentRow();
     this->ui->listView->clear();
     if (index == 0) {//Lessons
         bool ShowAll = !this->ui->checkBox->isChecked();
@@ -108,8 +114,18 @@ void Settings::FlashList(int index)
             QListWidgetItem* item = new QListWidgetItem(result);
             this->ui->listView->addItem(item);
         }
+        for (auto i : pParent->windowsettings.changedItems) {
+            if (i < pParent->windowsettings.msTextFormat.size()) {
+                this->ui->listView->item(i)->setBackground(QBrush(QColor(128, 128, 0)));
+            }
+            else if(!hasAddLastItem){
+                this->ui->listView->addItem("");
+                this->ui->listView->item(pParent->windowsettings.msTextFormat.size())->setBackground(QBrush(QColor(255, 0, 0)));
+                hasAddLastItem = true;
+            }
+        }
     }
-    this->ui->listView->setCurrentRow(0);
+    this->ui->listView->setCurrentRow(std::min(row, this->ui->listView->count() - 1));
 
 }
 
@@ -153,12 +169,13 @@ void Settings::on_pushButton_delete_clicked()
             break;
         case 3:
             pParent->windowsettings.msTextFormat.erase(pParent->windowsettings.msTextFormat.begin() + row);
+            pParent->windowsettings.changedItems.push_back(row);
             break;
         default:
             break;
         }
         FlashList();
-        this->ui->listView->setCurrentRow(max(row - 1, 0));
+        this->ui->listView->setCurrentRow(std::min(row, this->ui->listView->count()-1));
     }
 }
 
@@ -273,6 +290,10 @@ void Settings::on_listView_currentRowChanged(int currentRow)
     }
     else if (tab == 3) //textFormat
     {
+        if (currentRow >= pParent->windowsettings.msTextFormat.size()) {
+            this->ui->listView->setCurrentRow(currentRow - 1);
+            return;
+        }
         TextFormat& textFormat = pParent->windowsettings.msTextFormat[currentRow];
         this->ui->lineEdit_color->setText(QString::fromStdString(ColorRefToHexString(textFormat.color)));
         this->ui->lineEdit_textFormat->setText(QString::fromStdString(textFormat.msTextFormat));
@@ -439,8 +460,10 @@ COLORREF Settings::HexStringToColorRef(const std::string& input)
 
 void Settings::on_pushButton_addFormat_clicked()
 {
+    int row = this->ui->listView->currentRow();
     TextFormat format = ReadTextFormatFromUI();
     pParent->windowsettings.msTextFormat.push_back(format);
+    pParent->windowsettings.changedItems.push_back(pParent->windowsettings.msTextFormat.size()-1);
     FlashList();
     this->ui->listView->setCurrentRow(this->ui->listView->count()-1);
 }
@@ -453,6 +476,7 @@ void Settings::on_pushButton_changeFormat_clicked()
     int row = this->ui->listView->currentRow();
     FlashList();
     this->ui->listView->setCurrentRow(row);
+    pParent->windowsettings.changedItems.push_back(row);
 }
 
 
@@ -467,12 +491,15 @@ void Settings::on_pushButton_applySettings_clicked()
 void Settings::on_pushButton_cancelChange_clicked()
 {
     pParent->windowsettings.mGetWindowSettings();
+    pParent->windowsettings.changedItems.clear();
     FlashList();
 }
 
 
 void Settings::on_pushButton_saveChange_clicked()
 {
+    pParent->windowsettings.changedItems.clear();
     pParent->windowsettings.save();
+    FlashList();
 }
 

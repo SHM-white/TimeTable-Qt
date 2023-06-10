@@ -15,7 +15,7 @@ About::About(QWidget *parent) :
     p->windowsettings.mGetTextItem("About", about);
     QString qabout{ QString::fromStdString(about) };
     this->ui->textEdit->setText(qabout);
-    this->ui->label_3->setText(QString::fromStdString(std::format("v{}.{}.{}-SE", p->windowsettings.minVersion[0], p->windowsettings.minVersion[1], p->windowsettings.minVersion[2])));
+    this->ui->label_3->setText(QString::fromStdString(std::format("v{}.{}.{}", p->windowsettings.currentVersion[0], p->windowsettings.currentVersion[1], p->windowsettings.currentVersion[2])));
 }
 
 About::~About()

@@ -1,4 +1,4 @@
-#ifndef SHOWALLLESSONS_H
+﻿#ifndef SHOWALLLESSONS_H
 #define SHOWALLLESSONS_H
 
 #include <QDialog>

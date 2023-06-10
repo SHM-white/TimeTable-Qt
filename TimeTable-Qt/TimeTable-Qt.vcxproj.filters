@@ -73,6 +73,9 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="todayalllessons.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="config.json" />
@@ -80,6 +83,7 @@
     <None Include="README.md" />
     <None Include="TimeTable-Qt.pro" />
     <None Include="TimeTable-Qt.pri" />
+    <None Include="TimeTable-Qt-Make-Setup.iss" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CSVEditor.h">
@@ -137,6 +141,9 @@
     <QtMoc Include="settings.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="todayalllessons.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="importfromfile.ui">
@@ -155,6 +162,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="settings.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="todayalllessons.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

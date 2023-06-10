@@ -92,7 +92,7 @@ int WindowSettings::save(const std::string& ConfigPath)
 	}
 	Settings["BackGroundImg"] = msBackGroundImg;
 	Settings["TextFormat"].clear();
-	for (auto format : msTextFormat) {
+	for (const auto& format : msTextFormat) {
 		Settings["TextFormat"].append(format.GetJsonValue());
 	}
 	Settings["AcrylicEffect"] = bAcrylicEffect;
@@ -126,13 +126,6 @@ int WindowSettings::mGetTextItem(const std::string& Item, std::string& input)
 	in.close();
 	return 1;
 }
-
-std::vector<int> WindowSettings::mGetChangedItem()
-{
-
-	return changedItems;
-}
-
 
 const std::string WindowSettings::mChangeConfigPath(const std::string& path)
 {

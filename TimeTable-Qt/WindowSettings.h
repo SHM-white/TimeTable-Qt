@@ -14,6 +14,7 @@
 class WindowSettings {
 public:
 	const int minVersion[3]{ 2,3,0 };
+	const int currentVersion[3]{ 2,4,0 };
 	WindowSettings(const std::string path)
 		:msSettingPath{ path }
 	{
@@ -26,7 +27,6 @@ public:
 	int save();
 	int save(const std::string& ConfigPath);
 	int mGetTextItem(const std::string& Item, std::string& input);	
-	std::vector<int> mGetChangedItem();
 	const std::string mChangeConfigPath(const std::string& path);
 	int miWindowHeight{ 120 };
 	int miWindowWeight{ 250 };
@@ -44,6 +44,5 @@ public:
 	bool Utf8{ true };
 	tm mCountDownDay;
 	std::string msSettingPath{ TEXT(".\\Config.json") };
-private:
 	std::vector<int> changedItems;
 };

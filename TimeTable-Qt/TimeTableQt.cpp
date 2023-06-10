@@ -8,6 +8,7 @@
 #include "showmoreinfo.h"
 #include "changeconfigpath.h"
 #include "settings.h"
+#include "todayalllessons.h"
 #include <string>
 #include <windef.h>
 #include <QDialog>
@@ -43,7 +44,12 @@ TimeTableQt::TimeTableQt(QWidget *parent)
     flags = windowFlags();
     setWindowFlags(flags | Qt::WindowStaysOnTopHint);
     mInitializeWindow();
-    
+    {
+        QString application_name = QApplication::applicationName();
+        QSettings settings{ AUTO_RUN_KEY, QSettings::NativeFormat };
+        bool autoBoot = settings.value(application_name, "").toBool();
+        this->ui.actionBootAtPowerOn->setChecked(autoBoot);
+    }
 }
 
 TimeTableQt::~TimeTableQt()
@@ -283,16 +289,24 @@ void TimeTableQt::on_actionSettings_triggered()
 
 void TimeTableQt::on_actionBootAtPowerOn_triggered()
 {
-    QString application_name = QApplication::applicationName();//获取应用名称
-    QSettings* settings = new QSettings(AUTO_RUN_KEY, QSettings::NativeFormat);//创建QSetting, 需要添加QSetting头文件
+    QString application_name = QApplication::applicationName();
+    
+    std::unique_ptr<QSettings> settings = std::make_unique<QSettings>(AUTO_RUN_KEY, QSettings::NativeFormat);
 
     if (this->ui.actionBootAtPowerOn->isChecked()) {
-        QString application_path = QApplication::applicationFilePath();//找到应用的目录
-        settings->setValue(application_name, application_path.replace("/", "\\"));//写入注册表
+        QString application_path = QApplication::applicationFilePath();
+        settings->setValue(application_name, application_path.replace("/", "\\"));
     }
     else
     {
-        settings->remove(application_name);		//从注册表中删除
+        settings->remove(application_name);		
     }
+}
+
+
+void TimeTableQt::on_actionshowTodayAll_triggered()
+{
+    TodayAllLessons* window = new TodayAllLessons();
+    window->show();
 }
 

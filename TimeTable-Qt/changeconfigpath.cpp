@@ -1,4 +1,4 @@
-#include "changeconfigpath.h"
+﻿#include "changeconfigpath.h"
 #include "ui_changeconfigpath.h"
 #include "TimeTableQt.h"
 #include <qfiledialog.h>

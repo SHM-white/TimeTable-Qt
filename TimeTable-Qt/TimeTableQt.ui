@@ -75,6 +75,8 @@
     <addaction name="actionBootAtPowerOn"/>
     <addaction name="actionminimize"/>
     <addaction name="separator"/>
+    <addaction name="actionshowTodayAll"/>
+    <addaction name="separator"/>
     <addaction name="actionexit"/>
    </widget>
    <addaction name="menuwindow"/>
@@ -151,6 +153,11 @@
    </property>
    <property name="text">
     <string>开机自启动</string>
+   </property>
+  </action>
+  <action name="actionshowTodayAll">
+   <property name="text">
+    <string>显示所有</string>
    </property>
   </action>
  </widget>

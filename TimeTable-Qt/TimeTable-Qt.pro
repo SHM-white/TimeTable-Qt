@@ -22,7 +22,8 @@ SOURCES += \
     mainwindow.cpp \
     settings.cpp \
     showalllessons.cpp \
-    showmoreinfo.cpp
+    showmoreinfo.cpp \
+    todayalllessons.cpp
 
 HEADERS += \
     CSVEditor.h \
@@ -42,7 +43,8 @@ HEADERS += \
     settings.h \
     showalllessons.h \
     showmoreinfo.h \
-    targetver.h
+    targetver.h \
+    todayalllessons.h
 
 FORMS += \
     TimeTableQt.ui \
@@ -52,7 +54,8 @@ FORMS += \
     mainwindow.ui \
     settings.ui \
     showalllessons.ui \
-    showmoreinfo.ui
+    showmoreinfo.ui \
+    todayalllessons.ui
 
 TRANSLATIONS += \
     TimeTable-Qt_zh_CN.ts

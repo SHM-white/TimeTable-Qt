@@ -119,6 +119,7 @@
     <ClCompile Include="settings.cpp" />
     <ClCompile Include="showalllessons.cpp" />
     <ClCompile Include="showmoreinfo.cpp" />
+    <ClCompile Include="todayalllessons.cpp" />
     <ClCompile Include="WindowSettings.cpp" />
     <QtRcc Include="TimeTableQt.qrc" />
     <QtUic Include="about.ui" />
@@ -133,11 +134,13 @@
     <ClCompile Include="TextFormat.cpp" />
     <ClCompile Include="Timetable.cpp" />
     <ClCompile Include="TimeTableQt.cpp" />
+    <QtUic Include="todayalllessons.ui" />
   </ItemGroup>
   <ItemGroup>
     <None Include="config.json" />
     <None Include="Lessons.json" />
     <None Include="README.md" />
+    <None Include="TimeTable-Qt-Make-Setup.iss" />
     <None Include="TimeTable-Qt.pri" />
     <None Include="TimeTable-Qt.pro" />
   </ItemGroup>
@@ -153,6 +156,7 @@
     <QtMoc Include="settings.h" />
     <ClInclude Include="TextFormat.h" />
     <ClInclude Include="Timetable.h" />
+    <QtMoc Include="todayalllessons.h" />
     <ClInclude Include="ToWString.h" />
     <ClInclude Include="WindowSettings.h" />
   </ItemGroup>
