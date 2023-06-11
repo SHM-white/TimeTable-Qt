@@ -46,7 +46,7 @@ jobs:
         archives: 'qtbase qtsvg'
         cache: 'false'
         cache-key-prefix: 'install-qt-action'
-        setup-python: 'true'
+        setup-python: 'false'
         tools: 'tools_ifw tools_qtcreator,qt.tools.qtcreator'
         set-env: 'true'
         tools-only: 'false'
