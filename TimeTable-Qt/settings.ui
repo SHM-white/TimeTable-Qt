@@ -71,7 +71,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>3</number>
          </property>
          <widget class="QWidget" name="tab_lessons">
           <attribute name="title">
@@ -600,9 +600,6 @@
               </layout>
              </item>
              <item>
-              <widget class="QLineEdit" name="lineEdit_textFormat"/>
-             </item>
-             <item>
               <layout class="QHBoxLayout" name="horizontalLayout_11">
                <item>
                 <widget class="QSpinBox" name="spinBox_FontSize">
@@ -617,37 +614,79 @@
               </layout>
              </item>
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_25">
+              <layout class="QHBoxLayout" name="horizontalLayout_12">
                <item>
-                <widget class="QRadioButton" name="radioButton_time">
-                 <property name="text">
-                  <string>时间</string>
-                 </property>
-                 <property name="checked">
-                  <bool>true</bool>
-                 </property>
-                </widget>
+                <layout class="QVBoxLayout" name="verticalLayout_12">
+                 <item>
+                  <widget class="QListWidget" name="listWidget"/>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_13">
+                   <item>
+                    <widget class="QPushButton" name="pushButton">
+                     <property name="text">
+                      <string>PushButton</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="pushButton_2">
+                     <property name="text">
+                      <string>PushButton</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
                </item>
                <item>
-                <widget class="QRadioButton" name="radioButton_lesson">
-                 <property name="text">
-                  <string>当前课程</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QRadioButton" name="radioButton_countDownDay">
-                 <property name="text">
-                  <string>倒计时</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QRadioButton" name="radioButton_info">
-                 <property name="text">
-                  <string>值日信息</string>
-                 </property>
-                </widget>
+                <layout class="QVBoxLayout" name="verticalLayout_11">
+                 <item>
+                  <widget class="QLineEdit" name="lineEdit_textFormat"/>
+                 </item>
+                 <item>
+                  <widget class="QRadioButton" name="radioButton_time">
+                   <property name="text">
+                    <string>时间</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QRadioButton" name="radioButton_lesson">
+                   <property name="text">
+                    <string>当前课程</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QRadioButton" name="radioButton_countDownDay">
+                   <property name="text">
+                    <string>倒计时</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QRadioButton" name="radioButton_info">
+                   <property name="text">
+                    <string>值日信息</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QRadioButton" name="radioButton_weather">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="text">
+                    <string>天气</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </item>
               </layout>
              </item>
@@ -669,7 +708,7 @@
                <item>
                 <widget class="QPushButton" name="pushButton_addFormat">
                  <property name="text">
-                  <string>添加</string>
+                  <string>新组</string>
                  </property>
                 </widget>
                </item>

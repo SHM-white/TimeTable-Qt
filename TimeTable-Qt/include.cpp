@@ -4,8 +4,8 @@ bool Json::ChangeValue(const std::string& Item, const Json::Value& value, const 
 {
 	Json::Value root = GetRootJsonValue(filePath);
 	root[Item] = value;
-
-    return false;
+	SaveJson(filePath, root);
+    return true;
 }
 
 Json::Value Json::GetRootJsonValue(const std::string& TargetPath)
