@@ -18,7 +18,6 @@ public:
 	WindowSettings(const std::string path)
 		:msSettingPath{ path }
 	{
-		msLessonNull = std::format(TEXT("找不到{}"), msSettingPath);
 		msTextFormat.push_back(TextFormat());
 		mGetWindowSettings();
 	};
@@ -27,6 +26,8 @@ public:
 	int save();
 	int save(const std::string& ConfigPath);
 	int mGetTextItem(const std::string& Item, std::string& input);	
+	static int mGetTextItem(const std::string& Item, std::string& input, const std::string& filePath);
+	static std::string mGetTextItem(const std::string& Item, const std::string& filePath, int);
 	const std::string mChangeConfigPath(const std::string& path);
 	int miWindowHeight{ 120 };
 	int miWindowWeight{ 250 };

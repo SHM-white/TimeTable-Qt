@@ -113,7 +113,12 @@ int WindowSettings::save(const std::string& ConfigPath)
 //获取配置文件中某一项文本
 int WindowSettings::mGetTextItem(const std::string& Item, std::string& input)
 {
-	std::ifstream in(msSettingPath, std::ios::in);
+	return mGetTextItem(Item,input,msSettingPath);
+}
+
+int WindowSettings::mGetTextItem(const std::string& Item, std::string& input, const std::string& filePath)
+{
+	std::ifstream in(filePath, std::ios::in);
 	if (!in.is_open())
 	{
 		return 0;
@@ -125,7 +130,14 @@ int WindowSettings::mGetTextItem(const std::string& Item, std::string& input)
 		input = Text.asString();
 	}
 	in.close();
-	return 1;
+	return 0;
+}
+
+std::string WindowSettings::mGetTextItem(const std::string& Item, const std::string& filePath, int)
+{
+	std::string value;
+	mGetTextItem(Item, value, filePath);
+	return value;
 }
 
 const std::string WindowSettings::mChangeConfigPath(const std::string& path)
@@ -134,6 +146,7 @@ const std::string WindowSettings::mChangeConfigPath(const std::string& path)
 		return "";
 	}
 	std::string origin{ msSettingPath };
+	Json::ChangeValue("ConfigFile", path, DEFAULT_CONFIG_PATH);
 	msSettingPath = path;
 	return origin;
 }

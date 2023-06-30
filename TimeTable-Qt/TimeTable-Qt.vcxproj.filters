@@ -76,6 +76,9 @@
     <ClCompile Include="todayalllessons.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="include.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="config.json" />

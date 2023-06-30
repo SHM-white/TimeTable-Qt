@@ -42,7 +42,6 @@ public:
 	std::string mGetCurrentLesson(const std::string& LessonNull);
 	std::string mReplacePath(const std::string& Path);
 	Lesson mGetLesson(const std::string& week, int index);
-	Json::Value GetRootJsonValue(const std::string& TargetPath);
 	static std::string mGetCurrentTime(const std::string& TextFormat);
 	static int mGetCurrentTime(tm& tmTime);
 	const std::string& mGetLessonInfoPath();

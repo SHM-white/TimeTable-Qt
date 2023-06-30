@@ -17,7 +17,7 @@ int TimeTable::mAddLesson(const std::string& week, const std::string& Lesson, co
 	if (!((bool)week.size() && (bool)Lesson.size() && (bool)sBegin.size() && (bool)sEnd.size() && (bool)TargetFilePath.size())) {
 		return 0;
 	}
-	Json::Value root = GetRootJsonValue(TargetFilePath);
+	Json::Value root = Json::GetRootJsonValue(TargetFilePath);
 	Json::Value Current;
 	Current.append(Lesson);
 	Current.append(sBegin);
@@ -66,6 +66,7 @@ int TimeTable::mHHMMToMin(int input)
 std::string TimeTable::mReplacePath(const std::string& Path)
 {
 	std::string old = mLessonInfoPath;
+	Json::ChangeValue("LessonInfoFile", Path, DEFAULT_CONFIG_PATH);
 	mLessonInfoPath = Path;
 	return old;
 }
@@ -82,18 +83,7 @@ Lesson TimeTable::mGetLesson(const std::string& week, int index)
 	const Json::Value Lessons = root[week]["Lessons"][index];
 	return 	Lesson(week, Lessons[0].asString(), atoi(Lessons[1].asString().c_str()), atoi(Lessons[2].asString().c_str()));
 }
-Json::Value TimeTable::GetRootJsonValue(const std::string& TargetPath)
-{
-	Json::Reader reader;
-	Json::Value root;
-	std::ifstream in(TargetPath, std::ios::in);
-	if (!in.is_open())
-	{
-		return 0;
-	};
-	reader.parse(in, root);
-	return root;
-}
+
 //获取所有的课程并返回至传入的数组
 int TimeTable::mGetLesson(std::vector<std::string>& input)
 {
@@ -299,7 +289,7 @@ int TimeTable::deleteInfo(size_t index, const std::string& day)
 }
 int TimeTable::deleteInfo(size_t index, const std::string& day, const std::string& lessonPath)
 {
-	Json::Value root = GetRootJsonValue(lessonPath);
+	Json::Value root = Json::GetRootJsonValue(lessonPath);
 	std::vector<std::string> vectorInfos;
 	Json::Value& valueInfos = root[day]["Infos"];
 	for (const auto& a : valueInfos) {
@@ -343,14 +333,9 @@ int TimeTable::changeLesson(size_t index, const std::string& day, const Lesson& 
 }
 int TimeTable::SaveJson(const std::string& TargetPath, const Json::Value& root)
 {
-	std::fstream os(TargetPath, std::ios::out | std::ios::trunc);
-	if (!os.is_open()) { return 0; }
-
-	Json::StyledWriter sw;
-	os << sw.write(root);
-	os.close();
+	int result = Json::SaveJson(TargetPath, root);
 	mReloadLesson();
-	return 1;
+	return result;
 }
 int TimeTable::mGetCurrentLesson(int)
 {
@@ -358,7 +343,7 @@ int TimeTable::mGetCurrentLesson(int)
 	std::string timeCurrentTime{ mGetCurrentTime("%H%M") };
 	int iCurrentTime = mHHMMToMin(atoi(timeCurrentTime.c_str()));
 	if (!((CurrentLesson.mGetBeginTime() <= iCurrentTime) && (iCurrentTime <= CurrentLesson.mGetEndTime()))) {
-		Json::Value root = GetRootJsonValue(mLessonInfoPath);
+		Json::Value root = Json::GetRootJsonValue(mLessonInfoPath);
 		std::string week{ mGetCurrentTime("%a") };
 		const Json::Value Lessons = root[week]["Lessons"];
 		for (unsigned int i = 0; i < Lessons.size(); ++i) {
@@ -441,7 +426,7 @@ int TimeTable::mGetLesson(std::vector<std::string>& input, const std::string& we
 
 int TimeTable::mGetLesson(std::vector<Lesson>& input, const std::string& week)
 {
-	Json::Value root = GetRootJsonValue(mLessonInfoPath);
+	Json::Value root = Json::GetRootJsonValue(mLessonInfoPath);
 	const Json::Value Lessons = root[week]["Lessons"];
 	for (unsigned int i = 0; i < Lessons.size(); ++i) {
 		Lesson lesson{ week, Lessons[i][0].asString(), atoi(Lessons[i][1].asString().c_str()), atoi(Lessons[i][2].asString().c_str()) };

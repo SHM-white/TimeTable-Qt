@@ -108,6 +108,7 @@ std::string TimeTableQt::translateUtfToAnsi(const std::string& input)
 
 void TimeTableQt::updateTexts()
 {
+
 }
 
 void TimeTableQt::ShowShadow()

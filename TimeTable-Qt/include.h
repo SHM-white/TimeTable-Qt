@@ -25,7 +25,14 @@
 #include <QDesktopServices>
 #include <qmessagebox.h>
 #include <exception>
+#include "include\json\json.h"
 
 
 #define DEFAULT_CONFIG_PATH "config.json"
 #define DEFAULT_LESSONINFO_PATH "Lessons.json"
+
+namespace Json {
+	bool ChangeValue(const std::string& Item,const Json::Value& value,const std::string& filePath);
+	Json::Value GetRootJsonValue(const std::string& TargetPath);
+	int SaveJson(const std::string& TargetPath, const Json::Value& root);
+}
