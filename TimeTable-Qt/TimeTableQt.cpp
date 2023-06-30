@@ -11,14 +11,7 @@
 #include "changeconfigpath.h"
 #include "settings.h"
 #include "todayalllessons.h"
-#include <string>
-#include <windef.h>
-#include <QDialog>
-#include <QMouseEvent>
-#include <QPainter>
-#include <QPixmap>
-#include <qsettings.h>
-#include <windows.h>
+#include "include.h"
 
 #if EXPERENCE
 #ifdef Q_OS_WIN
@@ -40,9 +33,12 @@ TimeTableQt::TimeTableQt(QWidget *parent)
 {
     ui.setupUi(this);
     
-    time_calendar = new QTimer(this);
-    connect(time_calendar, SIGNAL(timeout()), this, SLOT(UpdateWindow()));
-    time_calendar->start(500);
+    time_calendar_text = new QTimer(this);
+    time_calendar_window = new QTimer(this);
+    connect(time_calendar_window, SIGNAL(timeout()), this, SLOT(update()));
+    connect(time_calendar_text, SIGNAL(timeout()), this, SLOT(updateTexts()));
+    time_calendar_window->start((int)100/6);
+    time_calendar_text->start(500);
     setWindowFlags(Qt::WindowMinMaxButtonsHint | Qt::FramelessWindowHint);
     setAttribute(Qt::WA_TranslucentBackground);
     flags = windowFlags();
@@ -58,7 +54,8 @@ TimeTableQt::TimeTableQt(QWidget *parent)
 
 TimeTableQt::~TimeTableQt()
 {
-    delete time_calendar;
+    delete time_calendar_window;
+    delete time_calendar_text;
 }
 
 bool TimeTableQt::mInitializeWindow()
@@ -105,6 +102,12 @@ std::string TimeTableQt::translateUtfToAnsi(const std::string& input)
 {
     QString tmp = QString::fromUtf8(input);
     return tmp.toLocal8Bit().data();
+}
+
+
+
+void TimeTableQt::updateTexts()
+{
 }
 
 void TimeTableQt::ShowShadow()

@@ -1,11 +1,9 @@
 ﻿#include "WindowSettings.h"
 #include "Timetable.h"
-#include <Windows.h>
-#include <fstream>
-#include <vector>
+#include "include.h"
 #include "include\json\json.h"
 #include<format>
-#include<strsafe.h>
+
 
 //WindowSettings类的实现函数
 //初始化时获取设置
@@ -47,8 +45,7 @@ int WindowSettings::mGetWindowSettings()
 		msBackGroundImg = Settings["BackGroundImg"].asString();
 		msTextFormat.clear();
 		for (int i = 0; i < (int)Settings["TextFormat"].size(); i++) {
-			Json::Value Format = Settings["TextFormat"][i];
-			TextFormat textformat(Format[2][0].asInt(), Format[2][1].asInt(), Format[3].asInt(), Format[1].asString(), Format[0].asString(), RGB(Format[4][0].asInt(), Format[4][1].asInt(), Format[4][2].asInt()),(TextType)Format[5].asInt());
+			TextFormat textformat(Settings["TextFormat"][i]);
 			msTextFormat.push_back(textformat);
 		}
 		miCountDownDayInLine = Settings["CountDownDayInLine"].asInt();
@@ -59,9 +56,6 @@ int WindowSettings::mGetWindowSettings()
 		mCountDownDay.tm_min = Settings["CountDownDay"][4].asInt();
 		mCountDownDay.tm_sec = Settings["CountDownDay"][5].asInt();
 		bAcrylicEffect = Settings["AcrylicEffect"].asBool();
-	}
-	else {
-		msTextFormat.push_back(TextFormat(0, 0, 10, "微软雅黑", "error", 0x000000, TextType::CurrentTime));
 	}
 	return 1;
 }

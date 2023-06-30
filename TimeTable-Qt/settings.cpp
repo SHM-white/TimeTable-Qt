@@ -165,7 +165,7 @@ void Settings::on_pushButton_delete_clicked()
             pParent->timetable.deleteLesson(this->ui->listView->currentIndex().row(), std::string(this->ui->comboBox_LessonDays->currentText().toStdString()));
             break;
         case 1:
-            pParent->timetable.deleteInfo(this->ui->listView->currentIndex().row(), std::string(this->ui->comboBox_LessonDays->currentText().toStdString()));
+            pParent->timetable.deleteInfo(this->ui->listView->currentIndex().row(), std::string(this->ui->comboBox_InfoDays->currentText().toStdString()));
             break;
         case 3:
             pParent->windowsettings.msTextFormat.erase(pParent->windowsettings.msTextFormat.begin() + row);

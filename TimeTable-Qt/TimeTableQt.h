@@ -1,9 +1,7 @@
 ﻿#pragma once
 //#pragma execution_character_set("utf-8")
 
-#include <QtWidgets/QWidget>
-#include <qtimer.h>
-#include <qpixmap.h>
+#include "include.h"
 #include "ui_TimeTableQt.h"
 #include "WindowSettings.h"
 //#include "todayalllessons.h"
@@ -27,10 +25,12 @@ private:
     QPixmap pic;
     int timeCounter{ 0 };
     bool m_bDrag{ false };
-    QTimer* time_calendar;
+    QTimer* time_calendar_window;
+    QTimer* time_calendar_text;
     QPoint mouseStartPoint;
     QPoint windowTopLeftPoint;
     QPoint MenuRD;
+    void updateTexts();
     void ShowShadow();
     void closeEvent(QCloseEvent* event) override;
     void paintEvent(QPaintEvent *event) override;

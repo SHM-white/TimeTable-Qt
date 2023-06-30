@@ -1,18 +1,9 @@
-﻿#include <ctime>
+﻿#include "include.h"
 #include "Timetable.h"
-#include <Windows.h>
-#include <fstream>
-#include <vector>
-#include <strsafe.h>
 #include "include\json\json.h"
-#include <format>
-#include <algorithm>
-#include <ranges>
 #include "CSVEditor.h"
 #include "Lesson.h"
-#include <stdlib.h>
-#include <functional>
-#include <regex>
+
 
 //TimeTable类的实现函数
 //添加课程的4参数重载函数，兼容旧代码（其实就是懒），默认写入成员变量保存的路径

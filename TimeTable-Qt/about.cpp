@@ -1,10 +1,7 @@
 ﻿#include "about.h"
 #include "ui_about.h"
 #include "TimeTableQt.h"
-#include <QDesktopServices>
-#include <qmessagebox.h>
-#include <exception>
-
+#include "include.h"
 About::About(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::About)

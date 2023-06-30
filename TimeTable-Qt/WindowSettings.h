@@ -8,7 +8,7 @@
 #include"TextFormat.h"
 #include "Timetable.h"
 
-#include "ToWString.h"
+//#include "ToWString.h"
 
 //WindowSettings类，用于保存设置，包含与窗口绘图有关函数
 class WindowSettings {
