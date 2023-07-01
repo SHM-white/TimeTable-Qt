@@ -1,9 +1,9 @@
 ﻿#pragma once
 #include <QtWidgets/QWidget>
 #include <qtimer.h>
-#include <qpixmap.h>
 #include <string>
-#include <windef.h>
+//#include <windef.h>
+
 #include <QDialog>
 #include <QMouseEvent>
 #include <QPainter>
@@ -17,12 +17,9 @@
 #include <format>
 #include <algorithm>
 #include <ranges>
-#include <Windows.h>
 #include <fstream>
-#include <vector>
 #include <strsafe.h>
 #include <ctime>
-#include <string>
 #include <QDesktopServices>
 #include <qmessagebox.h>
 #include <exception>
@@ -32,7 +29,9 @@
 #include <qfiledialog.h>
 #include <qcolor.h>
 #include <qcolordialog.h>
-
+#include <shellapi.h>
+#include <shlobj.h>
+#pragma  comment(lib, "shell32.lib")
 
 #define DEFAULT_CONFIG_PATH "config.json"
 #define DEFAULT_LESSONINFO_PATH "Lessons.json"

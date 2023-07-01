@@ -30,7 +30,7 @@ private:
     QPoint mouseStartPoint;
     QPoint windowTopLeftPoint;
     QPoint MenuRD;
-    void updateTexts();
+    
     void ShowShadow();
     void closeEvent(QCloseEvent* event) override;
     void paintEvent(QPaintEvent *event) override;
@@ -38,7 +38,8 @@ private:
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
 private slots:
-    void UpdateWindow();
+    void updateTexts();
+    void updateWindow();
     void on_actionabout_triggered();
     void on_actionexit_triggered();
     void on_actioninport_triggered();

@@ -1,17 +1,17 @@
 {
-   "ConfigFile":"config.json",
-   "LessonInfoFile" : "Lessons.json",
-   "version":[2,4,0],
    "About" : "该程序的目的是取代每天写在黑板上的课表和值日表等信息，可以放在教室的电脑上，也可网课期间自己使用\r\n如有bug或建议请到GitHub反馈",
+   "ConfigFile" : "config.json",
+   "LessonInfoFile" : "Lessons.json",
    "Settings" : {
       "Window" : {
          "AcrylicEffect" : false,
          "BackGroundColor" : [ 255, 255, 255, 50 ],
          "BackGroundImg" : "BackGround.png",
-         "ImgAsBackGround":true,
-         "CountDownDay" : [ 2024, 6, 7, 0, 9, 0 ],
+         "CountDownDay" : [ 2024, 6, 7, 0, 0, 0 ],
          "CountDownDayInLine" : 4,
+         "ImgAsBackGround" : true,
          "LessonInLine" : 2,
+         "LessonInfoFile" : "",
          "LessonNull" : "",
          "TextFormat" : [
             [
@@ -20,7 +20,7 @@
                20,
                [ 0, 0, 0 ],
                [
-                  ["%a-%H:%M:%S",0]
+                  [ "", 0 ]
                ]
             ],
             [
@@ -28,22 +28,19 @@
                [ 4, 48 ],
                20,
                [ 0, 0, 0 ],
-               [
-                  ["当前课程：",1]
-               ]
+               null
             ],
             [
                "微软雅黑",
                [ 12, 31 ],
                20,
                [ 0, 0, 0 ],
-               [
-                  ["距离高考%03d天%02d小时",2]
-               ]
+               null
             ]
          ],
-         "WindowLocation" : [ 1100, 40 , 20 , 20 ],
+         "WindowLocation" : [ 900, 40, 20, 20 ],
          "WindowSize" : [ 230, 55 ]
       }
-   }
+   },
+   "version" : [ 2, 4, 0 ]
 }

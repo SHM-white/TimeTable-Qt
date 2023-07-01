@@ -427,6 +427,10 @@ int TimeTable::mGetLesson(std::vector<std::string>& input, const std::string& we
 int TimeTable::mGetLesson(std::vector<Lesson>& input, const std::string& week)
 {
 	Json::Value root = Json::GetRootJsonValue(mLessonInfoPath);
+	if (root[week].isNull()) {
+		input.push_back(Lesson("null", 0, 2400));
+		return 0;
+	}
 	const Json::Value Lessons = root[week]["Lessons"];
 	for (unsigned int i = 0; i < Lessons.size(); ++i) {
 		Lesson lesson{ week, Lessons[i][0].asString(), atoi(Lessons[i][1].asString().c_str()), atoi(Lessons[i][2].asString().c_str()) };

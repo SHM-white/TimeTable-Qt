@@ -24,11 +24,14 @@ public:
 	TextFormat(const Json::Value& value);
 	TextFormat() = default;
 	Json::Value GetJsonValue() const;
+	TextItem getCurrentText() const;
+	bool update();
 	POINT mpTextLocation{ 0,0 };
 	int miTextSize{ 20 };
 	std::vector<TextItem> Texts;
 	std::string msFontName{ "Consolas" };
 	COLORREF color{ 0x00000000 };
+	int updateCounter{ 0 };
 private:
 	
 };

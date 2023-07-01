@@ -134,6 +134,10 @@ void Settings::FlashList()
 void Settings::FlashTextsList()
 {
     int row = this->ui->listView->currentRow();
+    if (row < 0) {
+        return;
+    }
+    this->ui->listWidget_textItems->clear();
     for (auto& i : pParent->windowsettings.msTextFormat[row].Texts) {
         this->ui->listWidget_textItems->addItem(QString::fromStdString(i.text));
     }
@@ -390,7 +394,7 @@ void Settings::on_pushButton_chooseColor_clicked()
     }
 }
 
-TextItem Settings::ReadTextFormatFromUI()
+TextItem Settings::ReadTextsFromUI()
 {
     TextType type{ 0 };
     if (this->ui->radioButton_time->isChecked()) {
@@ -410,6 +414,11 @@ TextItem Settings::ReadTextFormatFromUI()
     format.type = type;
     return format;
 }
+
+//TextFormat Settings::ReadFormatFromUI()
+//{
+//    return TextFormat();
+//}
 
 std::string Settings::ColorRefToHexString(COLORREF& color)
 {
@@ -432,8 +441,7 @@ COLORREF Settings::HexStringToColorRef(const std::string& input)
 void Settings::on_pushButton_addFormat_clicked()
 {
     int row = this->ui->listView->currentRow();
-    TextFormat format = ReadTextFormatFromUI();
-    pParent->windowsettings.msTextFormat.push_back(format);
+    pParent->windowsettings.msTextFormat.push_back(TextFormat());
     pParent->windowsettings.changedItems.push_back(pParent->windowsettings.msTextFormat.size()-1);
     FlashList();
     this->ui->listView->setCurrentRow(this->ui->listView->count()-1);
@@ -442,8 +450,8 @@ void Settings::on_pushButton_addFormat_clicked()
 
 void Settings::on_pushButton_changeFormat_clicked()
 {
-    TextFormat format = ReadTextFormatFromUI();
-    pParent->windowsettings.msTextFormat[this->ui->listView->currentRow()] = format;
+    TextFormat& format = pParent->windowsettings.msTextFormat[this->ui->listView->currentRow()];
+    format.Texts[ui->listWidget_textItems->currentRow()] = ReadTextsFromUI();
     int row = this->ui->listView->currentRow();
     pParent->windowsettings.changedItems.push_back(row);
     FlashList();
@@ -477,7 +485,12 @@ void Settings::on_pushButton_saveChange_clicked()
 
 void Settings::on_pushButton_addTextItem_clicked()
 {
-
+    int row = this->ui->listView->currentRow();
+    pParent->windowsettings.msTextFormat[row].Texts.push_back(ReadTextsFromUI());
+    this->ui->listWidget_textItems->setCurrentRow(this->ui->listWidget_textItems->count() - 1);
+    pParent->windowsettings.changedItems.push_back(row);
+    FlashList();
+    this->ui->listView->setCurrentRow(row);
 }
 
 
@@ -488,8 +501,11 @@ void Settings::on_pushButton_deleteTextItem_clicked()
 
 void Settings::on_listWidget_textItems_currentRowChanged(int currentRow)
 {
+    if (currentRow < 0) {
+        return;
+    }
     auto textItem = pParent->windowsettings.msTextFormat[this->ui->listView->currentRow()];
-    ui->lineEdit_textFormat->setText(QString::fromStdString(.Texts[currentRow].text));
+    ui->lineEdit_textFormat->setText(QString::fromStdString(textItem.Texts[currentRow].text));
     switch (pParent->windowsettings.msTextFormat[ui->listView->currentRow()].Texts[currentRow].type)
     {
     case TextType::CurrentTime:

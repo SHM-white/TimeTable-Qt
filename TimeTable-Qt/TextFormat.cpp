@@ -31,9 +31,26 @@ Json::Value TextFormat::GetJsonValue() const
 	formatItem.append(miTextSize);
 	formatItem.append(valueColor);
 	formatItem.append(textItem);
-
-	formatItem.append((int)textType);
 	return formatItem;
+}
+
+TextItem TextFormat::getCurrentText() const
+{
+	if (Texts.empty()) {
+		return TextItem();
+	}
+	return Texts[updateCounter];
+}
+
+bool TextFormat::update()
+{
+	if (!(updateCounter < Texts.size())) {
+		updateCounter = 0;
+	}
+	else {
+		++updateCounter;
+	}
+	return true;
 }
 
 Json::Value TextItem::getJsonValue() const

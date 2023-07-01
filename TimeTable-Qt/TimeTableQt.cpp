@@ -35,11 +35,11 @@ TimeTableQt::TimeTableQt(QWidget *parent)
     
     time_calendar_text = new QTimer(this);
     time_calendar_window = new QTimer(this);
-    connect(time_calendar_window, SIGNAL(timeout()), this, SLOT(update()));
+    connect(time_calendar_window, SIGNAL(timeout()), this, SLOT(updateWindow()));
     connect(time_calendar_text, SIGNAL(timeout()), this, SLOT(updateTexts()));
     time_calendar_window->start((int)100/6);
     time_calendar_text->start(500);
-    setWindowFlags(Qt::WindowMinMaxButtonsHint | Qt::FramelessWindowHint);
+    setWindowFlags(Qt::WindowMinMaxButtonsHint | Qt::FramelessWindowHint | Qt::Tool | Qt::X11BypassWindowManagerHint);
     setAttribute(Qt::WA_TranslucentBackground);
     flags = windowFlags();
     setWindowFlags(flags | Qt::WindowStaysOnTopHint);
@@ -108,7 +108,24 @@ std::string TimeTableQt::translateUtfToAnsi(const std::string& input)
 
 void TimeTableQt::updateTexts()
 {
+    
+    for (auto& i : windowsettings.msTextFormat) {
+        i.update();
+    }
+}
 
+void TimeTableQt::updateWindow()
+{
+    if (timeCounter > 300) {
+        this->ui.menubar->setVisible(true);
+        timeCounter = 300;
+    }
+    else if (timeCounter < 1) {
+        this->ui.menubar->setVisible(false);
+    }
+    else {
+        timeCounter -= 1;
+    }
 }
 
 void TimeTableQt::ShowShadow()
@@ -158,7 +175,7 @@ void TimeTableQt::paintEvent(QPaintEvent*)
         painter.drawPixmap(0, 0, pic);
     }
     int i = 1;
-    for (TextFormat a : windowsettings.msTextFormat) {
+    /*for (TextFormat a : windowsettings.msTextFormat) {
         QFont font;
         painter.setPen(QColor(GetRValue(a.color),GetGValue(a.color),GetBValue(a.color)));
         font.setFamily(QString::fromStdString(a.msFontName));
@@ -185,7 +202,7 @@ void TimeTableQt::paintEvent(QPaintEvent*)
         painter.drawText(a.mpTextLocation.x, a.mpTextLocation.y, qtext);
         i++;
         
-    }
+    }*/
     painter.end();
     
 }
@@ -209,7 +226,7 @@ void TimeTableQt::mouseMoveEvent(QMouseEvent* event)
         this->move(windowTopLeftPoint + distance);
     }
     if (timeCounter < 1) {
-        timeCounter = 4;
+        timeCounter = 301;
     }
 
 }
@@ -223,19 +240,7 @@ void TimeTableQt::mouseReleaseEvent(QMouseEvent* event)
     setCursor(QCursor(Qt::ArrowCursor));
 }
 
-void TimeTableQt::UpdateWindow() {
-    if (timeCounter > 3) {
-        this->ui.menubar->setVisible(true);
-        timeCounter = 3;
-    }
-    else if (timeCounter < 1) {
-        this->ui.menubar->setVisible(false);
-    }
-    else {
-        timeCounter -= 1;
-    }
-    update();
-}
+
 
 
 void TimeTableQt::on_actionabout_triggered()
@@ -308,15 +313,18 @@ void TimeTableQt::on_actionBootAtPowerOn_triggered()
     QString application_name = QApplication::applicationName();
     
     std::unique_ptr<QSettings> settings = std::make_unique<QSettings>(AUTO_RUN_KEY, QSettings::NativeFormat);
-
-    if (this->ui.actionBootAtPowerOn->isChecked()) {
+    QMessageBox::information(this, "开发中", "之前的有bug，待修复", QMessageBox::Ok);
+   /* if (this->ui.actionBootAtPowerOn->isChecked()) {
         QString application_path = QApplication::applicationFilePath();
         settings->setValue(application_name, application_path.replace("/", "\\"));
     }
     else
     {
         settings->remove(application_name);		
-    }
+    }*/
+    //LPITEMIDLIST lp;
+    //SHGetSpecialFolderLocation(0, CSIDL_STARTUP, &lp);
+
 }
 
 
