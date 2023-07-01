@@ -24,6 +24,7 @@ public:
     void SaveSettings();
     void FlashList(int index);
     void FlashList();
+    void FlashTextsList();
 
 private slots:
     void on_tabWidget_currentChanged(int index);
@@ -70,11 +71,19 @@ private slots:
 
     void on_pushButton_saveChange_clicked();
 
+    void on_pushButton_addTextItem_clicked();
+
+    void on_pushButton_deleteTextItem_clicked();
+
+    void on_listWidget_textItems_currentRowChanged(int currentRow);
+
+    void on_pushButton_changeInfo_clicked();
+
 private:
     Ui::Settings *ui;
     TimeTableQt* pParent;
     std::string Days[7]{ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
-    TextFormat ReadTextFormatFromUI();
+    TextItem ReadTextFormatFromUI();
     static std::string ColorRefToHexString(COLORREF& color);
     static COLORREF HexStringToColorRef(const std::string& input);
 };

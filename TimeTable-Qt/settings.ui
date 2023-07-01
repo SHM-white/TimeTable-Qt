@@ -71,7 +71,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidget">
          <property name="currentIndex">
-          <number>3</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="tab_lessons">
           <attribute name="title">
@@ -361,7 +361,7 @@
                <item>
                 <widget class="QPushButton" name="pushButton_changeInfo">
                  <property name="enabled">
-                  <bool>false</bool>
+                  <bool>true</bool>
                  </property>
                  <property name="text">
                   <string>修改</string>
@@ -472,6 +472,13 @@
             </layout>
            </item>
            <item>
+            <widget class="Line" name="line_4">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
             <layout class="QVBoxLayout" name="verticalLayout_7">
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_14">
@@ -504,7 +511,21 @@
             </layout>
            </item>
            <item>
+            <widget class="Line" name="line_3">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
             <layout class="QHBoxLayout" name="horizontalLayout_23">
+             <item>
+              <widget class="QLabel" name="label_6">
+               <property name="text">
+                <string>背景图片</string>
+               </property>
+              </widget>
+             </item>
              <item>
               <widget class="QLineEdit" name="lineEdit_backGroundImg"/>
              </item>
@@ -512,6 +533,55 @@
               <widget class="QPushButton" name="pushButton_chooseBackGround">
                <property name="text">
                 <string>...</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="Line" name="line_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_25">
+             <item>
+              <widget class="QCheckBox" name="checkBox_3">
+               <property name="text">
+                <string>使用纯色背景</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="lineEdit"/>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButton">
+               <property name="text">
+                <string>选择</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_26">
+             <item>
+              <widget class="QLabel" name="label_10">
+               <property name="text">
+                <string>不透明度</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSlider" name="horizontalSlider">
+               <property name="maximum">
+                <number>255</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
                </property>
               </widget>
              </item>
@@ -614,25 +684,39 @@
               </layout>
              </item>
              <item>
+              <widget class="Line" name="line_5">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
               <layout class="QHBoxLayout" name="horizontalLayout_12">
                <item>
                 <layout class="QVBoxLayout" name="verticalLayout_12">
                  <item>
-                  <widget class="QListWidget" name="listWidget"/>
+                  <widget class="QListWidget" name="listWidget_textItems"/>
                  </item>
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_13">
                    <item>
-                    <widget class="QPushButton" name="pushButton">
+                    <widget class="QPushButton" name="pushButton_addTextItem">
                      <property name="text">
-                      <string>PushButton</string>
+                      <string>添加</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="pushButton_2">
+                    <widget class="QPushButton" name="pushButton_changeText">
                      <property name="text">
-                      <string>PushButton</string>
+                      <string>修改</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="pushButton_deleteTextItem">
+                     <property name="text">
+                      <string>删除</string>
                      </property>
                     </widget>
                    </item>
@@ -686,9 +770,26 @@
                    </property>
                   </widget>
                  </item>
+                 <item>
+                  <widget class="QRadioButton" name="radioButton_news">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="text">
+                    <string>新闻</string>
+                   </property>
+                  </widget>
+                 </item>
                 </layout>
                </item>
               </layout>
+             </item>
+             <item>
+              <widget class="Line" name="line_6">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
              </item>
              <item>
               <spacer name="verticalSpacer_5">
@@ -709,13 +810,6 @@
                 <widget class="QPushButton" name="pushButton_addFormat">
                  <property name="text">
                   <string>新组</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="pushButton_changeFormat">
-                 <property name="text">
-                  <string>修改</string>
                  </property>
                 </widget>
                </item>
@@ -795,6 +889,13 @@
               <widget class="QPushButton" name="pushButton_applyConfigPath">
                <property name="text">
                 <string>确定</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="Line" name="line_7">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
                </property>
               </widget>
              </item>

@@ -2,11 +2,8 @@
 #include "ui_settings.h"
 #include "TimeTableQt.h"
 #include "TextFormat.h"
-#include <qdatetime.h>
-#include <qmessagebox.h>
-#include <qfiledialog.h>
-#include <qcolor.h>
-#include <qcolordialog.h>
+#include "include.h"
+
 
 #undef max
 #undef min
@@ -110,7 +107,7 @@ void Settings::FlashList(int index)
         QString result;
         auto& textFormat = pParent->windowsettings.msTextFormat;
         for (const auto& a : textFormat) {
-            result = QString::fromStdString(a.msTextFormat);
+            result = QString::fromStdString(std::to_string(a.mpTextLocation.x) + "\t" + std::to_string(a.mpTextLocation.y));
             QListWidgetItem* item = new QListWidgetItem(result);
             this->ui->listView->addItem(item);
         }
@@ -132,6 +129,15 @@ void Settings::FlashList(int index)
 void Settings::FlashList()
 {
     FlashList(ui->tabWidget->currentIndex());
+}
+
+void Settings::FlashTextsList()
+{
+    int row = this->ui->listView->currentRow();
+    for (auto& i : pParent->windowsettings.msTextFormat[row].Texts) {
+        this->ui->listWidget_textItems->addItem(QString::fromStdString(i.text));
+    }
+    this->ui->listWidget_textItems->setCurrentRow(0);
 }
 
 void Settings::on_tabWidget_currentChanged(int index)
@@ -296,41 +302,12 @@ void Settings::on_listView_currentRowChanged(int currentRow)
         }
         TextFormat& textFormat = pParent->windowsettings.msTextFormat[currentRow];
         this->ui->lineEdit_color->setText(QString::fromStdString(ColorRefToHexString(textFormat.color)));
-        this->ui->lineEdit_textFormat->setText(QString::fromStdString(textFormat.msTextFormat));
+        //this->ui->lineEdit_textFormat->setText(QString::fromStdString(textFormat.));
         this->ui->fontComboBox_textFont->setCurrentText(QString::fromStdString(textFormat.msFontName));
         this->ui->spinBox_ItemLocationX->setValue((int)textFormat.mpTextLocation.x);
         this->ui->spinBox_ItemLocationY->setValue((int)textFormat.mpTextLocation.y);
         this->ui->spinBox_FontSize->setValue(textFormat.miTextSize);
-        switch (textFormat.textType)
-        {
-        case TextType::CurrentTime:
-            this->ui->radioButton_time->setChecked(true);
-            this->ui->radioButton_lesson->setChecked(false);
-            this->ui->radioButton_countDownDay->setChecked(false);
-            this->ui->radioButton_info->setChecked(false);
-            break;
-        case TextType::CurrentLesson:
-            this->ui->radioButton_time->setChecked(false);
-            this->ui->radioButton_lesson->setChecked(true);
-            this->ui->radioButton_countDownDay->setChecked(false);
-            this->ui->radioButton_info->setChecked(false);
-            break;
-        case TextType::CountDownDay:
-            this->ui->radioButton_time->setChecked(false);
-            this->ui->radioButton_lesson->setChecked(false);
-            this->ui->radioButton_countDownDay->setChecked(true);
-            this->ui->radioButton_info->setChecked(false);
-            break;
-        case TextType::Info:
-            this->ui->radioButton_time->setChecked(false);
-            this->ui->radioButton_lesson->setChecked(false);
-            this->ui->radioButton_countDownDay->setChecked(false);
-            this->ui->radioButton_info->setChecked(true);
-            break;
-
-        default:
-            break;
-        }
+        FlashTextsList();
     }
     
 }
@@ -413,7 +390,7 @@ void Settings::on_pushButton_chooseColor_clicked()
     }
 }
 
-TextFormat Settings::ReadTextFormatFromUI()
+TextItem Settings::ReadTextFormatFromUI()
 {
     TextType type{ 0 };
     if (this->ui->radioButton_time->isChecked()) {
@@ -428,15 +405,9 @@ TextFormat Settings::ReadTextFormatFromUI()
     else if (this->ui->radioButton_info->isChecked()) {
         type = TextType::Info;
     }
-    TextFormat format{
-        this->ui->spinBox_ItemLocationX->value(),
-        this->ui->spinBox_ItemLocationY->value(),
-        this->ui->spinBox_FontSize->value(),
-        this->ui->fontComboBox_textFont->currentText().toStdString(),
-        this->ui->lineEdit_textFormat->text().toStdString(),
-        HexStringToColorRef(this->ui->lineEdit_color->text().toStdString()),
-        type
-    };
+    TextItem format;
+    format.text = this->ui->lineEdit_textFormat->text().toStdString();
+    format.type = type;
     return format;
 }
 
@@ -501,5 +472,58 @@ void Settings::on_pushButton_saveChange_clicked()
     pParent->windowsettings.changedItems.clear();
     pParent->windowsettings.save();
     FlashList();
+}
+
+
+void Settings::on_pushButton_addTextItem_clicked()
+{
+
+}
+
+
+void Settings::on_pushButton_deleteTextItem_clicked()
+{
+
+}
+
+void Settings::on_listWidget_textItems_currentRowChanged(int currentRow)
+{
+    auto textItem = pParent->windowsettings.msTextFormat[this->ui->listView->currentRow()];
+    ui->lineEdit_textFormat->setText(QString::fromStdString(.Texts[currentRow].text));
+    switch (pParent->windowsettings.msTextFormat[ui->listView->currentRow()].Texts[currentRow].type)
+    {
+    case TextType::CurrentTime:
+        this->ui->radioButton_time->setChecked(true);
+        //this->ui->radioButton_lesson->setChecked(false);
+        //this->ui->radioButton_countDownDay->setChecked(false);
+        //this->ui->radioButton_info->setChecked(false);
+        break;
+    case TextType::CurrentLesson:
+        //this->ui->radioButton_time->setChecked(false);
+        this->ui->radioButton_lesson->setChecked(true);
+        //this->ui->radioButton_countDownDay->setChecked(false);
+        //this->ui->radioButton_info->setChecked(false);
+        break;
+    case TextType::CountDownDay:
+        //this->ui->radioButton_time->setChecked(false);
+        //this->ui->radioButton_lesson->setChecked(false);
+        this->ui->radioButton_countDownDay->setChecked(true);
+        //this->ui->radioButton_info->setChecked(false);
+        break;
+    case TextType::Info:
+        //this->ui->radioButton_time->setChecked(false);
+        //this->ui->radioButton_lesson->setChecked(false);
+        //this->ui->radioButton_countDownDay->setChecked(false);
+        this->ui->radioButton_info->setChecked(true);
+        break;
+    default:
+        break;
+    }
+}
+
+
+void Settings::on_pushButton_changeInfo_clicked()
+{
+
 }
 
