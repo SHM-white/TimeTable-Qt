@@ -39,10 +39,12 @@ TimeTableQt::TimeTableQt(QWidget *parent)
     connect(time_calendar_text, SIGNAL(timeout()), this, SLOT(updateTexts()));
     time_calendar_window->start((int)100/6);
     time_calendar_text->start(500);
-    setWindowFlags(Qt::WindowMinMaxButtonsHint | Qt::FramelessWindowHint | Qt::Tool | Qt::X11BypassWindowManagerHint);
+    setWindowFlags(Qt::WindowMinMaxButtonsHint | Qt::FramelessWindowHint);
     setAttribute(Qt::WA_TranslucentBackground);
     flags = windowFlags();
     setWindowFlags(flags | Qt::WindowStaysOnTopHint);
+    windowsettings = std::make_shared<WindowSettings>(Json::mGetTextItem("ConfigFile", DEFAULT_CONFIG_PATH, 0));
+    timetable = std::make_shared<TimeTable>(Json::mGetTextItem("LessonInfoFile", DEFAULT_CONFIG_PATH, 0));
     mInitializeWindow();
     {
         QString application_name = QApplication::applicationName();
@@ -65,16 +67,16 @@ bool TimeTableQt::mInitializeWindow()
     //}
     //allLessonWindow->show();
 
-    this->setGeometry(windowsettings.miWindowX, windowsettings.miWindowY, windowsettings.miWindowWeight, windowsettings.miWindowHeight);
-    this->setFixedSize(windowsettings.miWindowWeight, windowsettings.miWindowHeight);
+    this->setGeometry(windowsettings->miWindowX, windowsettings->miWindowY, windowsettings->miWindowWeight, windowsettings->miWindowHeight);
+    this->setFixedSize(windowsettings->miWindowWeight, windowsettings->miWindowHeight);
 
-    QString picpath = QString::fromStdString(windowsettings.msBackGroundImg);
+    QString picpath = QString::fromStdString(windowsettings->msBackGroundImg);
     pic = QPixmap(picpath);
     pic = pic.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     
 #if EXPERENCE
 #ifdef Q_OS_WIN
-    if (windowsettings.bAcrylicEffect) {
+    if (windowsettings->bAcrylicEffect) {
 
         HWND hMoudle = (HWND)(winId());
         HMODULE hDLL = LoadLibrary(TEXT("AcrylicMaterial"));
@@ -109,7 +111,7 @@ std::string TimeTableQt::translateUtfToAnsi(const std::string& input)
 void TimeTableQt::updateTexts()
 {
     items.clear();
-    for (auto& i : windowsettings.msTextFormat) {
+    for (auto& i : windowsettings->msTextFormat) {
         i.update();
         if (i.Texts.empty()) {
             return;
@@ -119,16 +121,16 @@ void TimeTableQt::updateTexts()
         switch (i.Texts[i.updateCounter].type)
         {
         case TextType::CurrentTime:
-            text = QString::fromLocal8Bit(timetable.mGetCurrentTime(translateUtfToAnsi(i.Texts[i.updateCounter].text)));
+            text = QString::fromLocal8Bit(timetable->mGetCurrentTime(translateUtfToAnsi(i.Texts[i.updateCounter].text)));
             break;
         case TextType::CurrentLesson:
-            text = QString::fromLocal8Bit(timetable.mGetCurrentTime(translateUtfToAnsi(i.Texts[i.updateCounter].text))) + QString::fromStdString(timetable.mGetCurrentLesson(translateUtfToAnsi(windowsettings.msLessonNull)));
+            text = QString::fromLocal8Bit(timetable->mGetCurrentTime(translateUtfToAnsi(i.Texts[i.updateCounter].text))) + QString::fromStdString(timetable->mGetCurrentLesson(translateUtfToAnsi(windowsettings->msLessonNull)));
             break;
         case TextType::CountDownDay:
-            text = QString::fromLocal8Bit(timetable.mGetCountDown(windowsettings.mCountDownDay, translateUtfToAnsi(i.Texts[i.updateCounter].text)));
+            text = QString::fromLocal8Bit(timetable->mGetCountDown(windowsettings->mCountDownDay, translateUtfToAnsi(i.Texts[i.updateCounter].text)));
             break;
         case TextType::Info:
-            text = QString::fromLocal8Bit(timetable.mGetCurrentTime(translateUtfToAnsi(i.Texts[i.updateCounter].text))) + QString::fromStdString(timetable.mGetInfo());
+            text = QString::fromLocal8Bit(timetable->mGetCurrentTime(translateUtfToAnsi(i.Texts[i.updateCounter].text))) + QString::fromStdString(timetable->mGetInfo());
             break;
         default:
             break;
@@ -154,6 +156,7 @@ void TimeTableQt::updateWindow()
     else {
         timeCounter -= 1;
     }
+    update();
 }
 
 void TimeTableQt::ShowShadow()
@@ -193,17 +196,17 @@ void TimeTableQt::paintEvent(QPaintEvent*)
     painter.drawRect(rect());
     if (pic.isNull()
 #if EXPERENCE
-        || windowsettings.bAcrylicEffect
+        || windowsettings->bAcrylicEffect
 #endif        
         ) {
-        painter.fillRect(rect(), QColor(windowsettings.miBackGroundColor[0], windowsettings.miBackGroundColor[1], windowsettings.miBackGroundColor[2], windowsettings.miBackGroundColor[3]));
+        painter.fillRect(rect(), QColor(windowsettings->miBackGroundColor[0], windowsettings->miBackGroundColor[1], windowsettings->miBackGroundColor[2], windowsettings->miBackGroundColor[3]));
     }
     else {
         painter.fillRect(rect(), QColor(255, 255, 255, 1));
         painter.drawPixmap(0, 0, pic);
     }
     int i = 1;
-    /*for (TextFormat a : windowsettings.msTextFormat) {
+    /*for (TextFormat a : windowsettings->msTextFormat) {
         QFont font;
         painter.setPen(QColor(GetRValue(a.color),GetGValue(a.color),GetBValue(a.color)));
         font.setFamily(QString::fromStdString(a.msFontName));
@@ -213,16 +216,16 @@ void TimeTableQt::paintEvent(QPaintEvent*)
         switch (a.textType)
         {
         case TextType::CurrentTime:
-            qtext = QString::fromLocal8Bit(timetable.mGetCurrentTime(translateUtfToAnsi(a.msTextFormat)));
+            qtext = QString::fromLocal8Bit(timetable->mGetCurrentTime(translateUtfToAnsi(a.msTextFormat)));
             break;
         case TextType::CurrentLesson:
-            qtext = QString::fromLocal8Bit(timetable.mGetCurrentTime(translateUtfToAnsi(a.msTextFormat))) + QString::fromStdString(timetable.mGetCurrentLesson(translateUtfToAnsi(windowsettings.msLessonNull)));
+            qtext = QString::fromLocal8Bit(timetable->mGetCurrentTime(translateUtfToAnsi(a.msTextFormat))) + QString::fromStdString(timetable->mGetCurrentLesson(translateUtfToAnsi(windowsettings->msLessonNull)));
             break;
         case TextType::CountDownDay:
-            qtext = QString::fromLocal8Bit(timetable.mGetCountDown(windowsettings.mCountDownDay, translateUtfToAnsi(a.msTextFormat)));
+            qtext = QString::fromLocal8Bit(timetable->mGetCountDown(windowsettings->mCountDownDay, translateUtfToAnsi(a.msTextFormat)));
             break;
         case TextType::Info:
-            qtext = QString::fromLocal8Bit(timetable.mGetCurrentTime(translateUtfToAnsi(a.msTextFormat))) + QString::fromStdString(timetable.mGetInfo());
+            qtext = QString::fromLocal8Bit(timetable->mGetCurrentTime(translateUtfToAnsi(a.msTextFormat))) + QString::fromStdString(timetable->mGetInfo());
             break;
         default:
             break;

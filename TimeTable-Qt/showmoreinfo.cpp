@@ -1,4 +1,4 @@
-#include "showmoreinfo.h"
+﻿#include "showmoreinfo.h"
 #include "ui_showmoreinfo.h"
 #include "TimeTableQt.h"
 #include <string>
@@ -14,7 +14,7 @@ void ShowMoreInfo::mFlashList()
     std::vector<std::string> in;
     this->ui->listView->clearMask();
     //std::string Days[]{ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
-    pParent->timetable.mGetTodayMoreInfo(in, Days[this->ui->comboBox->currentIndex()]);
+    pParent->timetable->mGetTodayMoreInfo(in, Days[this->ui->comboBox->currentIndex()]);
     for (auto a : in) {
         result = QString::fromStdString(a);
         QStandardItem* item = new QStandardItem(result);
@@ -28,7 +28,7 @@ ShowMoreInfo::ShowMoreInfo(QWidget *parent) :
     ui(new Ui::ShowMoreInfo)
 {
     ui->setupUi(this);
-    std::string week = pParent->timetable.mGetCurrentTime(std::string("%a"));
+    std::string week = pParent->timetable->mGetCurrentTime(std::string("%a"));
     this->ui->comboBox->setCurrentText(QString::fromStdString(week));
     mFlashList();
 }
@@ -56,7 +56,7 @@ void ShowMoreInfo::on_pushButton_clicked()
     if (!result.isEmpty()) {
         int currentItem = this->ui->comboBox->currentIndex();
         std::string info = result.toStdString();
-        pParent->timetable.mAddMoreInfo(Days[currentItem], info);
+        pParent->timetable->mAddMoreInfo(Days[currentItem], info);
     }
     mFlashList();
 }

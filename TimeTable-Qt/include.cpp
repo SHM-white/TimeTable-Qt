@@ -30,3 +30,30 @@ int Json::SaveJson(const std::string& TargetPath, const Json::Value& root)
 	os.close();
 	return 1;
 }
+
+int Json::mGetTextItem(const std::string& Item, std::string& input, const std::string& filePath)
+{
+	std::ifstream in(filePath, std::ios::in);
+	if (!in.is_open())
+	{
+		return 0;
+	};
+	Json::Reader reader;
+	Json::Value root;
+	reader.parse(in, root);
+	const Json::Value Text = root[Item];
+	input = Text.asString();
+	in.close();
+	return 1;
+}
+
+std::string Json::mGetTextItem(const std::string& Item, const std::string& filePath, int)
+{
+	std::string value("");
+	if (Json::mGetTextItem(Item, value, filePath)) {
+		return value;
+	}
+	else {
+		throw std::exception("error");
+	}
+}

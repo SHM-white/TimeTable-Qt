@@ -31,6 +31,7 @@
 #include <qcolordialog.h>
 #include <shellapi.h>
 #include <shlobj.h>
+#include <memory>
 #pragma  comment(lib, "shell32.lib")
 
 #define DEFAULT_CONFIG_PATH "config.json"
@@ -40,4 +41,7 @@ namespace Json {
 	bool ChangeValue(const std::string& Item,const Json::Value& value,const std::string& filePath);
 	Json::Value GetRootJsonValue(const std::string& TargetPath);
 	int SaveJson(const std::string& TargetPath, const Json::Value& root);
+	int mGetTextItem(const std::string& Item, std::string& input, const std::string& filePath);
+	std::string mGetTextItem(const std::string& Item, const std::string& filePath, int);
+
 }

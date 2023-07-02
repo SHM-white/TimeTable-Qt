@@ -33,8 +33,8 @@ void ChangeConfigPath::on_pushButton_clicked()
 void ChangeConfigPath::on_pushButton_2_clicked()
 {
     TimeTableQt* pParent = (TimeTableQt*)parentWidget();
-    if (pParent->windowsettings.mChangeConfigPath(this->ui->lineEdit->text().toStdString()).length()!=0) {
-        pParent->windowsettings.mGetWindowSettings();
+    if (pParent->windowsettings->mChangeConfigPath(this->ui->lineEdit->text().toStdString()).length()!=0) {
+        pParent->windowsettings->mGetWindowSettings();
         pParent->mInitializeWindow();
         QMessageBox::information(this, QString("提示"), QString("成功"));
         this->close();

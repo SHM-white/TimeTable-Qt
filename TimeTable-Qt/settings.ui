@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>Settings</class>
  <widget class="QDialog" name="Settings">
@@ -384,7 +384,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="tab_windowsettings">
+         <widget class="QWidget" name="tab_*windowsettings">
           <attribute name="title">
            <string>窗口</string>
           </attribute>

@@ -60,7 +60,7 @@ void ImportFromFile::on_pushButton_OK_clicked()
     QString jsonpath = this->ui->lineEdit_2->text();
     TimeTableQt* pParent = (TimeTableQt*)parentWidget();
     if ((!csvpath.isEmpty()) && (!jsonpath.isEmpty())) {
-        if (pParent->timetable.mImportLessonsFromCsv((std::string)csvpath.toLocal8Bit(), (std::string)jsonpath.toLocal8Bit())) {
+        if (pParent->timetable->mImportLessonsFromCsv((std::string)csvpath.toLocal8Bit(), (std::string)jsonpath.toLocal8Bit())) {
             QMessageBox::information(this, QString("成功"), QString("添加成功"));
         }
     }

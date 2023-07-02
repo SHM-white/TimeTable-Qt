@@ -17,8 +17,8 @@ public:
     TimeTableQt(QWidget *parent = nullptr);
     ~TimeTableQt();
     bool mInitializeWindow();
-    WindowSettings windowsettings{ WindowSettings::mGetTextItem("ConfigFile",DEFAULT_CONFIG_PATH,0)};
-    TimeTable timetable{ WindowSettings::mGetTextItem("LessonInfoFile",DEFAULT_CONFIG_PATH,0) };
+    std::shared_ptr<WindowSettings> windowsettings;
+    std::shared_ptr<TimeTable> timetable;
     static std::string translateUtfToAnsi(const std::string& input);
     Ui::TimeTableQtClass ui;
 private:

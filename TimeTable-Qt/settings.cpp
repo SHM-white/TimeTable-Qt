@@ -15,7 +15,7 @@ Settings::Settings(QWidget *parent) :
     pParent = (TimeTableQt*)parentWidget();
     ui->setupUi(this);
     InitializeWindow();
-    std::string week = pParent->timetable.mGetCurrentTime(std::string("%a"));
+    std::string week = pParent->timetable->mGetCurrentTime(std::string("%a"));
     this->ui->comboBox_InfoDays->setCurrentText(QString::fromStdString(week));
     this->ui->comboBox_LessonDays->setCurrentText(QString::fromStdString(week));
     FlashList();
@@ -29,41 +29,41 @@ Settings::~Settings()
 
 void Settings::InitializeWindow()
 {
-    const tm& structDate = pParent->windowsettings.mCountDownDay;
+    const tm& structDate = pParent->windowsettings->mCountDownDay;
     QDate date(structDate.tm_year + 1900, structDate.tm_mon + 1, structDate.tm_mday);
     QTime time(structDate.tm_hour, structDate.tm_min, structDate.tm_sec);
     QDateTime dateTime(date,time);
-    this->ui->spinBox_windowLocationX->setValue(pParent->windowsettings.miWindowX);
-    this->ui->spinBox_windowLocationY->setValue(pParent->windowsettings.miWindowY);
-    //this->ui->spinBox_DayCountInLine->setValue(pParent->windowsettings.miCountDownDayInLine);
-    //this->ui->spinBox_lessonInLine->setValue(pParent->windowsettings.miLessonInLine);
-    this->ui->spinBox_windowSizeX->setValue(pParent->windowsettings.miWindowWeight);
-    this->ui->spinBox_windowSizeY->setValue(pParent->windowsettings.miWindowHeight);
+    this->ui->spinBox_windowLocationX->setValue(pParent->windowsettings->miWindowX);
+    this->ui->spinBox_windowLocationY->setValue(pParent->windowsettings->miWindowY);
+    //this->ui->spinBox_DayCountInLine->setValue(pParent->windowsettings->miCountDownDayInLine);
+    //this->ui->spinBox_lessonInLine->setValue(pParent->windowsettings->miLessonInLine);
+    this->ui->spinBox_windowSizeX->setValue(pParent->windowsettings->miWindowWeight);
+    this->ui->spinBox_windowSizeY->setValue(pParent->windowsettings->miWindowHeight);
     this->ui->dateTimeEdit->setDateTime(dateTime);
-    this->ui->lineEdit_ConfigPath->setText(QString::fromStdString(pParent->windowsettings.msSettingPath));
-    this->ui->lineEdit_LessonPath->setText(QString::fromStdString(pParent->windowsettings.msLessonInfoFile));
-    this->ui->lineEdit_backGroundImg->setText(QString::fromStdString(pParent->windowsettings.msBackGroundImg));
+    this->ui->lineEdit_ConfigPath->setText(QString::fromStdString(pParent->windowsettings->msSettingPath));
+    this->ui->lineEdit_LessonPath->setText(QString::fromStdString(pParent->windowsettings->msLessonInfoFile));
+    this->ui->lineEdit_backGroundImg->setText(QString::fromStdString(pParent->windowsettings->msBackGroundImg));
 }
 
 void Settings::SaveSettings()
 {
-    pParent->windowsettings.miWindowX = this->ui->spinBox_windowLocationX->value();
-    pParent->windowsettings.miWindowY = this->ui->spinBox_windowLocationY->value();
-    //pParent->windowsettings.miCountDownDayInLine = this->ui->spinBox_DayCountInLine->value();
-    //pParent->windowsettings.miLessonInLine = this->ui->spinBox_lessonInLine->value();
-    pParent->windowsettings.miWindowWeight = this->ui->spinBox_windowSizeX->value();
-    pParent->windowsettings.miWindowHeight = this->ui->spinBox_windowSizeY->value();
+    pParent->windowsettings->miWindowX = this->ui->spinBox_windowLocationX->value();
+    pParent->windowsettings->miWindowY = this->ui->spinBox_windowLocationY->value();
+    //pParent->windowsettings->miCountDownDayInLine = this->ui->spinBox_DayCountInLine->value();
+    //pParent->windowsettings->miLessonInLine = this->ui->spinBox_lessonInLine->value();
+    pParent->windowsettings->miWindowWeight = this->ui->spinBox_windowSizeX->value();
+    pParent->windowsettings->miWindowHeight = this->ui->spinBox_windowSizeY->value();
     QDateTime datetime = this->ui->dateTimeEdit->dateTime();
-    tm& structDate = pParent->windowsettings.mCountDownDay;
+    tm& structDate = pParent->windowsettings->mCountDownDay;
     structDate.tm_year = datetime.date().year() - 1900;
     structDate.tm_mon = datetime.date().month() - 1;
     structDate.tm_mday = datetime.date().day();
     structDate.tm_hour = datetime.time().hour();
     structDate.tm_min = datetime.time().minute();
     structDate.tm_sec = datetime.time().second();
-    pParent->windowsettings.msSettingPath = this->ui->lineEdit_ConfigPath->text().toStdString();
-    pParent->windowsettings.msLessonInfoFile = this->ui->lineEdit_LessonPath->text().toStdString();
-    pParent->windowsettings.msBackGroundImg = this->ui->lineEdit_backGroundImg->text().toStdString();
+    pParent->windowsettings->msSettingPath = this->ui->lineEdit_ConfigPath->text().toStdString();
+    pParent->windowsettings->msLessonInfoFile = this->ui->lineEdit_LessonPath->text().toStdString();
+    pParent->windowsettings->msBackGroundImg = this->ui->lineEdit_backGroundImg->text().toStdString();
 
 }
 
@@ -79,12 +79,12 @@ void Settings::FlashList(int index)
         std::vector<std::string> in;
         if (ShowAll) {
             for (const auto& day : Days) {
-                pParent->timetable.mGetLesson(in, day);
+                pParent->timetable->mGetLesson(in, day);
             }
         }
         else
         {
-            pParent->timetable.mGetLesson(in, Days[this->ui->comboBox_LessonDays->currentIndex()]);
+            pParent->timetable->mGetLesson(in, Days[this->ui->comboBox_LessonDays->currentIndex()]);
         }
         for (const auto& a : in) {
             result = QString::fromStdString(a);
@@ -95,7 +95,7 @@ void Settings::FlashList(int index)
     else if(index==1){//Infos
         QString result;
         std::vector<std::string> in;
-        pParent->timetable.mGetTodayMoreInfo(in, Days[this->ui->comboBox_InfoDays->currentIndex()]);
+        pParent->timetable->mGetTodayMoreInfo(in, Days[this->ui->comboBox_InfoDays->currentIndex()]);
         for (const auto& a : in) {
             result = QString::fromStdString(a);
             QListWidgetItem* item = new QListWidgetItem(result);
@@ -105,19 +105,19 @@ void Settings::FlashList(int index)
 
     else if(index==3||index==2){//textFormat
         QString result;
-        auto& textFormat = pParent->windowsettings.msTextFormat;
+        auto& textFormat = pParent->windowsettings->msTextFormat;
         for (const auto& a : textFormat) {
             result = QString::fromStdString(std::to_string(a.mpTextLocation.x) + "\t" + std::to_string(a.mpTextLocation.y));
             QListWidgetItem* item = new QListWidgetItem(result);
             this->ui->listView->addItem(item);
         }
-        for (auto i : pParent->windowsettings.changedItems) {
-            if (i < pParent->windowsettings.msTextFormat.size()) {
+        for (auto i : pParent->windowsettings->changedItems) {
+            if (i < pParent->windowsettings->msTextFormat.size()) {
                 this->ui->listView->item(i)->setBackground(QBrush(QColor(255, 245, 70)));
             }
             else if(!hasAddLastItem){
                 this->ui->listView->addItem("");
-                this->ui->listView->item(pParent->windowsettings.msTextFormat.size())->setBackground(QBrush(QColor(255, 0, 0)));
+                this->ui->listView->item(pParent->windowsettings->msTextFormat.size())->setBackground(QBrush(QColor(255, 0, 0)));
                 hasAddLastItem = true;
             }
         }
@@ -138,7 +138,7 @@ void Settings::FlashTextsList()
         return;
     }
     this->ui->listWidget_textItems->clear();
-    for (auto& i : pParent->windowsettings.msTextFormat[row].Texts) {
+    for (auto& i : pParent->windowsettings->msTextFormat[row].Texts) {
         this->ui->listWidget_textItems->addItem(QString::fromStdString(i.text));
     }
     this->ui->listWidget_textItems->setCurrentRow(0);
@@ -146,7 +146,7 @@ void Settings::FlashTextsList()
 
 void Settings::on_tabWidget_currentChanged(int index)
 {
-    std::string week = pParent->timetable.mGetCurrentTime(std::string("%a"));
+    std::string week = pParent->timetable->mGetCurrentTime(std::string("%a"));
     this->ui->comboBox_InfoDays->setCurrentText(QString::fromStdString(week));
     this->ui->comboBox_LessonDays->setCurrentText(QString::fromStdString(week));
     this->ui->checkBox->setChecked(true);
@@ -172,14 +172,14 @@ void Settings::on_pushButton_delete_clicked()
         switch (index)
         {
         case 0:
-            pParent->timetable.deleteLesson(this->ui->listView->currentIndex().row(), std::string(this->ui->comboBox_LessonDays->currentText().toStdString()));
+            pParent->timetable->deleteLesson(this->ui->listView->currentIndex().row(), std::string(this->ui->comboBox_LessonDays->currentText().toStdString()));
             break;
         case 1:
-            pParent->timetable.deleteInfo(this->ui->listView->currentIndex().row(), std::string(this->ui->comboBox_InfoDays->currentText().toStdString()));
+            pParent->timetable->deleteInfo(this->ui->listView->currentIndex().row(), std::string(this->ui->comboBox_InfoDays->currentText().toStdString()));
             break;
         case 3:
-            pParent->windowsettings.msTextFormat.erase(pParent->windowsettings.msTextFormat.begin() + row);
-            pParent->windowsettings.changedItems.push_back(row);
+            pParent->windowsettings->msTextFormat.erase(pParent->windowsettings->msTextFormat.begin() + row);
+            pParent->windowsettings->changedItems.push_back(row);
             break;
         default:
             break;
@@ -197,11 +197,11 @@ void Settings::on_pushButton_order_clicked()
     {
     case 0:
         if (this->ui->checkBox->isChecked()) {
-            pParent->timetable.sortLessons(std::string(this->ui->comboBox_LessonDays->currentText().toLocal8Bit()));
+            pParent->timetable->sortLessons(std::string(this->ui->comboBox_LessonDays->currentText().toLocal8Bit()));
         }
         else
         {
-            pParent->timetable.sortLessons();
+            pParent->timetable->sortLessons();
         }
         break;
     default:
@@ -251,7 +251,7 @@ void Settings::on_pushButton_addLesson_clicked()
         std::string Lesson = result.toStdString();
         QTime tBegin = this->ui->timeEdit_begin->time();
         QTime tEnd = this->ui->timeEdit_end->time();
-        pParent->timetable.mAddLesson(Days[this->ui->comboBox_LessonDays->currentIndex()], Lesson, tBegin.toString(QString("HHmm")).toStdString(), tEnd.toString(QString("HHmm")).toStdString());
+        pParent->timetable->mAddLesson(Days[this->ui->comboBox_LessonDays->currentIndex()], Lesson, tBegin.toString(QString("HHmm")).toStdString(), tEnd.toString(QString("HHmm")).toStdString());
     }
     FlashList();
     int count = this->ui->listView->count();
@@ -271,7 +271,7 @@ void Settings::on_pushButton_changeLesson_clicked()
         std::string lesson = result.toStdString();
         QTime tBegin = this->ui->timeEdit_begin->time();
         QTime tEnd = this->ui->timeEdit_end->time();
-        pParent->timetable.changeLesson(this->ui->listView->currentRow(), this->ui->comboBox_LessonDays->currentText().toStdString(), Lesson(this->ui->comboBox_LessonDays->currentText().toStdString(), this->ui->comboBox_addLesson->currentText().toStdString(), tBegin.toString(QString("HHmm")).toInt(), tEnd.toString(QString("HHmm")).toInt()));
+        pParent->timetable->changeLesson(this->ui->listView->currentRow(), this->ui->comboBox_LessonDays->currentText().toStdString(), Lesson(this->ui->comboBox_LessonDays->currentText().toStdString(), this->ui->comboBox_addLesson->currentText().toStdString(), tBegin.toString(QString("HHmm")).toInt(), tEnd.toString(QString("HHmm")).toInt()));
     }
     int row = this->ui->listView->currentRow();
     FlashList();
@@ -287,7 +287,7 @@ void Settings::on_listView_currentRowChanged(int currentRow)
     int tab{ ui->tabWidget->currentIndex() };
     if (tab == 0&&this->ui->checkBox->isChecked()) //lessons
     {
-        Lesson lesson = pParent->timetable.mGetLesson(this->ui->comboBox_LessonDays->currentText().toStdString(), currentRow);
+        Lesson lesson = pParent->timetable->mGetLesson(this->ui->comboBox_LessonDays->currentText().toStdString(), currentRow);
         this->ui->comboBox_addLesson->setCurrentText(QString::fromStdString(lesson.mGetName()));
         this->ui->timeEdit_begin->setTime(QTime(Lesson::getHourFromHHmm(lesson.mGetBeginTime()), Lesson::getMinFromHHmm(lesson.mGetBeginTime())));
         this->ui->timeEdit_end->setTime(QTime(Lesson::getHourFromHHmm(lesson.mGetEndTime()), Lesson::getMinFromHHmm(lesson.mGetEndTime())));
@@ -300,11 +300,11 @@ void Settings::on_listView_currentRowChanged(int currentRow)
     }
     else if (tab == 3) //textFormat
     {
-        if (currentRow >= pParent->windowsettings.msTextFormat.size()) {
+        if (currentRow >= pParent->windowsettings->msTextFormat.size()) {
             this->ui->listView->setCurrentRow(currentRow - 1);
             return;
         }
-        TextFormat& textFormat = pParent->windowsettings.msTextFormat[currentRow];
+        TextFormat& textFormat = pParent->windowsettings->msTextFormat[currentRow];
         this->ui->lineEdit_color->setText(QString::fromStdString(ColorRefToHexString(textFormat.color)));
         //this->ui->lineEdit_textFormat->setText(QString::fromStdString(textFormat.));
         this->ui->fontComboBox_textFont->setCurrentText(QString::fromStdString(textFormat.msFontName));
@@ -323,7 +323,7 @@ void Settings::on_pushButton_addInfo_clicked()
     if (!result.isEmpty()) {
         int currentItem = this->ui->comboBox_InfoDays->currentIndex();
         std::string info = result.toStdString();
-        pParent->timetable.mAddMoreInfo(Days[currentItem], info);
+        pParent->timetable->mAddMoreInfo(Days[currentItem], info);
     }
     FlashList();
     int count = this->ui->listView->count();
@@ -357,19 +357,19 @@ void Settings::on_pushButton_chooseLessons_clicked()
 
 void Settings::on_pushButton_applyConfigPath_clicked()
 {
-    pParent->windowsettings.mChangeConfigPath(this->ui->lineEdit_ConfigPath->text().toStdString());
-    pParent->windowsettings.mGetWindowSettings();
-    pParent->timetable.mReplacePath(pParent->windowsettings.msLessonInfoFile);
-    this->ui->lineEdit_LessonPath->setText(QString::fromStdString(pParent->windowsettings.msLessonInfoFile));
+    pParent->windowsettings->mChangeConfigPath(this->ui->lineEdit_ConfigPath->text().toStdString());
+    pParent->windowsettings->mGetWindowSettings();
+    pParent->timetable->mReplacePath(pParent->windowsettings->msLessonInfoFile);
+    this->ui->lineEdit_LessonPath->setText(QString::fromStdString(pParent->windowsettings->msLessonInfoFile));
     pParent->mInitializeWindow();
 }
 
 
 void Settings::on_pushButton_applyLessonPath_clicked()
 {
-    pParent->windowsettings.msLessonInfoFile = this->ui->lineEdit_LessonPath->text().toStdString();
-    pParent->timetable.mReplacePath(pParent->windowsettings.msLessonInfoFile);
-    pParent->timetable.mReloadLesson();
+    pParent->windowsettings->msLessonInfoFile = this->ui->lineEdit_LessonPath->text().toStdString();
+    pParent->timetable->mReplacePath(pParent->windowsettings->msLessonInfoFile);
+    pParent->timetable->mReloadLesson();
 }
 
 
@@ -442,8 +442,8 @@ COLORREF Settings::HexStringToColorRef(const std::string& input)
 void Settings::on_pushButton_addFormat_clicked()
 {
     int row = this->ui->listView->currentRow();
-    pParent->windowsettings.msTextFormat.push_back(TextFormat());
-    pParent->windowsettings.changedItems.push_back(pParent->windowsettings.msTextFormat.size()-1);
+    pParent->windowsettings->msTextFormat.push_back(TextFormat());
+    pParent->windowsettings->changedItems.push_back(pParent->windowsettings->msTextFormat.size()-1);
     FlashList();
     this->ui->listView->setCurrentRow(this->ui->listView->count()-1);
 }
@@ -451,10 +451,10 @@ void Settings::on_pushButton_addFormat_clicked()
 
 void Settings::on_pushButton_changeFormat_clicked()
 {
-    TextFormat& format = pParent->windowsettings.msTextFormat[this->ui->listView->currentRow()];
+    TextFormat& format = pParent->windowsettings->msTextFormat[this->ui->listView->currentRow()];
     format.Texts[ui->listWidget_textItems->currentRow()] = ReadTextsFromUI();
     int row = this->ui->listView->currentRow();
-    pParent->windowsettings.changedItems.push_back(row);
+    pParent->windowsettings->changedItems.push_back(row);
     FlashList();
     this->ui->listView->setCurrentRow(row);
 }
@@ -463,23 +463,23 @@ void Settings::on_pushButton_changeFormat_clicked()
 void Settings::on_pushButton_applySettings_clicked()
 {
     SaveSettings();
-    pParent->windowsettings.save();
+    pParent->windowsettings->save();
     pParent->mInitializeWindow();
 }
 
 
 void Settings::on_pushButton_cancelChange_clicked()
 {
-    pParent->windowsettings.mGetWindowSettings();
-    pParent->windowsettings.changedItems.clear();
+    pParent->windowsettings->mGetWindowSettings();
+    pParent->windowsettings->changedItems.clear();
     FlashList();
 }
 
 
 void Settings::on_pushButton_saveChange_clicked()
 {
-    pParent->windowsettings.changedItems.clear();
-    pParent->windowsettings.save();
+    pParent->windowsettings->changedItems.clear();
+    pParent->windowsettings->save();
     FlashList();
 }
 
@@ -487,9 +487,9 @@ void Settings::on_pushButton_saveChange_clicked()
 void Settings::on_pushButton_addTextItem_clicked()
 {
     int row = this->ui->listView->currentRow();
-    pParent->windowsettings.msTextFormat[row].Texts.push_back(ReadTextsFromUI());
+    pParent->windowsettings->msTextFormat[row].Texts.push_back(ReadTextsFromUI());
     this->ui->listWidget_textItems->setCurrentRow(this->ui->listWidget_textItems->count() - 1);
-    pParent->windowsettings.changedItems.push_back(row);
+    pParent->windowsettings->changedItems.push_back(row);
     FlashList();
     this->ui->listView->setCurrentRow(row);
 }
@@ -505,9 +505,9 @@ void Settings::on_listWidget_textItems_currentRowChanged(int currentRow)
     if (currentRow < 0) {
         return;
     }
-    auto textItem = pParent->windowsettings.msTextFormat[this->ui->listView->currentRow()];
+    auto textItem = pParent->windowsettings->msTextFormat[this->ui->listView->currentRow()];
     ui->lineEdit_textFormat->setText(QString::fromStdString(textItem.Texts[currentRow].text));
-    switch (pParent->windowsettings.msTextFormat[ui->listView->currentRow()].Texts[currentRow].type)
+    switch (pParent->windowsettings->msTextFormat[ui->listView->currentRow()].Texts[currentRow].type)
     {
     case TextType::CurrentTime:
         this->ui->radioButton_time->setChecked(true);

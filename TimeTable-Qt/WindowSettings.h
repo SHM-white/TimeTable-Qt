@@ -15,13 +15,16 @@ class WindowSettings {
 public:
 	const int minVersion[3]{ 2,4,0 };
 	const int currentVersion[3]{ 2,4,0 };
+	WindowSettings() = default;
+	WindowSettings(const WindowSettings& another) = default;
+	WindowSettings(WindowSettings& another) = default;
 	WindowSettings(const std::string path)
 		:msSettingPath{ path }
 	{
 		msTextFormat.push_back(TextFormat());
 		mGetWindowSettings();
 	};
-	WindowSettings() = delete;
+	WindowSettings& operator=(const WindowSettings& another) = default;
 	int mGetWindowSettings();
 	int save();
 	int save(const std::string& ConfigPath);

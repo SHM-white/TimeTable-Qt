@@ -12,8 +12,11 @@
 //TimeTable类，包含与获取课程有关的函数，需初始化配置文件路径
 class TimeTable {
 public:
-	TimeTable() = delete;
+	TimeTable() = default;
+	TimeTable(const TimeTable& another) = default;
+	TimeTable(TimeTable& another) = default;
 	TimeTable(std::string path) : mLessonInfoPath{ path } {};
+	TimeTable& operator=(const TimeTable& another) = default;
 	int mAddLesson(const std::string& week, const std::string& Lesson, const std::string& sBegin, const std::string& sEnd, const std::string& TargetFilePath);
 	int mAddLesson(const Lesson& lesson);
 	int mAddLesson(const Lesson& lesson, const std::string& TargetFilePath);

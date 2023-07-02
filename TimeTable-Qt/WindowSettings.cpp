@@ -118,26 +118,12 @@ int WindowSettings::mGetTextItem(const std::string& Item, std::string& input)
 
 int WindowSettings::mGetTextItem(const std::string& Item, std::string& input, const std::string& filePath)
 {
-	std::ifstream in(filePath, std::ios::in);
-	if (!in.is_open())
-	{
-		return 0;
-	};
-	Json::Reader reader;
-	Json::Value root;
-	if (reader.parse(in, root)) {
-		const Json::Value Text = root[Item];
-		input = Text.asString();
-	}
-	in.close();
-	return 0;
+	return Json::mGetTextItem(Item, input, filePath);
 }
 
 std::string WindowSettings::mGetTextItem(const std::string& Item, const std::string& filePath, int)
 {
-	std::string value;
-	mGetTextItem(Item, value, filePath);
-	return value;
+	return Json::mGetTextItem(Item, filePath, 0);
 }
 
 const std::string WindowSettings::mChangeConfigPath(const std::string& path)

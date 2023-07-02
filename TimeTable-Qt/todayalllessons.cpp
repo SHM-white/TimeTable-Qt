@@ -24,8 +24,8 @@ TodayAllLessons::TodayAllLessons(QWidget *parent) :
     setAttribute(Qt::WA_TranslucentBackground);
 
     QRect windowRect = geometry();
-    windowRect.setY(pParent->windowsettings.miAllLessonWindowY);
-    windowRect.setX(pParent->windowsettings.miAllLessonWindowX);
+    windowRect.setY(pParent->windowsettings->miAllLessonWindowY);
+    windowRect.setX(pParent->windowsettings->miAllLessonWindowX);
     setGeometry(windowRect);
 }
 
@@ -38,7 +38,7 @@ void TodayAllLessons::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
     std::vector<Lesson> allLessons;
-    pParent->timetable.mGetLesson(allLessons, pParent->timetable.mGetCurrentTime("%a"));
+    pParent->timetable->mGetLesson(allLessons, pParent->timetable->mGetCurrentTime("%a"));
     std::vector<QString> qAllLessons;
     for (const auto& i : allLessons) {
         qAllLessons.push_back(QString::fromStdString(i.mGetName()));
@@ -58,7 +58,7 @@ void TodayAllLessons::paintEvent(QPaintEvent*)
         QRect rect(i * fontMetrics.maxWidth()+3, 0, fontMetrics.maxWidth(), maxLength * fontMetrics.height());
         painter.drawText(rect, Qt::TextWordWrap | Qt::AlignVCenter, qAllLessons[i]);
     }
-    int currentLessonIndex = pParent->timetable.mGetCurrentLesson(0);
+    int currentLessonIndex = pParent->timetable->mGetCurrentLesson(0);
     painter.setPen(QPen(QBrush(QColor(67, 255, 9, 255)), 2));
     painter.drawRect(currentLessonIndex * fontMetrics.maxWidth(), 2, fontMetrics.maxWidth(), maxLength * fontMetrics.height());
 }
