@@ -654,6 +654,37 @@
                 </widget>
                </item>
                <item>
+                <widget class="QLabel" name="label_11">
+                 <property name="text">
+                  <string>范围</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_12">
+                 <property name="text">
+                  <string>H</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QSpinBox" name="spinBox"/>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_18">
+                 <property name="text">
+                  <string>W</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QSpinBox" name="spinBox_2"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_11">
+               <item>
                 <widget class="QLineEdit" name="lineEdit_color">
                  <property name="whatsThis">
                   <string>color</string>
@@ -667,10 +698,6 @@
                  </property>
                 </widget>
                </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_11">
                <item>
                 <widget class="QSpinBox" name="spinBox_FontSize">
                  <property name="value">
