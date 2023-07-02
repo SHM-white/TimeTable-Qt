@@ -121,6 +121,7 @@
     <ClCompile Include="showalllessons.cpp" />
     <ClCompile Include="showmoreinfo.cpp" />
     <ClCompile Include="todayalllessons.cpp" />
+    <ClCompile Include="WindowItem.cpp" />
     <ClCompile Include="WindowSettings.cpp" />
     <QtRcc Include="TimeTableQt.qrc" />
     <QtUic Include="about.ui" />
@@ -160,6 +161,7 @@
     <ClInclude Include="Timetable.h" />
     <QtMoc Include="todayalllessons.h" />
     <ClInclude Include="ToWString.h" />
+    <ClInclude Include="WindowItem.h" />
     <ClInclude Include="WindowSettings.h" />
   </ItemGroup>
   <ItemGroup>

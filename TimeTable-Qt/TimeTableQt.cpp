@@ -60,10 +60,10 @@ TimeTableQt::~TimeTableQt()
 
 bool TimeTableQt::mInitializeWindow()
 {
-    if (allLessonWindow == nullptr) {
-        allLessonWindow = new TodayAllLessons(this);
-    }
-    allLessonWindow->show();
+    //if (allLessonWindow == nullptr) {
+    //    allLessonWindow = new TodayAllLessons(this);
+    //}
+    //allLessonWindow->show();
 
     this->setGeometry(windowsettings.miWindowX, windowsettings.miWindowY, windowsettings.miWindowWeight, windowsettings.miWindowHeight);
     this->setFixedSize(windowsettings.miWindowWeight, windowsettings.miWindowHeight);
@@ -108,9 +108,37 @@ std::string TimeTableQt::translateUtfToAnsi(const std::string& input)
 
 void TimeTableQt::updateTexts()
 {
-    
+    items.clear();
     for (auto& i : windowsettings.msTextFormat) {
         i.update();
+        if (i.Texts.empty()) {
+            return;
+        }
+        WindowItem item;
+        QString& text = item.text;
+        switch (i.Texts[i.updateCounter].type)
+        {
+        case TextType::CurrentTime:
+            text = QString::fromLocal8Bit(timetable.mGetCurrentTime(translateUtfToAnsi(i.Texts[i.updateCounter].text)));
+            break;
+        case TextType::CurrentLesson:
+            text = QString::fromLocal8Bit(timetable.mGetCurrentTime(translateUtfToAnsi(i.Texts[i.updateCounter].text))) + QString::fromStdString(timetable.mGetCurrentLesson(translateUtfToAnsi(windowsettings.msLessonNull)));
+            break;
+        case TextType::CountDownDay:
+            text = QString::fromLocal8Bit(timetable.mGetCountDown(windowsettings.mCountDownDay, translateUtfToAnsi(i.Texts[i.updateCounter].text)));
+            break;
+        case TextType::Info:
+            text = QString::fromLocal8Bit(timetable.mGetCurrentTime(translateUtfToAnsi(i.Texts[i.updateCounter].text))) + QString::fromStdString(timetable.mGetInfo());
+            break;
+        default:
+            break;
+        }
+        item.color = QColor(GetRValue(i.color), GetGValue(i.color), GetBValue(i.color));
+        item.font.setFamily(QString::fromStdString(i.msFontName));
+        item.font.setPointSize(i.miTextSize);
+        item.position = QPoint(i.mpTextLocation.x, i.mpTextLocation.y);
+        item.size = QSize(i.miSizeW, i.miSizeH);
+        items.push_back(item);
     }
 }
 

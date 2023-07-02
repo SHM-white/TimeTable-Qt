@@ -86,7 +86,7 @@ int WindowSettings::save(const std::string& ConfigPath)
 	Settings["WindowLocation"].append(miAllLessonWindowY);
 	Settings["LessonInLine"] = miLessonInLine;
 	Settings["LessonNull"] = msLessonNull;
-	Settings["LessonInfoFile"] = msLessonInfoFile;
+	//Settings["LessonInfoFile"] = msLessonInfoFile;
 	Settings["BackGroundColor"].clear();
 	for (auto color : miBackGroundColor) {
 		Settings["BackGroundColor"].append(color);

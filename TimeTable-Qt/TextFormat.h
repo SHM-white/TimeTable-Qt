@@ -3,14 +3,16 @@
 #include "resource.h"
 #include"Lesson.h"
 
-enum TextType :int
+enum TextType
 {
-	CurrentTime = 0,
-	CurrentLesson = 1,
-	CountDownDay = 2,
-	Info = 3,
-	Weather = 4,
-	Default = 5
+	Default,
+	CurrentTime,
+	CurrentLesson,
+	CountDownDay,
+	Info,
+	AllLessons,
+	News,
+	Weather,
 };
 class TextItem
 {
@@ -26,6 +28,8 @@ public:
 	Json::Value GetJsonValue() const;
 	TextItem getCurrentText() const;
 	bool update();
+	int miSizeW{ 0 };
+	int miSizeH{ 0 };
 	POINT mpTextLocation{ 0,0 };
 	int miTextSize{ 20 };
 	std::vector<TextItem> Texts;

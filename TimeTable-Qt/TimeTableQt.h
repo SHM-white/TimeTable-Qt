@@ -2,6 +2,7 @@
 //#pragma execution_character_set("utf-8")
 
 #include "include.h"
+#include "WindowItem.h"
 #include "ui_TimeTableQt.h"
 #include "WindowSettings.h"
 //#include "todayalllessons.h"
@@ -30,7 +31,7 @@ private:
     QPoint mouseStartPoint;
     QPoint windowTopLeftPoint;
     QPoint MenuRD;
-    
+    std::vector<WindowItem> items;
     void ShowShadow();
     void closeEvent(QCloseEvent* event) override;
     void paintEvent(QPaintEvent *event) override;

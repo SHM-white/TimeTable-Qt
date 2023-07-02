@@ -396,7 +396,7 @@ void Settings::on_pushButton_chooseColor_clicked()
 
 TextItem Settings::ReadTextsFromUI()
 {
-    TextType type{ 0 };
+    TextType type;
     if (this->ui->radioButton_time->isChecked()) {
         type = TextType::CurrentTime;
     }
@@ -415,10 +415,11 @@ TextItem Settings::ReadTextsFromUI()
     return format;
 }
 
-//TextFormat Settings::ReadFormatFromUI()
-//{
-//    return TextFormat();
-//}
+TextFormat Settings::ReadFormatFromUI()
+{
+
+    return TextFormat();
+}
 
 std::string Settings::ColorRefToHexString(COLORREF& color)
 {

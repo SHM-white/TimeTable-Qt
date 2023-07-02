@@ -2,14 +2,19 @@
 
 TextFormat::TextFormat(const Json::Value& value)
 {
-	//Format[2][0].asInt(), Format[2][1].asInt(), Format[3].asInt(), Format[1].asString(), Format[0].asString(), RGB(Format[4][0].asInt(), Format[4][1].asInt(), Format[4][2].asInt()), (TextType)Format[5].asInt()
 	mpTextLocation.x = value[1][0].asInt();
 	mpTextLocation.y = value[1][1].asInt();
 	miTextSize = value[2].asInt();
 	msFontName = value[0].asString();
-	
 	color = RGB(value[3][0].asInt(), value[3][1].asInt(), value[3][2].asInt());
-	
+	miSizeW = value[1][2].asInt();
+	miSizeH = value[1][3].asInt();
+	for (const auto& i : value[3]) {
+		TextItem item;
+		item.text = i[0].asString();
+		item.type = (TextType)i[1].asInt();
+		Texts.push_back(item);
+	}
 }
 
 Json::Value TextFormat::GetJsonValue() const
