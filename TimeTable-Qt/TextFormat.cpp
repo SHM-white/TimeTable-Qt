@@ -9,7 +9,7 @@ TextFormat::TextFormat(const Json::Value& value)
 	color = RGB(value[3][0].asInt(), value[3][1].asInt(), value[3][2].asInt());
 	miSizeW = value[1][2].asInt();
 	miSizeH = value[1][3].asInt();
-	for (const auto& i : value[3]) {
+	for (const auto& i : value[4]) {
 		TextItem item;
 		item.text = i[0].asString();
 		item.type = (TextType)i[1].asInt();
@@ -49,13 +49,8 @@ TextItem TextFormat::getCurrentText() const
 
 bool TextFormat::update()
 {
-	if (!(updateCounter < Texts.size())) {
-		updateCounter = 0;
-	}
-	else {
-		++updateCounter;
-	}
-	return true;
+    updateCounter = (updateCounter + 1) % Texts.size();
+    return true;
 }
 
 Json::Value TextItem::getJsonValue() const

@@ -1,0 +1,22 @@
+{
+   "version":[2,4,0],
+   "About" : "该程序的目的是取代每天写在黑板上的课表和值日表等信息，可以放在教室的电脑上，也可网课期间自己使用\r\n如有bug或建议请到GitHub反馈",
+   "Settings" : {
+      "Window" : {
+         "LessonNull" : "",
+         "BackGroundColor" : [0,0,0,1],
+         "BackGroundImg" : "BackGround4.png",
+         "LessonInLine" : 2,
+         "TextFormat" : [ 
+            ["%a-%H:%M:%S","Minecraft AE",[4,21],15,[0,220,0],0],
+            ["当前课程：","Minecraft AE",[4,43],15,[0,220,0],1]
+         ],
+         "WindowSize" : [ 220,50 ],
+         "WindowLocation" : [ 1100, 40 ,20 , 20 ],
+         "LessonInfoFile" : "Lessons.json",
+         "CountDownDay" : [ 2023 , 1 , 22 , 0 , 0 , 0],
+         "CountDownDayInLine" : 4,
+         "AcrylicEffect":false
+      }
+   }
+}

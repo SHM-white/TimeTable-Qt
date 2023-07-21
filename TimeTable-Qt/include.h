@@ -32,6 +32,7 @@
 #include <shellapi.h>
 #include <shlobj.h>
 #include <memory>
+#include <codecvt>
 #pragma  comment(lib, "shell32.lib")
 
 #define DEFAULT_CONFIG_PATH "config.json"
@@ -43,5 +44,5 @@ namespace Json {
 	int SaveJson(const std::string& TargetPath, const Json::Value& root);
 	int mGetTextItem(const std::string& Item, std::string& input, const std::string& filePath);
 	std::string mGetTextItem(const std::string& Item, const std::string& filePath, int);
-
+	std::string utf8ToGB2312(const std::string &str);
 }
