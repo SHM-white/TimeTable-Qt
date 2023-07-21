@@ -64,6 +64,7 @@ build-TimeTable-Qt-Desktop_Qt_6_4_2_MSVC2019_64bit-Debug/
 build-TimeTable-Qt-Desktop_Qt_6_4_2_MSVC2019_64bit-Release/
 build-TimeTable-Qt-Desktop_Qt_6_5_1_MSVC2019_64bit-Debug/
 build-TimeTable-Qt-Desktop_Qt_6_5_1_MSVC2019_64bit-Release/
+build/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/

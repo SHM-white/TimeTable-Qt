@@ -5,11 +5,14 @@
 #include "Lesson.h"
 
 
-//TimeTable类的实现函数
-//添加课程的4参数重载函数，兼容旧代码（其实就是懒），默认写入成员变量保存的路径
+// This function is an overloaded version of the mAddLesson function in the TimeTable class.
+// It adds a lesson with four parameters: week, Lesson, sBegin, sEnd.
+// If the fifth parameter, mLessonInfoPath, is not provided, it defaults to the value of the member variable mLessonInfoPath.
+// Returns the result of calling the mAddLesson function with the provided parameters.
 int TimeTable::mAddLesson(const std::string& week, const std::string& Lesson, const std::string& sBegin, const std::string& sEnd)
 {
-	return mAddLesson(week, Lesson, sBegin, sEnd, mLessonInfoPath);
+    // Call the mAddLesson function with the provided parameters and the default mLessonInfoPath.
+    return mAddLesson(week, Lesson, sBegin, sEnd, mLessonInfoPath);
 }
 //添加课程5参数函数
 int TimeTable::mAddLesson(const std::string& week, const std::string& Lesson, const std::string& sBegin, const std::string& sEnd, const std::string& TargetFilePath)

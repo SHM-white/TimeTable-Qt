@@ -13,13 +13,14 @@ SOURCES += \
     Lesson.cpp \
     TextFormat.cpp \
     Timetable.cpp \
+    WindowItem.cpp \
     WindowSettings.cpp \
     about.cpp \
     changeconfigpath.cpp \
     importfromfile.cpp \
+    include.cpp \
     main.cpp \
     TimeTableQt.cpp \
-    mainwindow.cpp \
     settings.cpp \
     showalllessons.cpp \
     showmoreinfo.cpp \
@@ -31,13 +32,15 @@ HEADERS += \
     TextFormat.h \
     TimeTable-Qt.aps \
     Timetable.h \
+    ToWString.h \
+    WindowItem.h \
     WindowSettings.h \
     about.h \
     changeconfigpath.h \
     framework.h \
     TimeTableQt.h \
     importfromfile.h \
-    mainwindow.h \
+    include.h \
     resource.h \
     resource1.h \
     settings.h \
@@ -51,7 +54,6 @@ FORMS += \
     about.ui \
     changeconfigpath.ui \
     importfromfile.ui \
-    mainwindow.ui \
     settings.ui \
     showalllessons.ui \
     showmoreinfo.ui \
