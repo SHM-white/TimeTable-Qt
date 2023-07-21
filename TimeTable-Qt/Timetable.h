@@ -37,6 +37,8 @@ public:
 	int deleteInfo(size_t index, const std::string& day, const std::string& lessonPath);
 	int changeLesson(size_t index, const std::string& day,const Lesson& lesson);
 	int changeLesson(size_t index, const std::string& day, const Lesson& lesson, const std::string& lessonPath);
+	int changeInfo(size_t index, const std::string& day, const std::string& info);
+	int changeInfo(size_t index, const std::string& day, const std::string& info, const std::string& Path);
 	int SaveJson(const std::string& TargetPath, const Json::Value& root);
 	int mGetCurrentLesson(int);
 	std::string mGetCountDown(tm tmIn, const std::string& TimeFormat);

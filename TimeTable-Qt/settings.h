@@ -79,6 +79,14 @@ private slots:
 
     void on_pushButton_changeInfo_clicked();
 
+    void on_pushButton_changeText_clicked();
+
+    void on_pushButton_changeGroupSettings_clicked();
+
+    void on_pushButton_chooseBackGroundColor_clicked();
+
+    void on_checkBox_useColor_stateChanged(int arg1);
+
 private:
     Ui::Settings *ui;
     TimeTableQt* pParent;

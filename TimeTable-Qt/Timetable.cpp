@@ -334,34 +334,90 @@ int TimeTable::changeLesson(size_t index, const std::string& day, const Lesson& 
 	mReloadLesson();
 	return 1;
 }
-int TimeTable::SaveJson(const std::string& TargetPath, const Json::Value& root)
+int TimeTable::changeInfo(size_t index, const std::string &day, const std::string &info)
+{
+    return changeInfo(index, day, info, mLessonInfoPath);
+}
+// change info
+/*
+using jsoncpp library
+1. call Json::GetRootJsonValue to get the root json in the file of Path
+3. Change the value at root[day]["Infos"][index] to info
+4. Write the modified JSON back by calling Json::SaveJson
+5. Return 1 if successful, -1 otherwise
+*/
+int TimeTable::changeInfo(size_t index, const std::string &day, const std::string &info, const std::string &Path)
+{
+    // Read the contents of the JSON file
+    std::ifstream file(Path);
+    Json::Value root;
+    file >> root;
+    
+    // Change the value at root[day]["Infos"][index] to info
+    root[day]["Infos"][(int)index] = info;
+    // Write the modified JSON back to the file
+	Json::SaveJson(Path, root);
+    // Return 1 if successful, -1 otherwise
+    return 1;
+}
+
+int TimeTable::SaveJson(const std::string &TargetPath, const Json::Value &root)
 {
 	int result = Json::SaveJson(TargetPath, root);
 	mReloadLesson();
 	return result;
 }
+/**
+ * Returns the index of the current lesson based on the current time.
+ * @param None
+ * @return The index of the current lesson
+ */
 int TimeTable::mGetCurrentLesson(int)
 {
-	static int currentIndex{ 0 };
-	std::string timeCurrentTime{ mGetCurrentTime("%H%M") };
-	int iCurrentTime = mHHMMToMin(atoi(timeCurrentTime.c_str()));
-	if (!((CurrentLesson.mGetBeginTime() <= iCurrentTime) && (iCurrentTime <= CurrentLesson.mGetEndTime()))) {
-		Json::Value root = Json::GetRootJsonValue(mLessonInfoPath);
-		std::string week{ mGetCurrentTime("%a") };
-		const Json::Value Lessons = root[week]["Lessons"];
-		for (unsigned int i = 0; i < Lessons.size(); ++i) {
-			std::string sBeginTime = Lessons[i][1].asString();
-			std::string sEndTime = Lessons[i][2].asString();
-			int iBeginTime = mHHMMToMin(atoi(sBeginTime.c_str()));
-			int iEndTime = mHHMMToMin(atoi(sEndTime.c_str()));
-			if ((iBeginTime <= iCurrentTime) && (iEndTime >= iCurrentTime)) {
-				CurrentLesson.mSetValue(Lessons[i][0].asString(), iBeginTime, iEndTime);
-				currentIndex = i;
-				break;
-			}
-		}
+    // Initialize currentIndex to 0
+    static int currentIndex{ 0 };
+
+    // Get the current time in the format HHMM
+    std::string timeCurrentTime{ mGetCurrentTime("%H%M") };
+
+    // Convert the current time to minutes
+    int iCurrentTime = mHHMMToMin(atoi(timeCurrentTime.c_str()));
+
+    // Check if the current time is within the current lesson's time range
+    if (!((CurrentLesson.mGetBeginTime() <= iCurrentTime) && (iCurrentTime <= CurrentLesson.mGetEndTime()))) {
+        // Get the lesson information from the lesson info JSON file
+        Json::Value root = Json::GetRootJsonValue(mLessonInfoPath);
+
+        // Get the current day of the week
+        std::string week{ mGetCurrentTime("%a") };
+
+        // Get the lessons for the current day
+        const Json::Value Lessons = root[week]["Lessons"];
+
+        // Iterate through the lessons
+        for (unsigned int i = 0; i < Lessons.size(); ++i) {
+            // Get the begin and end times of the current lesson
+            std::string sBeginTime = Lessons[i][1].asString();
+            std::string sEndTime = Lessons[i][2].asString();
+            int iBeginTime = mHHMMToMin(atoi(sBeginTime.c_str()));
+            int iEndTime = mHHMMToMin(atoi(sEndTime.c_str()));
+
+            // Check if the current time is within the current lesson's time range
+            if ((iBeginTime <= iCurrentTime) && (iEndTime >= iCurrentTime)) {
+                // Set the current lesson and update the currentIndex
+                CurrentLesson.mSetValue(Lessons[i][0].asString(), iBeginTime, iEndTime);
+                currentIndex = i;
+                break;
+            }
+        }
+    }
+	else
+	{
+		CurrentLesson.mSetValue("", 0, 0);
 	}
-	return currentIndex;
+
+    // Return the index of the current lesson
+    return currentIndex;
 }
 int TimeTable::deleteLesson(size_t index, const std::string& day)
 {

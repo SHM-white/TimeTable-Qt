@@ -548,17 +548,17 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_25">
              <item>
-              <widget class="QCheckBox" name="checkBox_3">
+              <widget class="QCheckBox" name="checkBox_useColor">
                <property name="text">
                 <string>使用纯色背景</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="lineEdit"/>
+              <widget class="QLineEdit" name="lineEdit_backGroundColor"/>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton">
+              <widget class="QPushButton" name="pushButton_chooseBackGroundColor">
                <property name="text">
                 <string>选择</string>
                </property>
@@ -576,7 +576,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QSlider" name="horizontalSlider">
+              <widget class="QSlider" name="horizontalSlider_alpha">
                <property name="maximum">
                 <number>255</number>
                </property>
@@ -635,7 +635,7 @@
                <item>
                 <widget class="QSpinBox" name="spinBox_ItemLocationX">
                  <property name="maximum">
-                  <number>2000</number>
+                  <number>10000</number>
                  </property>
                 </widget>
                </item>
@@ -649,7 +649,7 @@
                <item>
                 <widget class="QSpinBox" name="spinBox_ItemLocationY">
                  <property name="maximum">
-                  <number>2000</number>
+                  <number>10000</number>
                  </property>
                 </widget>
                </item>
@@ -668,7 +668,11 @@
                 </widget>
                </item>
                <item>
-                <widget class="QSpinBox" name="spinBox"/>
+                <widget class="QSpinBox" name="spinBox_ItemHeight">
+                 <property name="maximum">
+                  <number>10000</number>
+                 </property>
+                </widget>
                </item>
                <item>
                 <widget class="QLabel" name="label_18">
@@ -678,7 +682,11 @@
                 </widget>
                </item>
                <item>
-                <widget class="QSpinBox" name="spinBox_2"/>
+                <widget class="QSpinBox" name="spinBox_ItemWeight">
+                 <property name="maximum">
+                  <number>10000</number>
+                 </property>
+                </widget>
                </item>
               </layout>
              </item>

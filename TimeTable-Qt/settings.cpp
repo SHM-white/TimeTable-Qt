@@ -27,19 +27,27 @@ Settings::~Settings()
     delete ui;
 }
 
+/**
+ * @brief Initializes the window settings.
+ */
 void Settings::InitializeWindow()
 {
+    // Get the date from the parent window settings
     const tm& structDate = pParent->windowsettings->mCountDownDay;
     QDate date(structDate.tm_year + 1900, structDate.tm_mon + 1, structDate.tm_mday);
     QTime time(structDate.tm_hour, structDate.tm_min, structDate.tm_sec);
-    QDateTime dateTime(date,time);
+    QDateTime dateTime(date, time);
+
+    // Set the values of the spin boxes
     this->ui->spinBox_windowLocationX->setValue(pParent->windowsettings->miWindowX);
     this->ui->spinBox_windowLocationY->setValue(pParent->windowsettings->miWindowY);
-    //this->ui->spinBox_DayCountInLine->setValue(pParent->windowsettings->miCountDownDayInLine);
-    //this->ui->spinBox_lessonInLine->setValue(pParent->windowsettings->miLessonInLine);
     this->ui->spinBox_windowSizeX->setValue(pParent->windowsettings->miWindowWeight);
     this->ui->spinBox_windowSizeY->setValue(pParent->windowsettings->miWindowHeight);
+
+    // Set the value of the date time edit widget
     this->ui->dateTimeEdit->setDateTime(dateTime);
+
+    // Set the text of the line edit widgets
     this->ui->lineEdit_ConfigPath->setText(QString::fromStdString(pParent->windowsettings->msSettingPath));
     this->ui->lineEdit_LessonPath->setText(QString::fromStdString(pParent->windowsettings->msLessonInfoFile));
     this->ui->lineEdit_backGroundImg->setText(QString::fromStdString(pParent->windowsettings->msBackGroundImg));
@@ -494,10 +502,23 @@ void Settings::on_pushButton_addTextItem_clicked()
     this->ui->listView->setCurrentRow(row);
 }
 
-
 void Settings::on_pushButton_deleteTextItem_clicked()
 {
-
+    int currentRow = this->ui->listView->currentRow();
+    
+    if (currentRow >= 0 && currentRow < pParent->windowsettings->msTextFormat.size())
+    {
+        auto& textFormat = pParent->windowsettings->msTextFormat[currentRow];
+        int rowToDelete = this->ui->listWidget_textItems->currentRow();
+        
+        if (rowToDelete >= 0 && rowToDelete < textFormat.Texts.size())
+        {
+            textFormat.Texts.erase(textFormat.Texts.begin() + rowToDelete);
+            pParent->windowsettings->changedItems.push_back(currentRow);
+            FlashList();
+            this->ui->listWidget_textItems->setCurrentRow(this->ui->listWidget_textItems->count() - 1);
+        }
+    }
 }
 
 void Settings::on_listWidget_textItems_currentRowChanged(int currentRow)
@@ -505,7 +526,7 @@ void Settings::on_listWidget_textItems_currentRowChanged(int currentRow)
     if (currentRow < 0) {
         return;
     }
-    auto textItem = pParent->windowsettings->msTextFormat[this->ui->listView->currentRow()];
+    auto& textItem = pParent->windowsettings->msTextFormat[this->ui->listView->currentRow()];
     ui->lineEdit_textFormat->setText(QString::fromStdString(textItem.Texts[currentRow].text));
     switch (pParent->windowsettings->msTextFormat[ui->listView->currentRow()].Texts[currentRow].type)
     {
@@ -538,8 +559,34 @@ void Settings::on_listWidget_textItems_currentRowChanged(int currentRow)
     }
 }
 
-
+//reload settings form file to ui
 void Settings::on_pushButton_changeInfo_clicked()
+{
+    pParent->timetable->changeInfo(this->ui->listWidget_textItems->currentRow(),this->ui->comboBox_InfoDays->currentText().toStdString(), this->ui->lineEdit_changeInfo->text().toStdString());
+    pParent->timetable->mReloadLesson();
+    FlashTextsList();
+}
+
+
+void Settings::on_pushButton_changeText_clicked()
+{
+
+}
+
+
+void Settings::on_pushButton_changeGroupSettings_clicked()
+{
+
+}
+
+
+void Settings::on_pushButton_chooseBackGroundColor_clicked()
+{
+
+}
+
+
+void Settings::on_checkBox_useColor_stateChanged(int arg1)
 {
 
 }
