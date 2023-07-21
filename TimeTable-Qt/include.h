@@ -38,6 +38,8 @@
 #define DEFAULT_CONFIG_PATH "config.json"
 #define DEFAULT_LESSONINFO_PATH "Lessons.json"
 
+//#define DEBUG 1
+
 namespace Json {
 	bool ChangeValue(const std::string& Item,const Json::Value& value,const std::string& filePath);
 	Json::Value GetRootJsonValue(const std::string& TargetPath);

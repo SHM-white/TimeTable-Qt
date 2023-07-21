@@ -47,20 +47,32 @@ void Settings::InitializeWindow()
     // Set the value of the date time edit widget
     this->ui->dateTimeEdit->setDateTime(dateTime);
 
+    this->ui->checkBox_useColor->setChecked(true);
+    this->ui->checkBox_useColor->setChecked(!pParent->windowsettings->mUseImgAsBackGround);
+
     // Set the text of the line edit widgets
     this->ui->lineEdit_ConfigPath->setText(QString::fromStdString(pParent->windowsettings->msSettingPath));
     this->ui->lineEdit_LessonPath->setText(QString::fromStdString(pParent->windowsettings->msLessonInfoFile));
     this->ui->lineEdit_backGroundImg->setText(QString::fromStdString(pParent->windowsettings->msBackGroundImg));
+    COLORREF backgroundColor = RGB(pParent->windowsettings->miBackGroundColor[0], pParent->windowsettings->miBackGroundColor[1], pParent->windowsettings->miBackGroundColor[2]);
+    this->ui->lineEdit_backGroundColor->setText(QString::fromStdString(ColorRefToHexString(backgroundColor)));
+    this->ui->horizontalSlider_alpha->setValue(pParent->windowsettings->miBackGroundColor[3]);
 }
 
+/**
+ * @brief Saves the settings of the application.
+ */
 void Settings::SaveSettings()
 {
+    // Save window location
     pParent->windowsettings->miWindowX = this->ui->spinBox_windowLocationX->value();
     pParent->windowsettings->miWindowY = this->ui->spinBox_windowLocationY->value();
-    //pParent->windowsettings->miCountDownDayInLine = this->ui->spinBox_DayCountInLine->value();
-    //pParent->windowsettings->miLessonInLine = this->ui->spinBox_lessonInLine->value();
+
+    // Save window size
     pParent->windowsettings->miWindowWeight = this->ui->spinBox_windowSizeX->value();
     pParent->windowsettings->miWindowHeight = this->ui->spinBox_windowSizeY->value();
+
+    // Save countdown day
     QDateTime datetime = this->ui->dateTimeEdit->dateTime();
     tm& structDate = pParent->windowsettings->mCountDownDay;
     structDate.tm_year = datetime.date().year() - 1900;
@@ -69,69 +81,90 @@ void Settings::SaveSettings()
     structDate.tm_hour = datetime.time().hour();
     structDate.tm_min = datetime.time().minute();
     structDate.tm_sec = datetime.time().second();
+
+    // Save paths
     pParent->windowsettings->msSettingPath = this->ui->lineEdit_ConfigPath->text().toStdString();
     pParent->windowsettings->msLessonInfoFile = this->ui->lineEdit_LessonPath->text().toStdString();
     pParent->windowsettings->msBackGroundImg = this->ui->lineEdit_backGroundImg->text().toStdString();
 
+    // Save background color
+    COLORREF backgroundColor = HexStringToColorRef(this->ui->lineEdit_backGroundColor->text().toStdString());
+    pParent->windowsettings->miBackGroundColor[0] = GetRValue(backgroundColor);
+    pParent->windowsettings->miBackGroundColor[1] = GetGValue(backgroundColor);
+    pParent->windowsettings->miBackGroundColor[2] = GetBValue(backgroundColor);
+    pParent->windowsettings->miBackGroundColor[3] = this->ui->horizontalSlider_alpha->value();
+
+    pParent->windowsettings->mUseImgAsBackGround = !this->ui->checkBox_useColor->isChecked();
 }
 
+/**
+ * @brief Refreshes the list view based on the provided index.
+ * 
+ * @param index The index to determine the type of data to display in the list view.
+ */
 void Settings::FlashList(int index)
 {
-    bool hasAddLastItem{ false };
-    auto count = this->ui->listView->count();
-    int row = this->ui->listView->currentRow();
-    this->ui->listView->clear();
-    if (index == 0) {//Lessons
-        bool ShowAll = !this->ui->checkBox->isChecked();
+    bool hasAddLastItem{ false }; // Flag to track if the last item has been added
+
+    auto count = this->ui->listView->count(); // Get the count of items in the list view
+    int row = this->ui->listView->currentRow(); // Get the current selected row in the list view
+    this->ui->listView->clear(); // Clear the list view
+
+    if (index == 0) { // Lessons
+        bool ShowAll = !this->ui->checkBox->isChecked(); // Check if all lessons should be shown
         QString result;
         std::vector<std::string> in;
+
         if (ShowAll) {
             for (const auto& day : Days) {
-                pParent->timetable->mGetLesson(in, day);
+                pParent->timetable->mGetLesson(in, day); // Get all lessons for each day
             }
         }
-        else
-        {
-            pParent->timetable->mGetLesson(in, Days[this->ui->comboBox_LessonDays->currentIndex()]);
+        else {
+            pParent->timetable->mGetLesson(in, Days[this->ui->comboBox_LessonDays->currentIndex()]); // Get lessons for the selected day
         }
+
         for (const auto& a : in) {
             result = QString::fromStdString(a);
-            QListWidgetItem* item = new QListWidgetItem(result);
-            this->ui->listView->addItem(item);
+            QListWidgetItem* item = new QListWidgetItem(result); // Create a new list widget item
+            this->ui->listView->addItem(item); // Add the item to the list view
         }
     }
-    else if(index==1){//Infos
+    else if (index == 1) { // Infos
         QString result;
         std::vector<std::string> in;
-        pParent->timetable->mGetTodayMoreInfo(in, Days[this->ui->comboBox_InfoDays->currentIndex()]);
+        pParent->timetable->mGetTodayMoreInfo(in, Days[this->ui->comboBox_InfoDays->currentIndex()]); // Get additional info for today
         for (const auto& a : in) {
             result = QString::fromStdString(a);
-            QListWidgetItem* item = new QListWidgetItem(result);
-            this->ui->listView->addItem(item);
+            QListWidgetItem* item = new QListWidgetItem(result); // Create a new list widget item
+            this->ui->listView->addItem(item); // Add the item to the list view
         }
     }
-
-    else if(index==3||index==2){//textFormat
+    else if (index == 3 || index == 2) { // textFormat
         QString result;
         auto& textFormat = pParent->windowsettings->msTextFormat;
+
         for (const auto& a : textFormat) {
-            result = QString::fromStdString(std::to_string(a.mpTextLocation.x) + "\t" + std::to_string(a.mpTextLocation.y));
-            QListWidgetItem* item = new QListWidgetItem(result);
-            this->ui->listView->addItem(item);
+            result = QString::fromStdString("X:" + std::to_string(a.mpTextLocation.x) + "\tY:" + std::to_string(a.mpTextLocation.y));
+            QListWidgetItem* item = new QListWidgetItem(result); // Create a new list widget item
+            this->ui->listView->addItem(item); // Add the item to the list view
         }
+
         for (auto i : pParent->windowsettings->changedItems) {
             if (i < pParent->windowsettings->msTextFormat.size()) {
-                this->ui->listView->item(i)->setBackground(QBrush(QColor(255, 245, 70)));
+                this->ui->listView->item(i)->setBackground(QBrush(QColor(255, 245, 70))); // Set background color for changed items
             }
-            else if(!hasAddLastItem){
-                this->ui->listView->addItem("");
-                this->ui->listView->item(pParent->windowsettings->msTextFormat.size())->setBackground(QBrush(QColor(255, 0, 0)));
+            else if (!hasAddLastItem) {
+                this->ui->listView->addItem(""); // Add an empty item
+                this->ui->listView->item(pParent->windowsettings->msTextFormat.size())->setBackground(QBrush(QColor(255, 0, 0))); // Set background color for the last item
                 hasAddLastItem = true;
             }
         }
-    }
-    this->ui->listView->setCurrentRow(std::min(row, this->ui->listView->count() - 1));
 
+        FlashTextsList(); // Flash the texts list
+    }
+
+    this->ui->listView->setCurrentRow(std::min(row, this->ui->listView->count() - 1)); // Set the current selected row in the list view
 }
 
 void Settings::FlashList()
@@ -319,6 +352,8 @@ void Settings::on_listView_currentRowChanged(int currentRow)
         this->ui->spinBox_ItemLocationX->setValue((int)textFormat.mpTextLocation.x);
         this->ui->spinBox_ItemLocationY->setValue((int)textFormat.mpTextLocation.y);
         this->ui->spinBox_FontSize->setValue(textFormat.miTextSize);
+        this->ui->spinBox_ItemWeight->setValue(textFormat.miSizeW);
+        this->ui->spinBox_ItemHeight->setValue(textFormat.miSizeH);
         FlashTextsList();
     }
     
@@ -425,8 +460,16 @@ TextItem Settings::ReadTextsFromUI()
 
 TextFormat Settings::ReadFormatFromUI()
 {
-
-    return TextFormat();
+    int formatIndex = this->ui->listView->currentRow();
+    auto format = pParent->windowsettings->msTextFormat[formatIndex];
+    format.color = HexStringToColorRef(this->ui->lineEdit_color->text().toStdString());
+    format.msFontName = this->ui->fontComboBox_textFont->currentText().toStdString();
+    format.mpTextLocation.x = this->ui->spinBox_ItemLocationX->value();
+    format.mpTextLocation.y = this->ui->spinBox_ItemLocationY->value();
+    format.miTextSize = this->ui->spinBox_FontSize->value();
+    format.miSizeW = this->ui->spinBox_ItemWeight->value();
+    format.miSizeH = this->ui->spinBox_ItemHeight->value();
+    return format;
 }
 
 std::string Settings::ColorRefToHexString(COLORREF& color)
@@ -562,32 +605,45 @@ void Settings::on_listWidget_textItems_currentRowChanged(int currentRow)
 //reload settings form file to ui
 void Settings::on_pushButton_changeInfo_clicked()
 {
-    pParent->timetable->changeInfo(this->ui->listWidget_textItems->currentRow(),this->ui->comboBox_InfoDays->currentText().toStdString(), this->ui->lineEdit_changeInfo->text().toStdString());
+    pParent->timetable->changeInfo(this->ui->listView->currentRow(),this->ui->comboBox_InfoDays->currentText().toStdString(), this->ui->lineEdit_changeInfo->text().toStdString());
     pParent->timetable->mReloadLesson();
-    FlashTextsList();
+    FlashList();
 }
 
 
 void Settings::on_pushButton_changeText_clicked()
 {
-
+    pParent->windowsettings->msTextFormat[this->ui->listView->currentRow()].Texts[this->ui->listWidget_textItems->currentRow()] = ReadTextsFromUI();
+    pParent->windowsettings->changedItems.push_back(this->ui->listView->currentRow());
+    FlashList();
 }
 
 
 void Settings::on_pushButton_changeGroupSettings_clicked()
 {
-
+    auto textFormat = ReadFormatFromUI();
+    pParent->windowsettings->msTextFormat[this->ui->listView->currentRow()] = textFormat;
+    pParent->windowsettings->changedItems.push_back(this->ui->listView->currentRow());
+    FlashList();
 }
 
 
 void Settings::on_pushButton_chooseBackGroundColor_clicked()
 {
-
+    QColor color = QColorDialog::getColor(this->ui->lineEdit_backGroundColor->text(), this);
+    if (color.isValid()) {
+        COLORREF colorRef{ RGB(color.red(), color.green(), color.blue()) };
+        this->ui->lineEdit_backGroundColor->setText(QString::fromStdString(ColorRefToHexString(colorRef)));
+    }
 }
 
 
 void Settings::on_checkBox_useColor_stateChanged(int arg1)
 {
-
+    this->ui->lineEdit_backGroundColor->setEnabled(arg1 == Qt::Checked);
+    this->ui->horizontalSlider_alpha->setEnabled(arg1 == Qt::Checked);
+    this->ui->pushButton_chooseBackGroundColor->setEnabled(arg1 == Qt::Checked);
+    this->ui->lineEdit_backGroundImg->setEnabled(arg1 != Qt::Checked);
+    this->ui->pushButton_chooseBackGround->setEnabled(arg1 != Qt::Checked);
 }
 

@@ -411,10 +411,6 @@ int TimeTable::mGetCurrentLesson(int)
             }
         }
     }
-	else
-	{
-		CurrentLesson.mSetValue("", 0, 0);
-	}
 
     // Return the index of the current lesson
     return currentIndex;
@@ -451,19 +447,15 @@ std::string TimeTable::mGetInfo(const std::string& week)
 	mGetTodayMoreInfo(Infos, week);
 	static int count{ 0 };
 	static int currentItem{ 0 };
-	const int changeAfterTimes{ 10 };
+	const int changeAfterTimes{ 19 };
 	if (Infos.empty()) {
 		return "";
 	}
-
-	if (count >= changeAfterTimes) {
-		if (currentItem >= Infos.size()-1) {
+	if (currentItem >= Infos.size()-1) {
 			currentItem = 0;
 		}
-		else
-		{
-			++currentItem;
-		}
+	else if (count >= changeAfterTimes) {
+		++currentItem;
 		count = 0;
 	}
 	else

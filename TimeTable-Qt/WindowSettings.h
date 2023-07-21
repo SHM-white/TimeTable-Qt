@@ -13,8 +13,8 @@
 //WindowSettings类，用于保存设置，包含与窗口绘图有关函数
 class WindowSettings {
 public:
-	const int minVersion[3]{ 2,4,0 };
-	const int currentVersion[3]{ 2,4,0 };
+	const int minVersion[3]{ 2,5,0 };
+	const int currentVersion[3]{ 2,5,0 };
 	WindowSettings() = default;
 	WindowSettings(const WindowSettings& another) = default;
 	WindowSettings(WindowSettings& another) = default;
@@ -44,9 +44,9 @@ public:
 	std::string msLessonNull{ "" };
 	std::string msLessonInfoFile{ ".\\Lessons.json" };
 	std::string msBackGroundImg{ "" };
-	COLORREF mcBackGroundColor{ 0x00ffffff };
 	int miBackGroundColor[4]{ 255,255,255,1 };
 	bool bAcrylicEffect{ false };
+	bool mUseImgAsBackGround{ true };
 	bool Utf8{ true };
 	tm mCountDownDay;
 	std::string msSettingPath{ ".\\Config.json" };

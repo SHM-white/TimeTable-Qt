@@ -38,7 +38,6 @@ int WindowSettings::mGetWindowSettings()
 		miLessonInLine = Settings["LessonInLine"].asInt();
 		msLessonNull = Settings["LessonNull"].asString();
 		msLessonInfoFile = Settings["LessonInfoFile"].asString();
-		mcBackGroundColor = RGB(Settings["BackGroundColor"][0].asInt(), Settings["BackGroundColor"][1].asInt(), Settings["BackGroundColor"][2].asInt());
 		for (int i = 0; i < Settings["BackGroundColor"].size(); i++) {
 			miBackGroundColor[i] = Settings["BackGroundColor"][i].asInt();
 		}
@@ -56,6 +55,7 @@ int WindowSettings::mGetWindowSettings()
 		mCountDownDay.tm_min = Settings["CountDownDay"][4].asInt();
 		mCountDownDay.tm_sec = Settings["CountDownDay"][5].asInt();
 		bAcrylicEffect = Settings["AcrylicEffect"].asBool();
+        mUseImgAsBackGround= Settings["ImgAsBackGround"].asBool();
 	}
 	return 1;
 }
@@ -65,50 +65,71 @@ int WindowSettings::save()
 }
 int WindowSettings::save(const std::string& ConfigPath)
 {
-	Json::StyledWriter sw;
-	Json::Value root;
-	Json::Reader reader;
-	std::ifstream in(msSettingPath, std::ios::in);
-	if (in.is_open()) {
-		reader.parse(in, root);
-		in.close();
-	}
-	std::fstream os(ConfigPath, std::ios::out | std::ios::trunc);
-	Json::Value& Settings = root["Settings"]["Window"];
-	//fill settings
-	Settings["WindowSize"].clear();
-	Settings["WindowSize"].append(miWindowWeight);
-	Settings["WindowSize"].append(miWindowHeight);
-	Settings["WindowLocation"].clear();
-	Settings["WindowLocation"].append(miWindowX);
-	Settings["WindowLocation"].append(miWindowY);
-	Settings["WindowLocation"].append(miAllLessonWindowX);
-	Settings["WindowLocation"].append(miAllLessonWindowY);
-	Settings["LessonInLine"] = miLessonInLine;
-	Settings["LessonNull"] = msLessonNull;
-	//Settings["LessonInfoFile"] = msLessonInfoFile;
-	Settings["BackGroundColor"].clear();
-	for (auto color : miBackGroundColor) {
-		Settings["BackGroundColor"].append(color);
-	}
-	Settings["BackGroundImg"] = msBackGroundImg;
-	Settings["TextFormat"].clear();
-	for (const auto& format : msTextFormat) {
-		Settings["TextFormat"].append(format.GetJsonValue());
-	}
-	Settings["AcrylicEffect"] = bAcrylicEffect;
-	Settings["CountDownDayInLine"] = miCountDownDayInLine;
-	Settings["CountDownDay"].clear();
-	Settings["CountDownDay"].append(mCountDownDay.tm_year+1900);
-	Settings["CountDownDay"].append(mCountDownDay.tm_mon+1);
-	Settings["CountDownDay"].append(mCountDownDay.tm_mday);
-	Settings["CountDownDay"].append(mCountDownDay.tm_hour);
-	Settings["CountDownDay"].append(mCountDownDay.tm_min);
-	Settings["CountDownDay"].append(mCountDownDay.tm_sec);
-	
-	os<<sw.write(root);
-	os.close();
-	return 0;
+    // Create a Json writer
+    Json::StyledWriter sw;
+    // Create a Json root object
+    Json::Value root;
+    // Create a Json reader
+    Json::Reader reader;
+    // Open the input file stream
+    std::ifstream in(msSettingPath, std::ios::in);
+    // If the input file stream is open
+    if (in.is_open()) {
+        // Parse the input file stream and store the result in the root object
+        reader.parse(in, root);
+        // Close the input file stream
+        in.close();
+    }
+    // Open the output file stream
+    std::fstream os(ConfigPath, std::ios::out | std::ios::trunc);
+    // Get the "Settings" object from the root object and then get the "Window" object from the "Settings" object
+    Json::Value& Settings = root["Settings"]["Window"];
+    // Clear the "WindowSize" array and append the window weight and height
+    Settings["WindowSize"].clear();
+    Settings["WindowSize"].append(miWindowWeight);
+    Settings["WindowSize"].append(miWindowHeight);
+    // Clear the "WindowLocation" array and append the window position and all lesson window position
+    Settings["WindowLocation"].clear();
+    Settings["WindowLocation"].append(miWindowX);
+    Settings["WindowLocation"].append(miWindowY);
+    Settings["WindowLocation"].append(miAllLessonWindowX);
+    Settings["WindowLocation"].append(miAllLessonWindowY);
+    // Set the "LessonInLine" and "LessonNull" properties
+    Settings["LessonInLine"] = miLessonInLine;
+    Settings["LessonNull"] = msLessonNull;
+    // Clear the "BackGroundColor" array and append each color
+    Settings["BackGroundColor"].clear();
+    for (auto color : miBackGroundColor) {
+        Settings["BackGroundColor"].append(color);
+    }
+    // Set the "BackGroundImg" property
+    Settings["BackGroundImg"] = msBackGroundImg;
+    // Clear the "TextFormat" array and append each text format
+    Settings["TextFormat"].clear();
+    for (const auto& format : msTextFormat) {
+        Settings["TextFormat"].append(format.GetJsonValue());
+    }
+    // Set the "AcrylicEffect" and "UseImgBackGround" properties
+    Settings["AcrylicEffect"] = bAcrylicEffect;
+    Settings["ImgAsBackGround"] = mUseImgAsBackGround;
+    // Set the "CountDownDayInLine" property
+    Settings["CountDownDayInLine"] = miCountDownDayInLine;
+    // Clear the "CountDownDay" array and append the count down day values
+    Settings["CountDownDay"].clear();
+    Settings["CountDownDay"].append(mCountDownDay.tm_year+1900);
+    Settings["CountDownDay"].append(mCountDownDay.tm_mon+1);
+    Settings["CountDownDay"].append(mCountDownDay.tm_mday);
+    Settings["CountDownDay"].append(mCountDownDay.tm_hour);
+    Settings["CountDownDay"].append(mCountDownDay.tm_min);
+    Settings["CountDownDay"].append(mCountDownDay.tm_sec);
+    
+    // Write the root object to the output file stream
+    os<<sw.write(root);
+    // Close the output file stream
+    os.close();
+    
+    // Return 0 to indicate success
+    return 0;
 }
 //获取配置文件中某一项文本
 int WindowSettings::mGetTextItem(const std::string& Item, std::string& input)

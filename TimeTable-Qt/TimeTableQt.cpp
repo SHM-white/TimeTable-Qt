@@ -122,22 +122,24 @@ void TimeTableQt::updateTexts()
         WindowItem item;
         QString& text = item.text;
 
-        const auto &currentText = i.Texts[i.updateCounter];
-        const auto& translatedText = translateUtfToAnsi(currentText.text);
-        
+        auto currentText = i.Texts[i.updateCounter];
+        auto translatedText = translateUtfToAnsi(currentText.text);
+
         switch (currentText.type)
         {
         case TextType::CurrentTime:
             text = QString::fromLocal8Bit(timetable->mGetCurrentTime(translatedText));
             break;
         case TextType::CurrentLesson:
-            text = QString::fromLocal8Bit(timetable->mGetCurrentTime(translatedText)) + QString::fromStdString(timetable->mGetCurrentLesson(translateUtfToAnsi(windowsettings->msLessonNull)));
+            text = QString::fromLocal8Bit(timetable->mGetCurrentTime(translatedText)) +
+                   QString::fromStdString(timetable->mGetCurrentLesson(translateUtfToAnsi(windowsettings->msLessonNull)));
             break;
         case TextType::CountDownDay:
             text = QString::fromLocal8Bit(timetable->mGetCountDown(windowsettings->mCountDownDay, translatedText));
             break;
         case TextType::Info:
-            text = QString::fromLocal8Bit(timetable->mGetCurrentTime(translatedText)) + QString::fromStdString(timetable->mGetInfo());
+            text = QString::fromLocal8Bit(timetable->mGetCurrentTime(translatedText)) +
+                   QString::fromStdString(timetable->mGetInfo());
             break;
         default:
             break;
@@ -204,10 +206,12 @@ TODO:
 void TimeTableQt::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
+//#if DEBUG||Debug
     painter.drawRect(rect());
+//#endif
     
     // Draw background image
-    if (pic.isNull() 
+    if (pic.isNull() || !(windowsettings->mUseImgAsBackGround)
 #if EXPERENCE
     || (windowsettings->bAcrylicEffect)
 #endif

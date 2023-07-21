@@ -28,6 +28,8 @@ Json::Value TextFormat::GetJsonValue() const
 	valueColor.append(GetGValue(color));
 	location.append((int)mpTextLocation.x);
 	location.append((int)mpTextLocation.y);
+	location.append((int)miSizeW);
+	location.append((int)miSizeH);
 	for (const auto& i : Texts) {
 		textItem.append(i.getJsonValue());
 	}
@@ -49,7 +51,17 @@ TextItem TextFormat::getCurrentText() const
 
 bool TextFormat::update()
 {
-    updateCounter = (updateCounter + 1) % Texts.size();
+	if (Texts.empty()) {
+		return false;
+	}
+	static int i = 0;
+	i = (i + 1) % 20;
+	if(i==0){
+		++updateCounter;
+	}
+	if(updateCounter>=Texts.size()){
+		updateCounter=0;
+	}
     return true;
 }
 
