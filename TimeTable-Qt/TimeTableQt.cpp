@@ -46,6 +46,7 @@ TimeTableQt::TimeTableQt(QWidget *parent)
     Json::mGetTextItem("ConfigFile", path, DEFAULT_CONFIG_PATH);
     windowsettings = std::make_shared<WindowSettings>(path);
     Json::mGetTextItem("LessonInfoFile", path, DEFAULT_CONFIG_PATH);
+    windowsettings->msLessonInfoFile = path;
     timetable = std::make_shared<TimeTable>(path);
     mInitializeWindow();
     {

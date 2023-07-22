@@ -478,7 +478,7 @@ int TimeTable::mGetLesson(std::vector<std::string>& input, const std::string& we
 int TimeTable::mGetLesson(std::vector<Lesson>& input, const std::string& week)
 {
 	Json::Value root = Json::GetRootJsonValue(mLessonInfoPath);
-	if (root[week].isNull()) {
+	if (root.isNull() || root[week].isNull()) {
 		input.push_back(Lesson("null", 0, 2400));
 		return 0;
 	}

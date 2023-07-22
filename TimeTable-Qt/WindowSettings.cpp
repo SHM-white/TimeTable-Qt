@@ -37,7 +37,6 @@ int WindowSettings::mGetWindowSettings()
 		miAllLessonWindowY = Settings["WindowLocation"][3].asInt();
 		miLessonInLine = Settings["LessonInLine"].asInt();
 		msLessonNull = Settings["LessonNull"].asString();
-		msLessonInfoFile = Settings["LessonInfoFile"].asString();
 		for (int i = 0; i < Settings["BackGroundColor"].size(); i++) {
 			miBackGroundColor[i] = Settings["BackGroundColor"][i].asInt();
 		}

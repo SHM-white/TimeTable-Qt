@@ -13,11 +13,11 @@ Json::Value Json::GetRootJsonValue(const std::string& TargetPath)
 	Json::Reader reader;
 	Json::Value root;
 	std::ifstream in(TargetPath, std::ios::in);
-	if (!in.is_open())
+	if ((!in.is_open())||(!reader.parse(in, root)))
 	{
-		return 0;
+        root = Json::Value(Json::nullValue);
+        return root;
 	};
-	reader.parse(in, root);
 	return root;
 }
 
