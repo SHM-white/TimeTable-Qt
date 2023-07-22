@@ -26,7 +26,6 @@
 #endif
 #endif // EXPERENCE
 
-TodayAllLessons* allLessonWindow;
 
 TimeTableQt::TimeTableQt(QWidget *parent)
     : QWidget(parent)
@@ -65,10 +64,7 @@ TimeTableQt::~TimeTableQt()
 
 bool TimeTableQt::mInitializeWindow()
 {
-    //if (allLessonWindow == nullptr) {
-    //    allLessonWindow = new TodayAllLessons(this);
-    //}
-    //allLessonWindow->show();
+    
 
     this->setGeometry(windowsettings->miWindowX, windowsettings->miWindowY, windowsettings->miWindowWeight, windowsettings->miWindowHeight);
     this->setFixedSize(windowsettings->miWindowWeight, windowsettings->miWindowHeight);
@@ -193,9 +189,10 @@ void TimeTableQt::ShowShadow()
 
 void TimeTableQt::closeEvent(QCloseEvent* event)
 {
-    if (allLessonWindow != nullptr) {
-        allLessonWindow->close();
+    if (this->ui.actionshowTodayAll->isChecked()) {
+        this->ui.actionshowTodayAll->setChecked(false);
     }
+    on_actionshowTodayAll_triggered();
     event->accept();
 }
 
@@ -302,6 +299,7 @@ void TimeTableQt::on_actionminimize_triggered()
 
 void TimeTableQt::on_actionshowall_triggered()
 {
+
     ShowAllLessons* dialog = new ShowAllLessons(this);
     dialog->show();
 }
@@ -350,10 +348,11 @@ void TimeTableQt::on_actionBootAtPowerOn_triggered()
 
 void TimeTableQt::on_actionshowTodayAll_triggered()
 {
+    static TodayAllLessons* allLessonWindow;
+    if (allLessonWindow == nullptr) {
+        allLessonWindow = new TodayAllLessons(this);
+    }
     if (this->ui.actionshowTodayAll->isChecked()) {
-        if (allLessonWindow == nullptr) {
-            allLessonWindow = new TodayAllLessons(this);
-        }
         allLessonWindow->show();
     }
     else

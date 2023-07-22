@@ -42,6 +42,7 @@ void TodayAllLessons::paintEvent(QPaintEvent*)
     std::vector<QString> qAllLessons;
     for (const auto& i : allLessons) {
         qAllLessons.push_back(QString::fromStdString(i.mGetName()));
+        qAllLessons.back() = qAllLessons.back().at(0);
     }
     painter.fillRect(rect(), QColor(255, 255, 255, 100));
     painter.setPen(QPen(QBrush(QColor(0, 0, 0, 255)), 2));
