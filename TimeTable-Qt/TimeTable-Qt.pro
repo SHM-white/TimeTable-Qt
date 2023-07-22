@@ -102,8 +102,8 @@ RESOURCES += \
 
 RC_FILE += TimeTable-Qt.rc
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/jsoncpp/lib/release/ -ljsoncpp
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/jsoncpp/lib/debug/ -ljsoncpp
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/jsoncpp/lib/Release/ -ljsoncpp
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/jsoncpp/lib/Debug/ -ljsoncpp
 
 INCLUDEPATH += $$PWD/jsoncpp/include
 DEPENDPATH += $$PWD/jsoncpp/include
