@@ -22,7 +22,7 @@ jobs:
         # Version of Qt to install
         version: 6.5.1
         # Host platform
-        host: x64
+        host: windows
         # Target platform for build
         target: Windows
         # Architecture for Windows/Android
