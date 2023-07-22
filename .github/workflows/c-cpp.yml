@@ -12,18 +12,24 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Install Qt5/Qt6 (yaqti)
-    # You may pin to the exact commit or the version.
-    # uses: WillBrennan/yaqti@8182822afd102e931137d71da54f52a13597af8d
-      uses: WillBrennan/yaqti@2021.07.29
+    - name: Install Qt
+      # You may pin to the exact commit or the version.
+      # uses: jurplel/install-qt-action@2d518188e746defd451af981c3c901f463d99e29
+      uses: jurplel/install-qt-action@v3.2.1
       with:
-    # Qt version to pick 5.15.2 or 6.2.1
-        version: 6.2.0
-    # install os; linux, windows, or mac
-        os: windows
-    # what platform are you installing for? desktop, winrt, android, or ios
-        platform: desktop
-    # what optional Qt modules to install? qtcharts, qtnetworkauth ect...
+        # Directory to install Qt
+        dir: C:\Qt
+        # Version of Qt to install
+        version: 6.5.1
+        # Host platform
+        host: x64
+        # Target platform for build
+        target: Windows
+        # Architecture for Windows/Android
+        arch: x64
+        # Whether or not to install Qt dependencies on Linux
+        install-deps: false # optional, default is true
+        # Additional Qt modules to install
 
     - name: Visual Studio shell
     # You may pin to the exact commit or the version.
