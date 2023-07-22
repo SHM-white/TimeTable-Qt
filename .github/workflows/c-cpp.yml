@@ -20,7 +20,7 @@ jobs:
         # Directory to install Qt
         dir: C:\
         # Version of Qt to install
-        version: 6.5.1
+        version: 6.4.*
         # Host platform
         host: windows
         # Target platform for build
