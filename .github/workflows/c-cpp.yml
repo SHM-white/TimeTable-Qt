@@ -58,11 +58,11 @@ jobs:
       uses: actions/upload-artifact@v2
       with: 
         name: TimeTable-Qt-Release
-        path: ${{ github.workspace }}\build\release\TimeTable-Qt.exe
+        path: ${{ github.workspace }}\build\release\
         
     - name: Create Debug
       uses: actions/upload-artifact@v2
       with: 
         name: TimeTable-Qt-Debug
-        path: ${{ github.workspace }}\build\debug\TimeTable-Qt.exe
+        path: ${{ github.workspace }}\build\debug\
       
