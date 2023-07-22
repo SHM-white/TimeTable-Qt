@@ -20,7 +20,7 @@ jobs:
         # Directory to install Qt
         dir: C:\
         # Version of Qt to install
-        version: 6.4.*
+        version: 6.5.1
         # Host platform
         host: windows
         # Target platform for build
@@ -41,13 +41,14 @@ jobs:
 
     - name: build
       run: |
-        dir C:\
+        dir C:\Qt
+        tree D:\a\TimeTable-Qt
         echo "---------"
-        dir D:\
+        dir D:\a\TimeTable-Qt
         echo "---------"
         dir ${{ github.workspace }}
-        ${{ github.workspace }}\scripts\build_release.bat
-        ${{ github.workspace }}\scripts\build_debug.bat
+        call ${{ github.workspace }}\scripts\build_release.bat
+        call ${{ github.workspace }}\scripts\build_debug.bat
         
     - name: Create Release
       uses: actions/upload-artifact@v2
