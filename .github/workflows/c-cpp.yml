@@ -18,7 +18,7 @@ jobs:
       uses: WillBrennan/yaqti@2021.07.29
       with:
     # Qt version to pick 5.15.2 or 6.2.1
-        version: 6.5.1
+        version: 6.2.0
     # install os; linux, windows, or mac
         os: windows
     # what platform are you installing for? desktop, winrt, android, or ios
