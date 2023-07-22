@@ -24,7 +24,7 @@ jobs:
         # Host platform
         host: windows
         # Target platform for build
-        target: Windows
+        target: desktop
         # Architecture for Windows/Android
         arch: x64
         # Whether or not to install Qt dependencies on Linux
