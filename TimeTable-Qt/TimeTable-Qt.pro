@@ -91,11 +91,11 @@ DISTFILES += \
     config.json \
     small.ico
 
-win32:CONFIG(release, debug|release): LIBS += -LC:/libraries/jsoncpp/lib/release/ -ljsoncpp
-else:win32:CONFIG(debug, debug|release): LIBS += -LC:/libraries/jsoncpp/lib/debug/ -ljsoncpp
+win32:CONFIG(release, debug|release): LIBS += ./jsoncpp/lib/release/ -ljsoncpp
+else:win32:CONFIG(debug, debug|release): LIBS += ./jsoncpp/lib/debug/ -ljsoncpp
 
-INCLUDEPATH += C:/libraries/jsoncpp/include
-DEPENDPATH += C:/libraries/jsoncpp/include
+INCLUDEPATH += ./include
+DEPENDPATH += ./include
 
 RESOURCES += \
     TimeTableQt.qrc \
