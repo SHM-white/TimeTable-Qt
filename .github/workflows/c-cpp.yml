@@ -18,7 +18,7 @@ jobs:
       uses: jurplel/install-qt-action@v3.2.1
       with:
         # Directory to install Qt
-        dir: C:\Qt
+        dir: C:\
         # Version of Qt to install
         version: 6.5.1
         # Host platform
@@ -26,7 +26,7 @@ jobs:
         # Target platform for build
         target: desktop
         # Architecture for Windows/Android
-        arch: x64
+        arch: win64_msvc2019_64
         # Whether or not to install Qt dependencies on Linux
         install-deps: false # optional, default is true
         # Additional Qt modules to install
