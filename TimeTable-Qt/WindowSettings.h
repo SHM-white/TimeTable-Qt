@@ -14,7 +14,7 @@
 class WindowSettings {
 public:
 	const int minVersion[3]{ 2,5,0 };
-	const int currentVersion[3]{ 2,5,0 };
+	const int currentVersion[3]{ 2,5,1 };
 	WindowSettings() = default;
 	WindowSettings(const WindowSettings& another) = default;
 	WindowSettings(WindowSettings& another) = default;

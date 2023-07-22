@@ -3,7 +3,7 @@
 
 
 #define MyAppName "TimeTable-Qt"
-#define MyAppVersion "2.5.0"
+#define MyAppVersion "2.5.1"
 #define MyAppPublisher "SHM_white"
 #define MyAppURL "https://github.com/SHM-white/TimeTable-Qt"
 #define MyAppExeName "TimeTable-Qt.exe"
@@ -24,7 +24,7 @@ DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 OutputDir=D:\setup files
-OutputBaseFilename=TimeTable-Qt-Setup
+OutputBaseFilename=TimeTable-Qt-Setup-{#MyAppVersion}
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
