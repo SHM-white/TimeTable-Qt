@@ -15,6 +15,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Check dir
+      run: |
+        tree ${{ github.workspace }}
+
     - name: Enable Developer Command Prompt
       uses: ilammy/msvc-dev-cmd@v1.12.1
       
