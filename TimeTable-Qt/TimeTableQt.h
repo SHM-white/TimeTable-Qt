@@ -19,7 +19,7 @@ public:
     bool mInitializeWindow();
     std::shared_ptr<WindowSettings> windowsettings;
     std::shared_ptr<TimeTable> timetable;
-    static std::string translateUtfToAnsi(const std::string& input);
+    static std::wstring translateUtfToAnsi(const std::wstring& input);
     Ui::TimeTableQtClass ui;
 private:
     Qt::WindowFlags flags;

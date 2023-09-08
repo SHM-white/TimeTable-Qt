@@ -1,4 +1,5 @@
 ﻿#include "Lesson.h"
+#include "include.h"
 #include <compare>
 #include <format>
 
@@ -11,32 +12,32 @@ std::strong_ordering Lesson::operator<=>(const Lesson& another) const
 	return result;
 }
 
-Lesson::Lesson(const std::string& Day, const std::string& Name, int begin, int end)
+Lesson::Lesson(const std::wstring& Day, const std::wstring& Name, int begin, int end)
 {
 	mSetValue(Day, Name, begin, end);
 }
 
-Lesson::Lesson(int Day, const std::string& Name, int begin, int end)
+Lesson::Lesson(int Day, const std::wstring& Name, int begin, int end)
 {
 	mSetValue(Days[Day], Name, begin, end);
 }
 
-Lesson::Lesson(const std::string& Name, int begin, int end)
+Lesson::Lesson(const std::wstring& Name, int begin, int end)
 {
 	mSetValue(Name, begin, end);
 }
 
-const std::string Lesson::mGetBeginTimeAsString() const
+const std::wstring Lesson::mGetBeginTimeAsString() const
 {
-	return std::to_string(iBeginTime);
+	return std::to_wstring(iBeginTime);
 }
 
-const std::string Lesson::mGetEndTimeAsString() const
+const std::wstring Lesson::mGetEndTimeAsString() const
 {
-	return std::to_string(iEndTime);
+	return std::to_wstring(iEndTime);
 }
 
-int Lesson::mSetValue(const std::string& Day, const std::string& s, int b, int e)
+int Lesson::mSetValue(const std::wstring& Day, const std::wstring& s, int b, int e)
 {
 	iBeginTime = b;
 	iEndTime = e;
@@ -45,28 +46,28 @@ int Lesson::mSetValue(const std::string& Day, const std::string& s, int b, int e
 	return 0;
 }
 
-int Lesson::mSetValue(int Day, const std::string& s, int b, int e)
+int Lesson::mSetValue(int Day, const std::wstring& s, int b, int e)
 {
 	return mSetValue(Days[Day], s, b, e);
 }
 
-int Lesson::mSetValue(const std::string& s, int b, int e)
+int Lesson::mSetValue(const std::wstring& s, int b, int e)
 {
 	return mSetValue(Days[0], s, b, e);
 }
 
-const std::string Lesson::GetValue(const std::string& seprator) const
+const std::wstring Lesson::GetValue(const std::wstring& seprator) const
 {
-	auto result{ std::format("{0}{4}{1}{4}{2}{4}{3}",sDay, sName,iBeginTime,iEndTime,seprator) };
+	auto result{ std::format(L"{0}{4}{1}{4}{2}{4}{3}",sDay, sName,iBeginTime,iEndTime,seprator) };
 	return result;
 }
 
 const Json::Value Lesson::GetJsonValue() const
 {
 	Json::Value result;
-	result.append(sName);
-	result.append(std::format("{:04}", iBeginTime));
-	result.append(std::format("{:04}", iEndTime));
+	result.append(wtu8(sName));
+	result.append(wtu8(std::format(L"{:04}", iBeginTime)));
+	result.append(wtu8(std::format(L"{:04}", iEndTime)));
 	return result;
 }
 

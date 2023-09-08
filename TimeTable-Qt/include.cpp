@@ -1,14 +1,14 @@
 ﻿#include "include.h"
 
-bool Json::ChangeValue(const std::string& Item, const Json::Value& value, const std::string& filePath)
+bool Json::ChangeValue(const std::wstring& Item, const Json::Value& value, const std::wstring& filePath)
 {
 	Json::Value root = GetRootJsonValue(filePath);
-	root[Item] = value;
+    root[wtu8(Item)] = value;
 	SaveJson(filePath, root);
     return true;
 }
 
-Json::Value Json::GetRootJsonValue(const std::string& TargetPath)
+Json::Value Json::GetRootJsonValue(const std::wstring& TargetPath)
 {
 	Json::Reader reader;
 	Json::Value root;
@@ -21,7 +21,7 @@ Json::Value Json::GetRootJsonValue(const std::string& TargetPath)
 	return root;
 }
 
-int Json::SaveJson(const std::string& TargetPath, const Json::Value& root)
+int Json::SaveJson(const std::wstring& TargetPath, const Json::Value& root)
 {
 	std::fstream os(TargetPath, std::ios::out | std::ios::trunc);
 	if (!os.is_open()) { return 0; }
@@ -32,7 +32,7 @@ int Json::SaveJson(const std::string& TargetPath, const Json::Value& root)
 }
 
 
-int Json::mGetTextItem(const std::string& Item, std::string& input, const std::string& filePath)
+int Json::mGetTextItem(const std::wstring& Item, std::wstring& input, const std::wstring& filePath)
 {
     std::ifstream in(filePath);
     if (!in.is_open()) {
@@ -44,15 +44,15 @@ int Json::mGetTextItem(const std::string& Item, std::string& input, const std::s
     if (!reader.parse(in, root)){
 		return 0;
 	}
-    const Json::Value Text = root[Item];
-    input = Text.asString();
+    const Json::Value Text = root[wtu8(Item)];
+    input = u8tw(Text.asString());
 
     return 1;
 }
 
-std::string Json::mGetTextItem(const std::string& Item, const std::string& filePath, int)
+std::wstring Json::mGetTextItem(const std::wstring& Item, const std::wstring& filePath, int)
 {
-    std::string value;
+    std::wstring value;
     if (Json::mGetTextItem(Item, value, filePath)) {
         return value;
     } else {
@@ -60,15 +60,17 @@ std::string Json::mGetTextItem(const std::string& Item, const std::string& fileP
     }
 }
 
-std::string Json::utf8ToGB2312(const std::string& str)
+std::string ToolFunctions::wstringToU8string(const std::wstring& wstring)
+{
+    // Create a wstring converter for UTF-8 encoding
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+
+    // Convert the wstring to UTF-8 encoded string and return it
+    return converter.to_bytes(wstring);
+}
+
+std::wstring ToolFunctions::u8stringToWstring(const std::string& u8string)
 {
     std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-    std::wstring wide = converter.from_bytes(str);
-
-    std::vector<char> buffer(wide.size() * 2);
-    std::wcstombs(buffer.data(), wide.c_str(), buffer.size());
-
-    std::string result(buffer.data(), buffer.data() + std::wcslen(wide.c_str()));
-
-    return result;
+    return converter.from_bytes(u8string);
 }

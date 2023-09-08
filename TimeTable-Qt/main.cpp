@@ -5,9 +5,9 @@
 int main(int argc, char *argv[])
 {
     /*{
-        std::string fullPath = argv[0];
+        std::wstring fullPath = argv[0];
         int find = fullPath.find_last_of('\\');
-        std::string path{fullPath.begin(), fullPath.begin() + find};
+        std::wstring path{fullPath.begin(), fullPath.begin() + find};
         SetCurrentDirectory(path.c_str());
     }*/
     QApplication a(argc, argv);

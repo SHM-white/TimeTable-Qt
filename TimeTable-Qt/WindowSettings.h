@@ -18,7 +18,7 @@ public:
 	WindowSettings() = default;
 	WindowSettings(const WindowSettings& another) = default;
 	WindowSettings(WindowSettings& another) = default;
-	WindowSettings(const std::string path)
+	WindowSettings(const std::wstring path)
 		:msSettingPath{ path }
 	{
 		msTextFormat.push_back(TextFormat());
@@ -27,11 +27,11 @@ public:
 	WindowSettings& operator=(const WindowSettings& another) = default;
 	int mGetWindowSettings();
 	int save();
-	int save(const std::string& ConfigPath);
-	int mGetTextItem(const std::string& Item, std::string& input);	
-	static int mGetTextItem(const std::string& Item, std::string& input, const std::string& filePath);
-	static std::string mGetTextItem(const std::string& Item, const std::string& filePath, int);
-	const std::string mChangeConfigPath(const std::string& path);
+	int save(const std::wstring& ConfigPath);
+	int mGetTextItem(const std::wstring& Item, std::wstring& input);	
+	static int mGetTextItem(const std::wstring& Item, std::wstring& input, const std::wstring& filePath);
+	static std::wstring mGetTextItem(const std::wstring& Item, const std::wstring& filePath, int);
+	const std::wstring mChangeConfigPath(const std::wstring& path);
 	int miWindowHeight{ 120 };
 	int miWindowWeight{ 250 };
 	int miAllLessonWindowX{ 300 };
@@ -41,14 +41,14 @@ public:
 	int miLessonInLine{ 1 };
 	int miCountDownDayInLine{ 10 };
 	std::vector<TextFormat> msTextFormat;
-	std::string msLessonNull{ "" };
-	std::string msLessonInfoFile{ ".\\Lessons.json" };
-	std::string msBackGroundImg{ "" };
+	std::wstring msLessonNull{ L"" };
+	std::wstring msLessonInfoFile{ L".\\Lessons.json" };
+	std::wstring msBackGroundImg{ L"" };
 	int miBackGroundColor[4]{ 255,255,255,1 };
 	bool bAcrylicEffect{ false };
 	bool mUseImgAsBackGround{ true };
 	bool Utf8{ true };
 	tm mCountDownDay;
-	std::string msSettingPath{ ".\\Config.json" };
+	std::wstring msSettingPath{ L".\\Config.json" };
 	std::vector<int> changedItems;
 };

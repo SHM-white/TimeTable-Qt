@@ -18,7 +18,7 @@ class TextItem
 {
 public:
 	Json::Value getJsonValue() const;
-	std::string text;
+	std::wstring text;
 	TextType type;
 };
 class TextFormat {
@@ -33,7 +33,7 @@ public:
 	POINT mpTextLocation{ 0,0 };
 	int miTextSize{ 20 };
 	std::vector<TextItem> Texts;
-	std::string msFontName{ "Consolas" };
+	std::wstring msFontName{ L"Consolas" };
 	COLORREF color{ 0x00000000 };
 	int updateCounter{ 0 };
 private:

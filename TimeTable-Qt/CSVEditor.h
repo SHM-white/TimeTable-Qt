@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include<string>
 #include<string_view>
@@ -12,21 +12,21 @@ class CSVEditor
 {
 public:
 	CSVEditor() = default;
-	CSVEditor(const std::string Path) {
+	CSVEditor(const std::wstring Path) {
 		mSetFilePath(Path);
-		data.push_back(std::vector<std::string>());
+		data.push_back(std::vector<std::wstring>());
 	}
-	int mSetFilePath(const std::string Path) {
+	int mSetFilePath(const std::wstring Path) {
 		mCsvPath = Path;
 		return 0;
 	}
 	int mGetLineCount();
 	int mGetCsvData();
 	//read:[line][order]
-	const std::vector<std::string>& operator[](int line);
+	const std::vector<std::wstring>& operator[](int line);
 private:
-	//std::vector<std::string> line;
-	std::vector<std::vector<std::string>> data;
-	std::string mCsvPath;
+	//std::vector<std::wstring> line;
+	std::vector<std::vector<std::wstring>> data;
+	std::wstring mCsvPath;
 };
 

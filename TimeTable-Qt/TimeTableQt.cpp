@@ -42,10 +42,10 @@ TimeTableQt::TimeTableQt(QWidget *parent)
     setAttribute(Qt::WA_TranslucentBackground);
     flags = windowFlags();
     setWindowFlags(flags | Qt::WindowStaysOnTopHint);
-    std::string path;
-    Json::mGetTextItem("ConfigFile", path, DEFAULT_CONFIG_PATH);
+    std::wstring path;
+    Json::mGetTextItem(L"ConfigFile", path, DEFAULT_CONFIG_PATH);
     windowsettings = std::make_shared<WindowSettings>(path);
-    Json::mGetTextItem("LessonInfoFile", path, DEFAULT_CONFIG_PATH);
+    Json::mGetTextItem(L"LessonInfoFile", path, DEFAULT_CONFIG_PATH);
     windowsettings->msLessonInfoFile = path;
     timetable = std::make_shared<TimeTable>(path);
     mInitializeWindow();
@@ -70,7 +70,7 @@ bool TimeTableQt::mInitializeWindow()
     this->setGeometry(windowsettings->miWindowX, windowsettings->miWindowY, windowsettings->miWindowWeight, windowsettings->miWindowHeight);
     this->setFixedSize(windowsettings->miWindowWeight, windowsettings->miWindowHeight);
 
-    QString picpath = QString::fromStdString(windowsettings->msBackGroundImg);
+    QString picpath = QString::fromStdWString(windowsettings->msBackGroundImg);
     pic = QPixmap(picpath);
     pic = pic.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     
@@ -100,10 +100,10 @@ bool TimeTableQt::mInitializeWindow()
     return true;
 }
 
-std::string TimeTableQt::translateUtfToAnsi(const std::string& input)
+std::wstring TimeTableQt::translateUtfToAnsi(const std::wstring& input)
 {
-    QString tmp = QString::fromUtf8(input);
-    return tmp.toLocal8Bit().data();
+    QString tmp = QString::fromStdWString(input);
+    return tmp.toStdWString().data();
 }
 
 
@@ -125,24 +125,24 @@ void TimeTableQt::updateTexts()
         switch (currentText.type)
         {
         case TextType::CurrentTime:
-            text = QString::fromLocal8Bit(timetable->mGetCurrentTime(translatedText));
+            text = QString::fromStdWString(timetable->mGetCurrentTime(translatedText));
             break;
         case TextType::CurrentLesson:
-            text = QString::fromLocal8Bit(timetable->mGetCurrentTime(translatedText)) +
-                   QString::fromStdString(timetable->mGetCurrentLesson(translateUtfToAnsi(windowsettings->msLessonNull)));
+            text = QString::fromStdWString(timetable->mGetCurrentTime(translatedText)) +
+                   QString::fromStdWString(timetable->mGetCurrentLesson(translateUtfToAnsi(windowsettings->msLessonNull)));
             break;
         case TextType::CountDownDay:
-            text = QString::fromLocal8Bit(timetable->mGetCountDown(windowsettings->mCountDownDay, translatedText));
+            text = QString::fromStdWString(timetable->mGetCountDown(windowsettings->mCountDownDay, translatedText));
             break;
         case TextType::Info:
-            text = QString::fromLocal8Bit(timetable->mGetCurrentTime(translatedText)) +
-                   QString::fromStdString(timetable->mGetInfo());
+            text = QString::fromStdWString(timetable->mGetCurrentTime(translatedText)) +
+                   QString::fromStdWString(timetable->mGetInfo());
             break;
         default:
             break;
         }
         item.color = QColor(GetRValue(i.color), GetGValue(i.color), GetBValue(i.color));
-        item.font.setFamily(QString::fromStdString(i.msFontName));
+        item.font.setFamily(QString::fromStdWString(i.msFontName));
         item.font.setPointSize(i.miTextSize);
         item.position = QPoint(i.mpTextLocation.x, i.mpTextLocation.y);
         item.size = QSize(i.miSizeW, i.miSizeH);

@@ -3,7 +3,7 @@
 #include <qtimer.h>
 #include <string>
 //#include <windef.h>
-
+#include <locale>
 #include <QDialog>
 #include <QMouseEvent>
 #include <QPainter>
@@ -33,18 +33,50 @@
 #include <shlobj.h>
 #include <memory>
 #include <codecvt>
+//#include "ToWString.h"
 #pragma  comment(lib, "shell32.lib")
 
-#define DEFAULT_CONFIG_PATH "config.json"
-#define DEFAULT_LESSONINFO_PATH "Lessons.json"
+#define DEFAULT_CONFIG_PATH L"config.json"
+#define DEFAULT_LESSONINFO_PATH L"Lessons.json"
 
 //#define DEBUG 1
 
 namespace Json {
-	bool ChangeValue(const std::string& Item,const Json::Value& value,const std::string& filePath);
-	Json::Value GetRootJsonValue(const std::string& TargetPath);
-	int SaveJson(const std::string& TargetPath, const Json::Value& root);
-	int mGetTextItem(const std::string& Item, std::string& input, const std::string& filePath);
-	std::string mGetTextItem(const std::string& Item, const std::string& filePath, int);
-	std::string utf8ToGB2312(const std::string &str);
+	bool ChangeValue(const std::wstring& Item,const Json::Value& value,const std::wstring& filePath);
+	Json::Value GetRootJsonValue(const std::wstring& TargetPath);
+	int SaveJson(const std::wstring& TargetPath, const Json::Value& root);
+	int mGetTextItem(const std::wstring& Item, std::wstring& input, const std::wstring& filePath);
+	std::wstring mGetTextItem(const std::wstring& Item, const std::wstring& filePath, int);
+	
 }
+
+#if EXPERENCE
+
+// convert string to wstring
+std::wstring to_wide_string(const std::wstring& input)
+{
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+    return converter.from_bytes(input);
+}
+// convert wstring to string
+std::wstring to_byte_string(const std::wstring& input)
+{
+    // std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+    return converter.to_bytes(input);
+}
+
+#ifdef UNICODE
+#define string wstring
+#define asString() asString().c_str()
+#endif // UNICODE
+
+#endif //  EXPERENCE
+
+namespace ToolFunctions {
+    std::string wstringToU8string(const std::wstring& wstring);
+    std::wstring u8stringToWstring(const std::string& u8string);
+}
+
+static auto u8tw = ToolFunctions::u8stringToWstring;
+static auto wtu8 = ToolFunctions::wstringToU8string;

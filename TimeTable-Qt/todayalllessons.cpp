@@ -38,10 +38,10 @@ void TodayAllLessons::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
     std::vector<Lesson> allLessons;
-    pParent->timetable->mGetLesson(allLessons, pParent->timetable->mGetCurrentTime("%a"));
+    pParent->timetable->mGetLesson(allLessons, pParent->timetable->mGetCurrentTime(L"%a"));
     std::vector<QString> qAllLessons;
     for (const auto& i : allLessons) {
-        qAllLessons.push_back(QString::fromStdString(i.mGetName()));
+        qAllLessons.push_back(QString::fromStdWString(i.mGetName()));
         qAllLessons.back() = qAllLessons.back().at(0);
     }
     painter.fillRect(rect(), QColor(255, 255, 255, 100));

@@ -36,11 +36,11 @@ int WindowSettings::mGetWindowSettings()
 		miAllLessonWindowX = Settings["WindowLocation"][2].asInt();
 		miAllLessonWindowY = Settings["WindowLocation"][3].asInt();
 		miLessonInLine = Settings["LessonInLine"].asInt();
-		msLessonNull = Settings["LessonNull"].asString();
+        msLessonNull = u8tw(Settings["LessonNull"].asString());
 		for (int i = 0; i < Settings["BackGroundColor"].size(); i++) {
 			miBackGroundColor[i] = Settings["BackGroundColor"][i].asInt();
 		}
-		msBackGroundImg = Settings["BackGroundImg"].asString();
+        msBackGroundImg = u8tw(Settings["BackGroundImg"].asString());
 		msTextFormat.clear();
 		for (int i = 0; i < (int)Settings["TextFormat"].size(); i++) {
 			TextFormat textformat(Settings["TextFormat"][i]);
@@ -62,7 +62,7 @@ int WindowSettings::save()
 {
 	return save(msSettingPath);
 }
-int WindowSettings::save(const std::string& ConfigPath)
+int WindowSettings::save(const std::wstring& ConfigPath)
 {
     // Create a Json writer
     Json::StyledWriter sw;
@@ -95,14 +95,14 @@ int WindowSettings::save(const std::string& ConfigPath)
     Settings["WindowLocation"].append(miAllLessonWindowY);
     // Set the "LessonInLine" and "LessonNull" properties
     Settings["LessonInLine"] = miLessonInLine;
-    Settings["LessonNull"] = msLessonNull;
+    Settings["LessonNull"] = wtu8(msLessonNull);
     // Clear the "BackGroundColor" array and append each color
     Settings["BackGroundColor"].clear();
     for (auto color : miBackGroundColor) {
         Settings["BackGroundColor"].append(color);
     }
     // Set the "BackGroundImg" property
-    Settings["BackGroundImg"] = msBackGroundImg;
+    Settings["BackGroundImg"] = wtu8(msBackGroundImg);
     // Clear the "TextFormat" array and append each text format
     Settings["TextFormat"].clear();
     for (const auto& format : msTextFormat) {
@@ -131,28 +131,28 @@ int WindowSettings::save(const std::string& ConfigPath)
     return 0;
 }
 //获取配置文件中某一项文本
-int WindowSettings::mGetTextItem(const std::string& Item, std::string& input)
+int WindowSettings::mGetTextItem(const std::wstring& Item, std::wstring& input)
 {
 	return mGetTextItem(Item,input,msSettingPath);
 }
 
-int WindowSettings::mGetTextItem(const std::string& Item, std::string& input, const std::string& filePath)
+int WindowSettings::mGetTextItem(const std::wstring& Item, std::wstring& input, const std::wstring& filePath)
 {
 	return Json::mGetTextItem(Item, input, filePath);
 }
 
-std::string WindowSettings::mGetTextItem(const std::string& Item, const std::string& filePath, int)
+std::wstring WindowSettings::mGetTextItem(const std::wstring& Item, const std::wstring& filePath, int)
 {
 	return Json::mGetTextItem(Item, filePath, 0);
 }
 
-const std::string WindowSettings::mChangeConfigPath(const std::string& path)
+const std::wstring WindowSettings::mChangeConfigPath(const std::wstring& path)
 {
 	if (path.size() == 0) {
-		return "";
+		return L"";
 	}
-	std::string origin{ msSettingPath };
-	Json::ChangeValue("ConfigFile", path, DEFAULT_CONFIG_PATH);
+	std::wstring origin{ msSettingPath };
+    Json::ChangeValue(L"ConfigFile", wtu8(path), DEFAULT_CONFIG_PATH);
 	msSettingPath = path;
 	return origin;
 }

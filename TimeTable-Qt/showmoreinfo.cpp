@@ -11,12 +11,12 @@ void ShowMoreInfo::mFlashList()
     }
     ItemModel = new QStandardItemModel(this);
     QString result;
-    std::vector<std::string> in;
+    std::vector<std::wstring> in;
     this->ui->listView->clearMask();
-    //std::string Days[]{ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+    //std::wstring Days[]{ L"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
     pParent->timetable->mGetTodayMoreInfo(in, Days[this->ui->comboBox->currentIndex()]);
     for (auto a : in) {
-        result = QString::fromStdString(a);
+        result = QString::fromStdWString(a);
         QStandardItem* item = new QStandardItem(result);
         ItemModel->appendRow(item);
     }
@@ -28,8 +28,8 @@ ShowMoreInfo::ShowMoreInfo(QWidget *parent) :
     ui(new Ui::ShowMoreInfo)
 {
     ui->setupUi(this);
-    std::string week = pParent->timetable->mGetCurrentTime(std::string("%a"));
-    this->ui->comboBox->setCurrentText(QString::fromStdString(week));
+    std::wstring week = pParent->timetable->mGetCurrentTime(std::wstring(L"%a"));
+    this->ui->comboBox->setCurrentText(QString::fromStdWString(week));
     mFlashList();
 }
 
@@ -55,7 +55,7 @@ void ShowMoreInfo::on_pushButton_clicked()
     QString result{ this->ui->lineEdit->text() };
     if (!result.isEmpty()) {
         int currentItem = this->ui->comboBox->currentIndex();
-        std::string info = result.toStdString();
+        std::wstring info = result.toStdWString();
         pParent->timetable->mAddMoreInfo(Days[currentItem], info);
     }
     mFlashList();

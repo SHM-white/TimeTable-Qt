@@ -90,12 +90,12 @@ private slots:
 private:
     Ui::Settings *ui;
     TimeTableQt* pParent;
-    std::string Days[7]{ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+    std::wstring Days[7]{ L"Mon", L"Tue", L"Wed", L"Thu", L"Fri", L"Sat", L"Sun" };
     TextItem ReadTextsFromUI();
     TextFormat ReadFormatFromUI();
 
-    static std::string ColorRefToHexString(COLORREF& color);
-    static COLORREF HexStringToColorRef(const std::string& input);
+    static std::wstring ColorRefToHexString(COLORREF& color);
+    static COLORREF HexStringToColorRef(const std::wstring& input);
 };
 
 #endif // SETTINGS_H

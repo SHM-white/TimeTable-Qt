@@ -1,4 +1,4 @@
-#ifndef SHOWMOREINFO_H
+﻿#ifndef SHOWMOREINFO_H
 #define SHOWMOREINFO_H
 
 #include <QDialog>
@@ -30,7 +30,7 @@ private slots:
     void on_pushButton_clicked();
 
 private:
-    std::string Days[7]{ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+    std::wstring Days[7]{ L"Mon", L"Tue", L"Wed", L"Thu", L"Fri", L"Sat", L"Sun" };
     Ui::ShowMoreInfo* ui;
     QStandardItemModel* ItemModel = nullptr;
     TimeTableQt* pParent = (TimeTableQt*)parentWidget();
