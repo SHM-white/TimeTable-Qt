@@ -292,7 +292,7 @@ void Settings::on_pushButton_addLesson_clicked()
         std::wstring Lesson = result.toStdWString();
         QTime tBegin = this->ui->timeEdit_begin->time();
         QTime tEnd = this->ui->timeEdit_end->time();
-        pParent->timetable->mAddLesson(Days[this->ui->comboBox_LessonDays->currentIndex()], Lesson, tBegin.toString(QString("HHmm")).toStdWString(), tEnd.toString(QString("HHmm")).toStdWString());
+        pParent->timetable->mAddLesson(Days[this->ui->comboBox_LessonDays->currentIndex()], Lesson, tBegin.toString(QString::fromStdWString(L"HHmm")).toStdWString(), tEnd.toString(QString::fromStdWString(L"HHmm")).toStdWString());
     }
     FlashList();
     int count = this->ui->listView->count();
@@ -312,7 +312,7 @@ void Settings::on_pushButton_changeLesson_clicked()
         std::wstring lesson = result.toStdWString();
         QTime tBegin = this->ui->timeEdit_begin->time();
         QTime tEnd = this->ui->timeEdit_end->time();
-        pParent->timetable->changeLesson(this->ui->listView->currentRow(), this->ui->comboBox_LessonDays->currentText().toStdWString(), Lesson(this->ui->comboBox_LessonDays->currentText().toStdWString(), this->ui->comboBox_addLesson->currentText().toStdWString(), tBegin.toString(QString("HHmm")).toInt(), tEnd.toString(QString("HHmm")).toInt()));
+        pParent->timetable->changeLesson(this->ui->listView->currentRow(), this->ui->comboBox_LessonDays->currentText().toStdWString(), Lesson(this->ui->comboBox_LessonDays->currentText().toStdWString(), this->ui->comboBox_addLesson->currentText().toStdWString(), tBegin.toString(QString::fromStdWString(L"HHmm")).toInt(), tEnd.toString(QString::fromStdWString(L"HHmm")).toInt()));
     }
     int row = this->ui->listView->currentRow();
     FlashList();
@@ -376,9 +376,9 @@ void Settings::on_pushButton_addInfo_clicked()
 
 void Settings::on_pushButton_chooseConfig_clicked()
 {
-    QString openFileName = QFileDialog::getOpenFileName(this, QString("请选择需要打开json"), QString(".\\"), QString("JSON文件(*.json);;All(*.*)"));
+    QString openFileName = QFileDialog::getOpenFileName(this, QString::fromStdWString(L"请选择需要打开json"), QString::fromStdWString(L".\\"), QString::fromStdWString(L"JSON文件(*.json);;All(*.*)"));
     if (openFileName.isEmpty()) {
-        QMessageBox::warning(this, QString("提示"), QString("未选择文件"));
+        QMessageBox::warning(this, QString::fromStdWString(L"提示"), QString::fromStdWString(L"未选择文件"));
     }
     else {
         this->ui->lineEdit_ConfigPath->setText(openFileName);
@@ -388,9 +388,9 @@ void Settings::on_pushButton_chooseConfig_clicked()
 
 void Settings::on_pushButton_chooseLessons_clicked()
 {
-    QString openFileName = QFileDialog::getOpenFileName(this, QString("请选择需要打开json"), QString(".\\"), QString("JSON文件(*.json);;All(*.*)"));
+    QString openFileName = QFileDialog::getOpenFileName(this, QString::fromStdWString(L"请选择需要打开json"), QString::fromStdWString(L".\\"), QString::fromStdWString(L"JSON文件(*.json);;All(*.*)"));
     if (openFileName.isEmpty()) {
-        QMessageBox::warning(this, QString("提示"), QString("未选择文件"));
+        QMessageBox::warning(this, QString::fromStdWString(L"提示"), QString::fromStdWString(L"未选择文件"));
     }
     else {
         this->ui->lineEdit_LessonPath->setText(openFileName);
@@ -418,9 +418,9 @@ void Settings::on_pushButton_applyLessonPath_clicked()
 
 void Settings::on_pushButton_chooseBackGround_clicked()
 {
-    QString openFileName = QFileDialog::getOpenFileName(this, QString("请选择图片"), QString(".\\"), QString("图片文件(*.jpg;*.png);;All(*.*)"));
+    QString openFileName = QFileDialog::getOpenFileName(this, QString::fromStdWString(L"请选择图片"), QString::fromStdWString(L".\\"), QString::fromStdWString(L"图片文件(*.jpg;*.png);;All(*.*)"));
     if (openFileName.isEmpty()) {
-        QMessageBox::warning(this, QString("提示"), QString("未选择文件"));
+        QMessageBox::warning(this, QString::fromStdWString(L"提示"), QString::fromStdWString(L"未选择文件"));
     }
     else {
         this->ui->lineEdit_backGroundImg->setText(openFileName);

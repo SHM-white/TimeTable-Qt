@@ -125,6 +125,9 @@ int TimeTable::mGetTodayMoreInfo(std::vector<std::wstring>& input, const std::ws
 std::wstring TimeTable::mGetCurrentLesson(const std::wstring& LessonNull)
 {
 	int lessonIndex = mGetCurrentLesson(0);
+	if (lessonIndex < 0) {
+		return LessonNull;
+	}
 	return CurrentLesson.mGetName();
 }
 
@@ -407,13 +410,14 @@ int TimeTable::mGetCurrentLesson(int)
                 // Set the current lesson and update the currentIndex
 				CurrentLesson.mSetValue(u8tw(Lessons[i][0].asString()), iBeginTime, iEndTime);
                 currentIndex = i;
-                break;
+				return currentIndex;
             }
         }
+		currentIndex = -1;
     }
 
     // Return the index of the current lesson
-    return currentIndex;
+	return currentIndex;
 }
 int TimeTable::deleteLesson(size_t index, const std::wstring& day)
 {

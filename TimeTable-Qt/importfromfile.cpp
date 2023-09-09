@@ -30,9 +30,9 @@ void ImportFromFile::on_buttonBox_accepted()
 
 void ImportFromFile::on_pushButton_clicked()
 {
-    QString openfilename = QFileDialog::getOpenFileName(this, QString("请选择需要打开的csv文件"), QString(".\\"), QString("CSV UTF-8(逗号分隔)(*.csv);;All(*.*)"));
+    QString openfilename = QFileDialog::getOpenFileName(this, QString::fromStdWString(L"请选择需要打开的csv文件"), QString::fromStdWString(L".\\"), QString::fromStdWString(L"CSV UTF-8(逗号分隔)(*.csv);;All(*.*)"));
     if (openfilename.isEmpty()) {
-        QMessageBox::warning(this, QString("提示"), QString("未选择文件"));
+        QMessageBox::warning(this, QString::fromStdWString(L"提示"), QString::fromStdWString(L"未选择文件"));
     }
     else {
         this->ui->lineEdit->setText(openfilename);
@@ -43,9 +43,9 @@ void ImportFromFile::on_pushButton_clicked()
 
 void ImportFromFile::on_pushButton_2_clicked()
 {
-    QString openfilename = QFileDialog::getSaveFileName(this, QString("请选择需要导入到的json文件"), QString(".\\"), QString("JSON文件(*.json);;All(*.*)"));
+    QString openfilename = QFileDialog::getSaveFileName(this, QString::fromStdWString(L"请选择需要导入到的json文件"), QString::fromStdWString(L".\\"), QString::fromStdWString(L"JSON文件(*.json);;All(*.*)"));
     if (openfilename.isEmpty()) {
-        QMessageBox::warning(this, QString("提示"), QString("未选择文件"));
+        QMessageBox::warning(this, QString::fromStdWString(L"提示"), QString::fromStdWString(L"未选择文件"));
     }
     else {
         this->ui->lineEdit_2->setText(openfilename);
@@ -61,11 +61,11 @@ void ImportFromFile::on_pushButton_OK_clicked()
     TimeTableQt* pParent = (TimeTableQt*)parentWidget();
     if ((!csvpath.isEmpty()) && (!jsonpath.isEmpty())) {
         if (pParent->timetable->mImportLessonsFromCsv((std::wstring)csvpath.toStdWString(), (std::wstring)jsonpath.toStdWString())) {
-            QMessageBox::information(this, QString("成功"), QString("添加成功"));
+            QMessageBox::information(this, QString::fromStdWString(L"成功"), QString::fromStdWString(L"添加成功"));
         }
     }
     else {
-        QMessageBox::warning(this, QString("提示"), QString("未选择文件"));
+        QMessageBox::warning(this, QString::fromStdWString(L"提示"), QString::fromStdWString(L"未选择文件"));
     }
     //close();
 }

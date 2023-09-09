@@ -63,7 +63,7 @@ void ShowAllLessons::on_pushButton_clicked()
         std::wstring Lesson = result.toStdWString();
         QTime tBegin = this->ui->timeEdit->time();
         QTime tEnd = this->ui->timeEdit_2->time();
-        pParent->timetable->mAddLesson(Days[this->ui->comboBox->currentIndex()], Lesson, tBegin.toString(QString("HHmm")).toStdWString(), tEnd.toString(QString("HHmm")).toStdWString());
+        pParent->timetable->mAddLesson(Days[this->ui->comboBox->currentIndex()], Lesson, tBegin.toString(QString::fromStdWString(L"HHmm")).toStdWString(), tEnd.toString(QString::fromStdWString(L"HHmm")).toStdWString());
     }
     mFlashList();
 }

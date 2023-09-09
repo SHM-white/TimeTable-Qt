@@ -4,10 +4,15 @@ class WindowItem
 {
 public:
 	bool paint(QPainter& painter);
-	QString text;
+	bool m_needUpdate{true};
+	QString& Text();
 	QPoint position;
 	QSize size;
 	QFont font;
 	QColor color;
+	int m_lastUpdateTime;
+private:
+	int m_printCount{0};
+	QString text;
 };
 

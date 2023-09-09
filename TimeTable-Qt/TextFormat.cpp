@@ -54,11 +54,7 @@ bool TextFormat::update()
 	if (Texts.empty()) {
 		return false;
 	}
-	static int i = 0;
-	i = (i + 1) % 20;
-	if(i==0){
-		++updateCounter;
-	}
+	++updateCounter;
 	if(updateCounter>=Texts.size()){
 		updateCounter=0;
 	}

@@ -47,7 +47,7 @@ void TodayAllLessons::paintEvent(QPaintEvent*)
     painter.fillRect(rect(), QColor(255, 255, 255, 100));
     painter.setPen(QPen(QBrush(QColor(0, 0, 0, 255)), 2));
     painter.drawRect(rect());
-    QFont font(QString("微软雅黑"),14);
+    QFont font(QString::fromStdWString(L"微软雅黑"),14);
     painter.setFont(font);
     int maxLength{ 0 };
     for (const auto& i : qAllLessons) {

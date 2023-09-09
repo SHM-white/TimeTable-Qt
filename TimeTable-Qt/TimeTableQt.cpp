@@ -100,27 +100,29 @@ bool TimeTableQt::mInitializeWindow()
     return true;
 }
 
-std::wstring TimeTableQt::translateUtfToAnsi(const std::wstring& input)
-{
-    QString tmp = QString::fromStdWString(input);
-    return tmp.toStdWString().data();
-}
-
-
-
 void TimeTableQt::updateTexts()
 {
-    items.clear();
-    for (auto& i : windowsettings->msTextFormat) {
-        i.update();
-        if (i.Texts.empty()) {
-            return;
+    if (items.size() != windowsettings->msTextFormat.size()) {
+        items.clear();
+        for (auto& i : windowsettings->msTextFormat) {
+            WindowItem item;
+            item.color = QColor(GetRValue(i.color), GetGValue(i.color), GetBValue(i.color));
+            item.font.setFamily(QString::fromStdWString(i.msFontName));
+            item.font.setPointSize(i.miTextSize);
+            item.position = QPoint(i.mpTextLocation.x, i.mpTextLocation.y);
+            item.size = QSize(i.miSizeW, i.miSizeH);
+            items.push_back(item);
         }
-        WindowItem item;
-        QString& text = item.text;
-
-        auto currentText = i.Texts[i.updateCounter];
-        auto translatedText = translateUtfToAnsi(currentText.text);
+    }
+    for (auto i = 0; i < items.size();++i) {
+        if (items[i].m_needUpdate) {
+            items[i].m_needUpdate = false;
+            windowsettings->msTextFormat[i].update();
+            items[i].m_lastUpdateTime = QDateTime::currentMSecsSinceEpoch();
+        }
+        auto& text = items[i].Text();
+        auto& currentText = windowsettings->msTextFormat[i].Texts[windowsettings->msTextFormat[i].updateCounter];
+        auto& translatedText = currentText.text;
 
         switch (currentText.type)
         {
@@ -129,24 +131,19 @@ void TimeTableQt::updateTexts()
             break;
         case TextType::CurrentLesson:
             text = QString::fromStdWString(timetable->mGetCurrentTime(translatedText)) +
-                   QString::fromStdWString(timetable->mGetCurrentLesson(translateUtfToAnsi(windowsettings->msLessonNull)));
+                QString::fromStdWString(timetable->mGetCurrentLesson(windowsettings->msLessonNull));
             break;
         case TextType::CountDownDay:
             text = QString::fromStdWString(timetable->mGetCountDown(windowsettings->mCountDownDay, translatedText));
             break;
         case TextType::Info:
             text = QString::fromStdWString(timetable->mGetCurrentTime(translatedText)) +
-                   QString::fromStdWString(timetable->mGetInfo());
+                QString::fromStdWString(timetable->mGetInfo());
             break;
         default:
             break;
         }
-        item.color = QColor(GetRValue(i.color), GetGValue(i.color), GetBValue(i.color));
-        item.font.setFamily(QString::fromStdWString(i.msFontName));
-        item.font.setPointSize(i.miTextSize);
-        item.position = QPoint(i.mpTextLocation.x, i.mpTextLocation.y);
-        item.size = QSize(i.miSizeW, i.miSizeH);
-        items.push_back(item);
+
     }
 }
 
@@ -204,9 +201,11 @@ TODO:
 void TimeTableQt::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
-//#if DEBUG||Debug
-    painter.drawRect(rect());
-//#endif
+    if (SHOW_ITEM_RECT)
+    {
+        painter.drawRect(rect());
+    }
+
     
     // Draw background image
     if (pic.isNull() || !(windowsettings->mUseImgAsBackGround)

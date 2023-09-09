@@ -36,10 +36,17 @@
 //#include "ToWString.h"
 #pragma  comment(lib, "shell32.lib")
 
+#define DEBUG
+
+#ifdef DEBUG
+#define SHOW_ITEM_RECT true
+#else
+#define SHOW_ITEM_RECT false
+#endif // 
+
 #define DEFAULT_CONFIG_PATH L"config.json"
 #define DEFAULT_LESSONINFO_PATH L"Lessons.json"
 
-//#define DEBUG 1
 
 namespace Json {
 	bool ChangeValue(const std::wstring& Item,const Json::Value& value,const std::wstring& filePath);
