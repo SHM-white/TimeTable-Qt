@@ -5,7 +5,7 @@
    "Settings" : {
       "Window" : {
          "AcrylicEffect" : false,
-         "BackGroundColor" : [ 255, 255, 255, 33 ],
+         "BackGroundColor" : [ 255, 255, 255, 41 ],
          "BackGroundImg" : "BackGround.png",
          "CountDownDay" : [ 2024, 6, 7, 0, 0, 0 ],
          "CountDownDayInLine" : 4,
