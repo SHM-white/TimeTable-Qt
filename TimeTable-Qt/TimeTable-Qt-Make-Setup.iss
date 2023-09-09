@@ -3,7 +3,7 @@
 
 
 #define MyAppName "TimeTable-Qt"
-#define MyAppVersion "2.5.1"
+#define MyAppVersion "2.6.0"
 #define MyAppPublisher "SHM_white"
 #define MyAppURL "https://github.com/SHM-white/TimeTable-Qt"
 #define MyAppExeName "TimeTable-Qt.exe"
