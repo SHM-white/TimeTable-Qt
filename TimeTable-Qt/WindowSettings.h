@@ -7,14 +7,15 @@
 #include<Windows.h>
 #include"TextFormat.h"
 #include "Timetable.h"
+#include "include.h"
 
 //#include "ToWString.h"
 
 //WindowSettings类，用于保存设置，包含与窗口绘图有关函数
 class WindowSettings {
 public:
-	const int minVersion[3]{ 2,5,0 };
-	const int currentVersion[3]{ 2,5,1 };
+	const int* minVersion = minVersion_global;
+	const int* currentVersion = currentVersion_global;
 	WindowSettings() = default;
 	WindowSettings(const WindowSettings& another) = default;
 	WindowSettings(WindowSettings& another) = default;

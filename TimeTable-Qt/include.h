@@ -36,7 +36,9 @@
 //#include "ToWString.h"
 #pragma  comment(lib, "shell32.lib")
 
+#ifdef QT_DEBUG
 #define DEBUG
+#endif // QT_DEBUG
 
 #ifdef DEBUG
 #define SHOW_ITEM_RECT true
@@ -47,6 +49,8 @@
 #define DEFAULT_CONFIG_PATH L"config.json"
 #define DEFAULT_LESSONINFO_PATH L"Lessons.json"
 
+const int minVersion_global[3]{ 2,5,0 };
+const int currentVersion_global[3]{ 2,6,0 };
 
 namespace Json {
 	bool ChangeValue(const std::wstring& Item,const Json::Value& value,const std::wstring& filePath);
