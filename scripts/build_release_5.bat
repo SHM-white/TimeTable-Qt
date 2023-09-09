@@ -8,7 +8,7 @@ if not exist %QT_DIR% exit
 if not exist %SRC_DIR% exit
 if not exist %BUILD_DIR% md %BUILD_DIR%
 
-cd build
+cd build_qt5
 
 call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
 
