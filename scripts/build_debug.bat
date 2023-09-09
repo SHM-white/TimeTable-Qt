@@ -12,7 +12,7 @@ cd build
 
 call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
 
-%QT_DIR%\bin\qmake.exe %SRC_DIR%\TimeTable-Qt\TimeTable-Qt.pro -spec win32-msvc  "CONFIG+=debug" "CONFIG+=console"
+%QT_DIR%\bin\qmake.exe %SRC_DIR%\TimeTable-Qt\TimeTable-Qt.pro -spec win32-msvc  "CONFIG+=debug"
 if exist %BUILD_DIR%\debug\TimeTable-Qt.exe del %BUILD_DIR%\debug\TimeTable-Qt.exe
 nmake Debug
 if not exist %BUILD_DIR%\debug\Qt6Cored.dll (
