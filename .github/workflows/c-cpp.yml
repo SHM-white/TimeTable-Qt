@@ -83,7 +83,7 @@ jobs:
     - name: Create Release fot Qt5
       uses: actions/upload-artifact@v2
       with: 
-        name: TimeTable-Qt-Release
+        name: TimeTable-Qt-Release-Qt5
         path: ${{ github.workspace }}\build_qt5\release\
         
     - name: Create Debug
