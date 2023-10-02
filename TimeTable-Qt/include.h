@@ -60,7 +60,7 @@
 #define DEFAULT_LESSONINFO_PATH L"Lessons.json"
 
 const int minVersion_global[3]{ 2,5,0 };
-const int currentVersion_global[3]{ 2,6,0 };
+const int currentVersion_global[3]{ 2,7,0 };
 
 namespace Json {
 	bool ChangeValue(const std::wstring& Item,const Json::Value& value,const std::wstring& filePath);
