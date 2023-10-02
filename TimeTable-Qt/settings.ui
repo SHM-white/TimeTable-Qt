@@ -71,7 +71,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidget">
          <property name="currentIndex">
-          <number>3</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="tab_lessons">
           <attribute name="title">
@@ -781,7 +781,7 @@
                         <string>时间</string>
                        </property>
                        <property name="checked">
-                        <bool>true</bool>
+                        <bool>false</bool>
                        </property>
                        <attribute name="buttonGroup">
                         <string notr="true">buttonGroup</string>
@@ -826,6 +826,9 @@
                       <widget class="QRadioButton" name="radioButton">
                        <property name="text">
                         <string>默认</string>
+                       </property>
+                       <property name="checked">
+                        <bool>true</bool>
                        </property>
                        <attribute name="buttonGroup">
                         <string notr="true">buttonGroup</string>

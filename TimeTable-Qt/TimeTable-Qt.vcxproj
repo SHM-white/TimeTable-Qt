@@ -57,13 +57,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <ExternalIncludePath>C:\libraries\jsoncpp\include</ExternalIncludePath>
-    <PublicIncludeDirectories>C:\libraries\jsoncpp\include</PublicIncludeDirectories>
+    <ExternalIncludePath>$(ProjectDir)jsoncpp\include;$(ProjectDir)jsoncpp\include\json;$(ProjectDir)hv\include\hv</ExternalIncludePath>
+    <PublicIncludeDirectories>$(ProjectDir)jsoncpp\include\jsoncpp;$(ProjectDir)jsoncpp\include;$(ProjectDir)hv\include\hv</PublicIncludeDirectories>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <ExternalIncludePath>C:\libraries\jsoncpp\include</ExternalIncludePath>
-    <PublicIncludeDirectories>C:\libraries\jsoncpp\include</PublicIncludeDirectories>
+    <ExternalIncludePath>$(ProjectDir)jsoncpp\include;$(ProjectDir)jsoncpp\include\json;$(ProjectDir)hv\include\hv</ExternalIncludePath>
+    <PublicIncludeDirectories>$(ProjectDir)jsoncpp\include\jsoncpp;$(ProjectDir)jsoncpp\include;$(ProjectDir)hv\include\hv</PublicIncludeDirectories>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -71,15 +71,15 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>"C:\libraries\jsoncpp\lib\Debug\jsoncpp.lib";%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\libraries\jsoncpp\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(ProjectDir)jsoncpp\lib\Debug\jsoncpp.lib;$(ProjectDir)hv\lib\Debug\hv.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)jsoncpp\lib\Debug;$(ProjectDir)hv\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <UACExecutionLevel>AsInvoker</UACExecutionLevel>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Link>
-      <AdditionalDependencies>"C:\libraries\jsoncpp\lib\Release\jsoncpp.lib";%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\libraries\jsoncpp\lib\Release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(ProjectDir)jsoncpp\lib\Release\jsoncpp.lib;$(ProjectDir)hv\lib\Release\hv.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)jsoncpp\lib\Release;$(ProjectDir)hv\lib\Release</AdditionalLibraryDirectories>
       <UACExecutionLevel>AsInvoker</UACExecutionLevel>
     </Link>
     <ClCompile>
