@@ -1,14 +1,10 @@
 ﻿#pragma once
-#include <QtWidgets/QWidget>
-#include <qtimer.h>
+
+#define WIN32_LEAN_AND_MEAN
+
 #include <string>
-//#include <windef.h>
 #include <locale>
-#include <QDialog>
-#include <QMouseEvent>
-#include <QPainter>
-#include <QPixmap>
-#include <qsettings.h>
+#include <Winsock2.h>
 #include <windows.h>
 #include <vector>
 #include <stdlib.h>
@@ -20,20 +16,34 @@
 #include <fstream>
 #include <strsafe.h>
 #include <ctime>
-#include <QDesktopServices>
-#include <qmessagebox.h>
 #include <exception>
+#include <shellapi.h>
+#include <shlobj.h>
+#include <memory>
+#include <codecvt>
+#include <chrono>
+#include <thread>
+#include <future>
+
 #include "include\json\json.h"
+#include "hv.h"
+#include "requests.h"
+
+#include <QtWidgets/QWidget>
+#include <qtimer.h>
+#include <QDialog>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QPixmap>
+#include <qsettings.h>
+#include <QDesktopServices>
 #include <qdatetime.h>
 #include <qmessagebox.h>
 #include <qfiledialog.h>
 #include <qcolor.h>
 #include <qcolordialog.h>
-#include <shellapi.h>
-#include <shlobj.h>
-#include <memory>
-#include <codecvt>
-//#include "ToWString.h"
+#include <qmessagebox.h>
+
 #pragma  comment(lib, "shell32.lib")
 
 #ifdef QT_DEBUG

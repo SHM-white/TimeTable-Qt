@@ -1,5 +1,6 @@
 ﻿#include "CSVEditor.h"
 #include "Timetable.h"
+#include "include.h"
 #include <Windows.h>
 #include <fstream>
 #include <sstream>

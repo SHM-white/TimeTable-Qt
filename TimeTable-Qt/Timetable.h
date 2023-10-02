@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include "include.h"
 #include<string>
 #include<string_view>
 #include<format>
@@ -41,6 +42,7 @@ public:
 	int changeInfo(size_t index, const std::wstring& day, const std::wstring& info, const std::wstring& Path);
 	int SaveJson(const std::wstring& TargetPath, const Json::Value& root);
 	int mGetCurrentLesson(int);
+	std::wstring mGetWeather(int code);
 	std::wstring mGetCountDown(tm tmIn, const std::wstring& TimeFormat);
 	std::wstring mGetInfo();
 	std::wstring mGetInfo(const std::wstring& week);

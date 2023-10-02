@@ -109,3 +109,12 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/jsoncpp/lib/Debug/ -ljs
 
 INCLUDEPATH += $$PWD/jsoncpp/include
 DEPENDPATH += $$PWD/jsoncpp/include
+
+INCLUDEPATH += $$PWD/jsoncpp/include/jsoncpp
+DEPENDPATH += $$PWD/jsoncpp/include/jsoncpp
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/hv/lib/Release/ -lhv
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/hv/lib/Debug/ -lhv
+
+INCLUDEPATH += $$PWD/hv/include/hv
+DEPENDPATH += $$PWD/hv/include/hv

@@ -419,7 +419,31 @@ int TimeTable::mGetCurrentLesson(int)
     // Return the index of the current lesson
 	return currentIndex;
 }
-int TimeTable::deleteLesson(size_t index, const std::wstring& day)
+std::wstring TimeTable::mGetWeather(int code)
+{
+	static std::wstring weather{L"null"};
+	static std::future<requests::Response> result;
+	static std::future_status status = std::future_status::deferred;
+	if (status == std::future_status::deferred) {
+		result = std::async(
+			std::launch::async,
+			[code]() {
+				return requests::get(std::format("https://restapi.amap.com/v3/weather/weatherInfo?city={}&key=7654cff2801031c93fba40fe770e7016&extensions=all", code).c_str());
+			});
+	}
+	status = result.wait_for(std::chrono::microseconds(1));
+	if (status == std::future_status::ready) {
+		Json::Value root;
+		Json::Reader reader;
+		if (reader.parse(result.get().get()->body, root)) {
+			std::wstring currentWeather = u8tw(root["forecasts"][0]["dayweather"].asString());
+			std::wstring nextDayWeather = u8tw(root["forecasts"][1]["dayweather"].asString());
+			weather = std::format(L"Current Weather: {}\nNext Day Weather: {}", currentWeather, nextDayWeather);
+		}
+	}
+	return weather;
+}
+int TimeTable::deleteLesson(size_t index, const std::wstring &day)
 {
 	return deleteLesson(index,day,mLessonInfoPath);
 }

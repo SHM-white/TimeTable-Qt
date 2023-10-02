@@ -18,3 +18,9 @@ nmake Debug
 if not exist %BUILD_DIR%\debug\Qt6Cored.dll (
   %QT_DIR%\bin\windeployqt.exe %BUILD_DIR%\debug\TimeTable-Qt.exe
 )
+if not exist %BUILD_DIR%\debug\hv.dll (y
+  xcopy %SRC_DIR%\TimeTable-Qt\hv\bin\Debug\hv.dll %BUILD_DIR%\debug\
+)
+if not exist %BUILD_DIR%\debug\jsoncpp.dll (
+  xcopy %SRC_DIR%\TimeTable-Qt\jsoncpp\bin\Debug\jsoncpp.dll %BUILD_DIR%\debug\
+)

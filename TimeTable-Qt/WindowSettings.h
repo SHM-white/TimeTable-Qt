@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include "include.h"
 #include<string>
 #include<string_view>
 #include<format>

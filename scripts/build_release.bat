@@ -18,3 +18,9 @@ nmake Release
 if not exist %BUILD_DIR%\release\Qt6Core.dll (
   %QT_DIR%\bin\windeployqt.exe %BUILD_DIR%\release\TimeTable-Qt.exe
 )
+if not exist %BUILD_DIR%\release\hv.dll (
+  xcopy %SRC_DIR%\TimeTable-Qt\hv\bin\Release\hv.dll %BUILD_DIR%\release\
+)
+if not exist %BUILD_DIR%\release\jsoncpp.dll (
+  xcopy %SRC_DIR%\TimeTable-Qt\jsoncpp\bin\Release\jsoncpp.dll %BUILD_DIR%\release\
+)
