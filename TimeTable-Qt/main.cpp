@@ -5,10 +5,9 @@
 int main(int argc, char *argv[])
 {
     {
-        std::string fullPath = argv[0];
-        int find = fullPath.find_last_of('\\');
-        std::string path{fullPath.begin(), fullPath.begin() + find};
-        SetCurrentDirectory(path.c_str());
+        char szBuf[512] = { 0 };
+        getcwd(szBuf, sizeof(szBuf)-1);
+        SetCurrentDirectoryA(szBuf);
     }
     QApplication a(argc, argv);
     TimeTableQt w;
