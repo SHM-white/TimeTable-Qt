@@ -17,10 +17,14 @@ bool WindowItem::paint(QPainter& painter)
     QPoint newPosition;
     // If the text is larger than the item's dimensions, enable scrolling
     if (textSize.width() > size.width()) {
+        if(m_updated){
+            m_lastUpdateTime = QDateTime::currentMSecsSinceEpoch();
+            m_updated = false;
+        }
         //todo：从最右侧开始滚动至最左侧后将m_needUpdate设置为true
-        int scrollPosition = ((QDateTime::currentMSecsSinceEpoch() - m_lastUpdateTime) / 20) % (int)(textSize.width() + size.width());
+        int scrollPosition = ((int(QDateTime::currentMSecsSinceEpoch()) - m_lastUpdateTime + int(textSize.width())) / 20) % (int(textSize.width()) + size.width());
         newPosition = QPoint(position.x() + size.width() - scrollPosition, position.y());
-        if (scrollPosition >= textSize.width() + size.width() - 5) {
+        if (scrollPosition >= textSize.width() + size.width() - 1) {
             m_needUpdate = true;
         }
     }

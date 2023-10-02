@@ -5,6 +5,7 @@ class WindowItem
 public:
 	bool paint(QPainter& painter);
 	bool m_needUpdate{true};
+	bool m_updated{false};
 	QString& Text();
 	QPoint position;
 	QSize size;

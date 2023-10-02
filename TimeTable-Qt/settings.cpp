@@ -452,6 +452,15 @@ TextItem Settings::ReadTextsFromUI()
     else if (this->ui->radioButton_info->isChecked()) {
         type = TextType::Info;
     }
+    else if (this->ui->radioButton_weather->isChecked()) {
+        type = TextType::Weather;
+    }
+    else if (this->ui->radioButton_news->isChecked()) {
+        type = TextType::News;
+    }
+    else {
+        type = TextType::Default;
+    }
     TextItem format;
     format.text = this->ui->lineEdit_textFormat->text().toStdWString();
     format.type = type;
@@ -575,27 +584,21 @@ void Settings::on_listWidget_textItems_currentRowChanged(int currentRow)
     {
     case TextType::CurrentTime:
         this->ui->radioButton_time->setChecked(true);
-        //this->ui->radioButton_lesson->setChecked(false);
-        //this->ui->radioButton_countDownDay->setChecked(false);
-        //this->ui->radioButton_info->setChecked(false);
         break;
     case TextType::CurrentLesson:
-        //this->ui->radioButton_time->setChecked(false);
         this->ui->radioButton_lesson->setChecked(true);
-        //this->ui->radioButton_countDownDay->setChecked(false);
-        //this->ui->radioButton_info->setChecked(false);
         break;
     case TextType::CountDownDay:
-        //this->ui->radioButton_time->setChecked(false);
-        //this->ui->radioButton_lesson->setChecked(false);
         this->ui->radioButton_countDownDay->setChecked(true);
-        //this->ui->radioButton_info->setChecked(false);
         break;
     case TextType::Info:
-        //this->ui->radioButton_time->setChecked(false);
-        //this->ui->radioButton_lesson->setChecked(false);
-        //this->ui->radioButton_countDownDay->setChecked(false);
         this->ui->radioButton_info->setChecked(true);
+        break;
+    case TextType::Weather:
+        this->ui->radioButton_weather->setChecked(true);
+        break;
+    case TextType::News:
+        this->ui->radioButton_news->setChecked(true);
         break;
     default:
         break;

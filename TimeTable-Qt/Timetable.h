@@ -18,6 +18,7 @@ public:
 	TimeTable(TimeTable& another) = default;
 	TimeTable(std::wstring path) : mLessonInfoPath{ path } {};
 	TimeTable& operator=(const TimeTable& another) = default;
+	int mUpdateWeather();
 	int mAddLesson(const std::wstring& week, const std::wstring& Lesson, const std::wstring& sBegin, const std::wstring& sEnd, const std::wstring& TargetFilePath);
 	int mAddLesson(const Lesson& lesson);
 	int mAddLesson(const Lesson& lesson, const std::wstring& TargetFilePath);
@@ -59,6 +60,7 @@ private:
 	Lesson CurrentLesson;
 	std::vector<Lesson> Lessons;
 	std::wstring mLessonInfoPath{ L"Lessons.json" };
+	bool m_needUpdateWeather{true};
 };
 
 

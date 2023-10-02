@@ -118,9 +118,13 @@ void TimeTableQt::updateTexts()
         if (items[i].m_needUpdate) {
             items[i].m_needUpdate = false;
             windowsettings->msTextFormat[i].update();
-            items[i].m_lastUpdateTime = QDateTime::currentMSecsSinceEpoch();
+            items[i].m_updated = true;
         }
         auto& text = items[i].Text();
+        if(windowsettings->msTextFormat.empty()||windowsettings->msTextFormat[i].Texts.empty()||windowsettings->msTextFormat[i].updateCounter>=windowsettings->msTextFormat[i].Texts.size()) {
+            items[i].Text() = "";
+            return;
+        }
         auto& currentText = windowsettings->msTextFormat[i].Texts[windowsettings->msTextFormat[i].updateCounter];
         auto& translatedText = currentText.text;
 
@@ -139,6 +143,14 @@ void TimeTableQt::updateTexts()
         case TextType::Info:
             text = QString::fromStdWString(timetable->mGetCurrentTime(translatedText)) +
                 QString::fromStdWString(timetable->mGetInfo());
+            break;
+        case TextType::Weather:
+            static auto lastUpdate = QDateTime::currentSecsSinceEpoch();
+            if (QDateTime::currentSecsSinceEpoch() - lastUpdate > 3600) {
+                timetable->mUpdateWeather();
+                lastUpdate = QDateTime::currentSecsSinceEpoch();
+            }
+            text = QString::fromStdWString(timetable->mGetWeather(_wtoi(translatedText.c_str())));
             break;
         default:
             break;
@@ -331,15 +343,15 @@ void TimeTableQt::on_actionBootAtPowerOn_triggered()
     QString application_name = QApplication::applicationName();
     
     std::unique_ptr<QSettings> settings = std::make_unique<QSettings>(AUTO_RUN_KEY, QSettings::NativeFormat);
-    QMessageBox::information(this, "开发中", "之前的有bug，待修复", QMessageBox::Ok);
-   /* if (this->ui.actionBootAtPowerOn->isChecked()) {
+    //QMessageBox::information(this, "开发中", "之前的有bug，待修复", QMessageBox::Ok);
+    if (this->ui.actionBootAtPowerOn->isChecked()) {
         QString application_path = QApplication::applicationFilePath();
         settings->setValue(application_name, application_path.replace("/", "\\"));
     }
     else
     {
         settings->remove(application_name);		
-    }*/
+    }
     //LPITEMIDLIST lp;
     //SHGetSpecialFolderLocation(0, CSIDL_STARTUP, &lp);
 
