@@ -13,11 +13,7 @@ int TimeTable::mAddLesson(const std::wstring &week, const std::wstring &Lesson, 
 	// Call the mAddLesson function with the provided parameters and the default mLessonInfoPath.
 	return mAddLesson(week, Lesson, sBegin, sEnd, mLessonInfoPath);
 }
-int TimeTable::mUpdateWeather()
-{
-	m_needUpdateWeather = true;
-	return 0;
-}
+
 // 添加课程5参数函数
 int TimeTable::mAddLesson(const std::wstring &week, const std::wstring &Lesson, const std::wstring &sBegin, const std::wstring &sEnd, const std::wstring &TargetFilePath)
 {
@@ -154,7 +150,7 @@ std::wstring TimeTable::mGetCurrentTime(const std::wstring &TextFormat)
 	}
 	if (TextFormat.size() >= 2 && !std::regex_match(TextFormat.begin() + location, TextFormat.begin() + location + 2, std::regex("%[^aAbBcCdDeFgGhHIjmMnprRStTuUVwWxXyYzZ%]|%[0-9]{1,}[a-zA-Z]")))
 	{
-		wcsftime(result, sizeof(result), TextFormat.c_str(), &structm);
+		wcsftime(result, wcslen(result), TextFormat.c_str(), &structm);
 	}
 	else
 	{
@@ -459,53 +455,62 @@ int TimeTable::mGetCurrentLesson(int)
 std::wstring TimeTable::mGetWeather(int code)
 {
 	static std::wstring weather{L"null"};
-	static std::future<requests::Response> result;
-	static std::future_status status = std::future_status::deferred;
-	try
+	static auto lastUpdateTime = std::chrono::system_clock::now();
+	if (m_needUpdateWeather)
 	{
-		if ((status == std::future_status::deferred) && m_needUpdateWeather)
-		{
-			result = std::async(
-				std::launch::async,
-				[code]()
-				{
-					return requests::get(std::format("https://restapi.amap.com/v3/weather/weatherInfo?city={}&key=7654cff2801031c93fba40fe770e7016&extensions=all", code).c_str());
-				});
-			status = std::future_status::timeout;
-		}
-		else if (status == std::future_status::timeout)
-		{
-			status = result.wait_for(std::chrono::microseconds(1));
-		}
-		else if (status == std::future_status::ready)
-		{
-			Json::Value root;
-			Json::Reader reader;
-			if (reader.parse(result.get().get()->body, root))
+		auto result = std::async(std::launch::async, [&](std::wstring* weatherString) {
+			try
 			{
-				status = std::future_status::deferred;
-				weather = std::format(L"今日天气: {}-{}℃,{}转{},明日天气：{}-{}℃,{}转{}",
-									  u8tw(root["forecasts"][0]["casts"][0]["nighttemp"].asString()),
-									  u8tw(root["forecasts"][0]["casts"][0]["daytemp"].asString()),
-									  u8tw(root["forecasts"][0]["casts"][0]["dayweather"].asString()),
-									  u8tw(root["forecasts"][0]["casts"][0]["nightweather"].asString()),
-									  u8tw(root["forecasts"][0]["casts"][1]["nighttemp"].asString()),
-									  u8tw(root["forecasts"][0]["casts"][1]["daytemp"].asString()),
-									  u8tw(root["forecasts"][0]["casts"][1]["dayweather"].asString()),
-									  u8tw(root["forecasts"][0]["casts"][1]["nightweather"].asString()));
-			}
-		}
-	}
-	catch (std::exception &e)
-	{
-		weather = L"error:" + u8tw(e.what());
-	}
-	catch (...)
-	{
-		weather = L"unknown error";
-	}
+				auto request = requests::get(std::format("https://restapi.amap.com/v3/weather/weatherInfo?city={}&key=7654cff2801031c93fba40fe770e7016&extensions=all", code).c_str());
+				if (request.get()==nullptr||request.get()->body.empty()) {
+					*weatherString += L"(重试)";
+					return;
+				}
+				Json::Value root;
+				Json::Reader reader;
+				if (reader.parse(request.get()->Body(), root)) {
+					*weatherString = std::format(L"今日天气:{}-{}℃,{},明日天气:{}-{}℃,{}",
+						u8tw(root["forecasts"][0]["casts"][0]["nighttemp"].asString()),
+						u8tw(root["forecasts"][0]["casts"][0]["daytemp"].asString()),
+						mGetWeather(u8tw(root["forecasts"][0]["casts"][0]["dayweather"].asString()),
+							u8tw(root["forecasts"][0]["casts"][0]["nightweather"].asString())
+						),
+						u8tw(root["forecasts"][0]["casts"][1]["nighttemp"].asString()),
+						u8tw(root["forecasts"][0]["casts"][1]["daytemp"].asString()),
+						mGetWeather(u8tw(root["forecasts"][0]["casts"][1]["dayweather"].asString()),
+							u8tw(root["forecasts"][0]["casts"][1]["nightweather"].asString())
+						)
+					);
+					m_needUpdateWeather = false;
+					lastUpdateTime = std::chrono::system_clock::now();
+				}
 
+
+			}
+			catch (const std::exception& e)
+			{
+				*weatherString = L"error:" + u8tw(e.what());
+			}
+			catch (...)
+			{
+				*weatherString = L"unknown error";
+			}
+			}, &weather);
+	}
+	if ((!m_needUpdateWeather) && (std::chrono::duration_cast<std::chrono::minutes>(std::chrono::system_clock::now() - lastUpdateTime).count() > 60)) {
+		m_needUpdateWeather = true;
+	}
 	return weather;
+}
+std::wstring TimeTable::mGetWeather(const std::wstring& first, const std::wstring& second)
+{
+	if (first == second) {
+		return first;
+	}
+	else
+	{
+		return std::format(L"{}转{}", first, second);
+	}
 }
 int TimeTable::deleteLesson(size_t index, const std::wstring &day)
 {
