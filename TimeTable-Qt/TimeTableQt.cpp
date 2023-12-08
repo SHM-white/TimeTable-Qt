@@ -145,11 +145,6 @@ void TimeTableQt::updateTexts()
                 QString::fromStdWString(timetable->mGetInfo());
             break;
         case TextType::Weather:
-            static auto lastUpdate = QDateTime::currentSecsSinceEpoch();
-            if (QDateTime::currentSecsSinceEpoch() - lastUpdate > 3600) {
-                timetable->mUpdateWeather();
-                lastUpdate = QDateTime::currentSecsSinceEpoch();
-            }
             text = QString::fromStdWString(timetable->mGetWeather(_wtoi(translatedText.c_str())));
             break;
         default:

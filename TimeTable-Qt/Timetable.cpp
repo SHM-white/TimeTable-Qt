@@ -13,11 +13,7 @@ int TimeTable::mAddLesson(const std::wstring &week, const std::wstring &Lesson, 
 	// Call the mAddLesson function with the provided parameters and the default mLessonInfoPath.
 	return mAddLesson(week, Lesson, sBegin, sEnd, mLessonInfoPath);
 }
-int TimeTable::mUpdateWeather()
-{
-	m_needUpdateWeather = true;
-	return 0;
-}
+
 // 添加课程5参数函数
 int TimeTable::mAddLesson(const std::wstring &week, const std::wstring &Lesson, const std::wstring &sBegin, const std::wstring &sEnd, const std::wstring &TargetFilePath)
 {
@@ -154,7 +150,7 @@ std::wstring TimeTable::mGetCurrentTime(const std::wstring &TextFormat)
 	}
 	if (TextFormat.size() >= 2 && !std::regex_match(TextFormat.begin() + location, TextFormat.begin() + location + 2, std::regex("%[^aAbBcCdDeFgGhHIjmMnprRStTuUVwWxXyYzZ%]|%[0-9]{1,}[a-zA-Z]")))
 	{
-		wcsftime(result, sizeof(result), TextFormat.c_str(), &structm);
+		wcsftime(result, wcslen(result), TextFormat.c_str(), &structm);
 	}
 	else
 	{
@@ -511,6 +507,16 @@ std::wstring TimeTable::mGetWeather(int code)
 	}
 
 	return weather;
+}
+std::wstring TimeTable::mGetWeather(const std::wstring& first, const std::wstring& second)
+{
+	if (first == second) {
+		return first;
+	}
+	else
+	{
+		return std::format(L"{}转{}", first, second);
+	}
 }
 int TimeTable::deleteLesson(size_t index, const std::wstring &day)
 {

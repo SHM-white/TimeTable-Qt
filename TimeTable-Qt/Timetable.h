@@ -18,7 +18,6 @@ public:
 	TimeTable(TimeTable& another) = default;
 	TimeTable(std::wstring path) : mLessonInfoPath{ path } {};
 	TimeTable& operator=(const TimeTable& another) = default;
-	int mUpdateWeather();
 	int mAddLesson(const std::wstring& week, const std::wstring& Lesson, const std::wstring& sBegin, const std::wstring& sEnd, const std::wstring& TargetFilePath);
 	int mAddLesson(const Lesson& lesson);
 	int mAddLesson(const Lesson& lesson, const std::wstring& TargetFilePath);
@@ -44,6 +43,7 @@ public:
 	int SaveJson(const std::wstring& TargetPath, const Json::Value& root);
 	int mGetCurrentLesson(int);
 	std::wstring mGetWeather(int code);
+	std::wstring mGetWeather(const std::wstring& first, const std::wstring& second);
 	std::wstring mGetCountDown(tm tmIn, const std::wstring& TimeFormat);
 	std::wstring mGetInfo();
 	std::wstring mGetInfo(const std::wstring& week);
