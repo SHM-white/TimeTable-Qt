@@ -469,7 +469,12 @@ std::wstring TimeTable::mGetWeather(int code)
 				std::launch::async,
 				[code]()
 				{
-					return requests::get(std::format("https://restapi.amap.com/v3/weather/weatherInfo?city={}&key=7654cff2801031c93fba40fe770e7016&extensions=all", code).c_str());
+					requests::Response response;
+					do
+					{
+						response = requests::get(std::format("https://restapi.amap.com/v3/weather/weatherInfo?city={}&key=7654cff2801031c93fba40fe770e7016&extensions=all", code).c_str());
+					} while (response.get() != nullptr);
+					return response;
 				});
 			status = std::future_status::timeout;
 		}
