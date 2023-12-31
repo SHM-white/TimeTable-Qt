@@ -139,7 +139,7 @@ std::wstring TimeTable::mGetCurrentLesson(const std::wstring &LessonNull)
 
 std::wstring TimeTable::mGetCurrentTime(const std::wstring &TextFormat)
 {
-	wchar_t result[100];
+    wchar_t result[1024];
 	tm structm;
 
 	mGetCurrentTime(structm);
@@ -148,9 +148,9 @@ std::wstring TimeTable::mGetCurrentTime(const std::wstring &TextFormat)
 	{
 		location = 0;
 	}
-	if (TextFormat.size() >= 2 && !std::regex_match(TextFormat.begin() + location, TextFormat.begin() + location + 2, std::regex("%[^aAbBcCdDeFgGhHIjmMnprRStTuUVwWxXyYzZ%]|%[0-9]{1,}[a-zA-Z]")))
+    if (TextFormat.size() >= 2 && !std::regex_match(TextFormat.begin() + location, TextFormat.begin() + location + 2, std::regex("%[^aAbBcCdDeFgGhHIjmMnprRStTuUVwWxXyYzZ%]|%[0-9]{1,}[a-zA-Z]")))
 	{
-		wcsftime(result, wcslen(result), TextFormat.c_str(), &structm);
+        wcsftime(result, sizeof(result)/2, TextFormat.c_str(), &structm);
 	}
 	else
 	{
