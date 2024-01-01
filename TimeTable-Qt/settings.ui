@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>Settings</class>
  <widget class="QDialog" name="Settings">
@@ -615,7 +615,7 @@
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_8">
            <item>
-            <layout class="QVBoxLayout" name="verticalLayout_6">
+            <layout class="QVBoxLayout" name="verticalLayout_14">
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_10">
                <item>
@@ -726,204 +726,229 @@
               </widget>
              </item>
              <item>
-              <widget class="Line" name="line_5">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+              <widget class="QPushButton" name="pushButton_addFormat">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>新组</string>
                </property>
               </widget>
              </item>
-             <item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QScrollArea" name="scrollArea">
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContents">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>-195</y>
+                <width>493</width>
+                <height>420</height>
+               </rect>
+              </property>
               <layout class="QHBoxLayout" name="horizontalLayout_12">
                <item>
-                <layout class="QVBoxLayout" name="verticalLayout_12">
+                <layout class="QVBoxLayout" name="verticalLayout_6">
                  <item>
-                  <widget class="QListWidget" name="listWidget_textItems"/>
+                  <widget class="Line" name="line_5">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                  </widget>
                  </item>
                  <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_13">
+                  <layout class="QVBoxLayout" name="verticalLayout_12">
                    <item>
-                    <widget class="QPushButton" name="pushButton_addTextItem">
-                     <property name="text">
-                      <string>添加</string>
+                    <widget class="QListWidget" name="listWidget_textItems">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="pushButton_changeText">
-                     <property name="text">
-                      <string>修改</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="pushButton_deleteTextItem">
-                     <property name="text">
-                      <string>删除</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <layout class="QVBoxLayout" name="verticalLayout_11">
-                 <item>
-                  <widget class="QLineEdit" name="lineEdit_textFormat"/>
-                 </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_27">
-                   <item>
-                    <layout class="QVBoxLayout" name="verticalLayout_15">
+                    <layout class="QHBoxLayout" name="horizontalLayout_13">
                      <item>
-                      <widget class="QRadioButton" name="radioButton_time">
+                      <widget class="QPushButton" name="pushButton_addTextItem">
                        <property name="text">
-                        <string>时间</string>
+                        <string>添加</string>
                        </property>
-                       <property name="checked">
-                        <bool>false</bool>
-                       </property>
-                       <attribute name="buttonGroup">
-                        <string notr="true">buttonGroup</string>
-                       </attribute>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QRadioButton" name="radioButton_lesson">
+                      <widget class="QPushButton" name="pushButton_changeText">
                        <property name="text">
-                        <string>当前课程</string>
+                        <string>修改</string>
                        </property>
-                       <attribute name="buttonGroup">
-                        <string notr="true">buttonGroup</string>
-                       </attribute>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QRadioButton" name="radioButton_info">
+                      <widget class="QPushButton" name="pushButton_deleteTextItem">
                        <property name="text">
-                        <string>值日信息</string>
+                        <string>删除</string>
                        </property>
-                       <attribute name="buttonGroup">
-                        <string notr="true">buttonGroup</string>
-                       </attribute>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QRadioButton" name="radioButton_countDownDay">
-                       <property name="text">
-                        <string>倒计时</string>
-                       </property>
-                       <attribute name="buttonGroup">
-                        <string notr="true">buttonGroup</string>
-                       </attribute>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QVBoxLayout" name="verticalLayout_13">
-                     <item>
-                      <widget class="QRadioButton" name="radioButton">
-                       <property name="text">
-                        <string>默认</string>
-                       </property>
-                       <property name="checked">
-                        <bool>true</bool>
-                       </property>
-                       <attribute name="buttonGroup">
-                        <string notr="true">buttonGroup</string>
-                       </attribute>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QRadioButton" name="radioButton_weather">
-                       <property name="enabled">
-                        <bool>true</bool>
-                       </property>
-                       <property name="text">
-                        <string>天气</string>
-                       </property>
-                       <attribute name="buttonGroup">
-                        <string notr="true">buttonGroup</string>
-                       </attribute>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QRadioButton" name="radioButton_news">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
-                       <property name="text">
-                        <string>新闻</string>
-                       </property>
-                       <attribute name="buttonGroup">
-                        <string notr="true">buttonGroup</string>
-                       </attribute>
                       </widget>
                      </item>
                     </layout>
                    </item>
                   </layout>
                  </item>
+                 <item>
+                  <layout class="QVBoxLayout" name="verticalLayout_16">
+                   <item>
+                    <layout class="QVBoxLayout" name="verticalLayout_11">
+                     <item>
+                      <widget class="QLineEdit" name="lineEdit_textFormat"/>
+                     </item>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_27">
+                       <item>
+                        <layout class="QVBoxLayout" name="verticalLayout_15">
+                         <item>
+                          <widget class="QRadioButton" name="radioButton_time">
+                           <property name="text">
+                            <string>时间</string>
+                           </property>
+                           <property name="checked">
+                            <bool>false</bool>
+                           </property>
+                           <attribute name="buttonGroup">
+                            <string notr="true">buttonGroup</string>
+                           </attribute>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QRadioButton" name="radioButton_lesson">
+                           <property name="text">
+                            <string>当前课程</string>
+                           </property>
+                           <attribute name="buttonGroup">
+                            <string notr="true">buttonGroup</string>
+                           </attribute>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QRadioButton" name="radioButton_info">
+                           <property name="text">
+                            <string>值日信息</string>
+                           </property>
+                           <attribute name="buttonGroup">
+                            <string notr="true">buttonGroup</string>
+                           </attribute>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QRadioButton" name="radioButton_countDownDay">
+                           <property name="text">
+                            <string>倒计时</string>
+                           </property>
+                           <attribute name="buttonGroup">
+                            <string notr="true">buttonGroup</string>
+                           </attribute>
+                          </widget>
+                         </item>
+                        </layout>
+                       </item>
+                       <item>
+                        <layout class="QVBoxLayout" name="verticalLayout_13">
+                         <item>
+                          <widget class="QRadioButton" name="radioButton">
+                           <property name="text">
+                            <string>默认</string>
+                           </property>
+                           <property name="checked">
+                            <bool>true</bool>
+                           </property>
+                           <attribute name="buttonGroup">
+                            <string notr="true">buttonGroup</string>
+                           </attribute>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QRadioButton" name="radioButton_weather">
+                           <property name="enabled">
+                            <bool>true</bool>
+                           </property>
+                           <property name="text">
+                            <string>天气</string>
+                           </property>
+                           <attribute name="buttonGroup">
+                            <string notr="true">buttonGroup</string>
+                           </attribute>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QRadioButton" name="radioButton_news">
+                           <property name="enabled">
+                            <bool>false</bool>
+                           </property>
+                           <property name="text">
+                            <string>新闻</string>
+                           </property>
+                           <attribute name="buttonGroup">
+                            <string notr="true">buttonGroup</string>
+                           </attribute>
+                          </widget>
+                         </item>
+                        </layout>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_5">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <widget class="Line" name="line">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                  </widget>
+                 </item>
                 </layout>
                </item>
               </layout>
-             </item>
+             </widget>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_24">
              <item>
-              <widget class="Line" name="line_6">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+              <widget class="QPushButton" name="pushButton_cancelChange">
+               <property name="text">
+                <string>放弃</string>
                </property>
               </widget>
              </item>
              <item>
-              <spacer name="verticalSpacer_5">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>40</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_21">
-               <item>
-                <widget class="QPushButton" name="pushButton_addFormat">
-                 <property name="text">
-                  <string>新组</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <widget class="Line" name="line">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+              <widget class="QPushButton" name="pushButton_saveChange">
+               <property name="text">
+                <string>保存</string>
                </property>
               </widget>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_24">
-               <item>
-                <widget class="QPushButton" name="pushButton_cancelChange">
-                 <property name="text">
-                  <string>放弃</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="pushButton_saveChange">
-                 <property name="text">
-                  <string>保存</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
              </item>
             </layout>
            </item>
