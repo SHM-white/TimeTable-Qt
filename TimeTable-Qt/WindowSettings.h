@@ -47,6 +47,7 @@ public:
 	std::wstring msLessonInfoFile{ L".\\Lessons.json" };
 	std::wstring msBackGroundImg{ L"" };
 	int miBackGroundColor[4]{ 255,255,255,1 };
+	bool mAutoOpenAllLessons {false};
 	bool bAcrylicEffect{ false };
 	bool mUseImgAsBackGround{ true };
 	bool Utf8{ true };

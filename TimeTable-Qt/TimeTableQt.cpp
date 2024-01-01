@@ -54,6 +54,9 @@ TimeTableQt::TimeTableQt(QWidget *parent)
         QSettings settings{ AUTO_RUN_KEY, QSettings::NativeFormat };
         bool autoBoot = settings.value(application_name, "").toBool();
         this->ui.actionBootAtPowerOn->setChecked(autoBoot);
+        if (mAutoOpenAllLessons){
+            this.ui.actionshowTodayAll.setChecked(true);
+        }
     }
 }
 

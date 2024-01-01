@@ -53,6 +53,7 @@ int WindowSettings::mGetWindowSettings()
 		mCountDownDay.tm_hour = Settings["CountDownDay"][3].asInt();
 		mCountDownDay.tm_min = Settings["CountDownDay"][4].asInt();
 		mCountDownDay.tm_sec = Settings["CountDownDay"][5].asInt();
+        mAutoOpenAllLessons = Settings["AutoOpenWindow"][0].asBool();
 		bAcrylicEffect = Settings["AcrylicEffect"].asBool();
         mUseImgAsBackGround= Settings["ImgAsBackGround"].asBool();
 	}
@@ -122,6 +123,8 @@ int WindowSettings::save(const std::wstring& ConfigPath)
     Settings["CountDownDay"].append(mCountDownDay.tm_min);
     Settings["CountDownDay"].append(mCountDownDay.tm_sec);
     
+    Settings["AutoOpenWindow"].clear();
+    Settings["AutoOpenWindow"].append(mAutoOpenAllLessons);
     // Write the root object to the output file stream
     os<<sw.write(root);
     // Close the output file stream
