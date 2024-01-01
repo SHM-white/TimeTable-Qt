@@ -56,6 +56,7 @@ TimeTableQt::TimeTableQt(QWidget *parent)
         this->ui.actionBootAtPowerOn->setChecked(autoBoot);
         if (windowsettings->mAutoOpenAllLessons){
             this->ui.actionshowTodayAll->setChecked(true);
+            this->on_actionshowTodayAll_triggered();
         }
     }
 }
