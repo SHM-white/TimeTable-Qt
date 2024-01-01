@@ -485,7 +485,7 @@ std::wstring TimeTable::mGetWeather(int code)
 			if (reader.parse(result.get().get()->body, root))
 			{
 				status = std::future_status::deferred;
-				weather = std::format(L"今日天气: {}-{}℃,{},明日天气：{}-{}℃,{}",
+				weather = std::format(L"今日天气: {}~{}℃,{},明日天气：{}~{}℃,{}",
 									  u8tw(root["forecasts"][0]["casts"][0]["nighttemp"].asString()),
 									  u8tw(root["forecasts"][0]["casts"][0]["daytemp"].asString()),
 									  mGetWeather(
