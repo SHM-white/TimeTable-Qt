@@ -454,7 +454,7 @@ int TimeTable::mGetCurrentLesson(int)
 }
 std::wstring TimeTable::mGetWeather(int code)
 {
-	static std::wstring weather{L"null"};
+	static std::wstring weather{L"getting...."};
 	static std::future<requests::Response> result;
 	static std::future_status status = std::future_status::deferred;
 	try
@@ -469,7 +469,7 @@ std::wstring TimeTable::mGetWeather(int code)
 					do
 					{
 						response = requests::get(std::format("https://restapi.amap.com/v3/weather/weatherInfo?city={}&key=7654cff2801031c93fba40fe770e7016&extensions=all", code).c_str());
-					} while (response.get() != nullptr);
+					} while (response.get() == nullptr);
 					return response;
 				});
 			status = std::future_status::timeout;
@@ -485,15 +485,20 @@ std::wstring TimeTable::mGetWeather(int code)
 			if (reader.parse(result.get().get()->body, root))
 			{
 				status = std::future_status::deferred;
-				weather = std::format(L"今日天气: {}-{}℃,{}转{},明日天气：{}-{}℃,{}转{}",
+				weather = std::format(L"今日天气: {}-{}℃,{},明日天气：{}-{}℃,{}",
 									  u8tw(root["forecasts"][0]["casts"][0]["nighttemp"].asString()),
 									  u8tw(root["forecasts"][0]["casts"][0]["daytemp"].asString()),
+									  mGetWeather(
 									  u8tw(root["forecasts"][0]["casts"][0]["dayweather"].asString()),
-									  u8tw(root["forecasts"][0]["casts"][0]["nightweather"].asString()),
+									  u8tw(root["forecasts"][0]["casts"][0]["nightweather"].asString())
+									  ),
 									  u8tw(root["forecasts"][0]["casts"][1]["nighttemp"].asString()),
 									  u8tw(root["forecasts"][0]["casts"][1]["daytemp"].asString()),
+									  mGetWeather(
 									  u8tw(root["forecasts"][0]["casts"][1]["dayweather"].asString()),
-									  u8tw(root["forecasts"][0]["casts"][1]["nightweather"].asString()));
+									  u8tw(root["forecasts"][0]["casts"][1]["nightweather"].asString())
+				)
+				);
 			}
 		}
 	}
