@@ -4,11 +4,9 @@
 
 int main(int argc, char *argv[])
 {
-    {
-        char szBuf[512] = { 0 };
-        getcwd(szBuf, sizeof(szBuf)-1);
-        SetCurrentDirectoryA(szBuf);
-    }
+    std::string dir{ argv[0] };
+    auto dir2 = std::string{ dir.begin(),dir.begin() + dir.find_last_of("\\") };
+    SetCurrentDirectoryA(dir2.c_str());
     QApplication a(argc, argv);
     TimeTableQt w;
     w.show();
