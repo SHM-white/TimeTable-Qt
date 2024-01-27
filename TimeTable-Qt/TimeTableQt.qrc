@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/TimeTableQt">
         <file>123.ico</file>
+        <file>123.png</file>
     </qresource>
 </RCC>

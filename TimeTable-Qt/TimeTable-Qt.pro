@@ -11,10 +11,12 @@ CONFIG += \
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    BasicWindow.cpp \
     CSVEditor.cpp \
     Lesson.cpp \
     TextFormat.cpp \
     Timetable.cpp \
+    UIElementBase.cpp \
     WindowItem.cpp \
     WindowSettings.cpp \
     about.cpp \
@@ -23,18 +25,21 @@ SOURCES += \
     include.cpp \
     main.cpp \
     TimeTableQt.cpp \
+    mainwindow.cpp \
     settings.cpp \
     showalllessons.cpp \
     showmoreinfo.cpp \
     todayalllessons.cpp
 
 HEADERS += \
+    BasicWindow.h \
     CSVEditor.h \
     Lesson.h \
     TextFormat.h \
     TimeTable-Qt.aps \
     Timetable.h \
     ToWString.h \
+    UIElementBase.h \
     WindowItem.h \
     WindowSettings.h \
     about.h \
@@ -43,6 +48,7 @@ HEADERS += \
     TimeTableQt.h \
     importfromfile.h \
     include.h \
+    mainwindow.h \
     resource.h \
     resource1.h \
     settings.h \
@@ -56,6 +62,7 @@ FORMS += \
     about.ui \
     changeconfigpath.ui \
     importfromfile.ui \
+    mainwindow.ui \
     settings.ui \
     showalllessons.ui \
     showmoreinfo.ui \

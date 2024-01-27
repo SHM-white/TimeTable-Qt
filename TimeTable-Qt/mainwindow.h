@@ -15,7 +15,7 @@ public:
 
 private:
 	Ui::MainWindowClass ui;
-
+	void CreateSystemTrayIcon();
 	// 通过 BasicWindow 继承
 	Json::Value SaveJson(Json::Value& value) const override;
 };
