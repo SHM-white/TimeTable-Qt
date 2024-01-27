@@ -112,21 +112,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="about.cpp" />
+    <ClCompile Include="BasicWindow.cpp" />
     <ClCompile Include="changeconfigpath.cpp" />
     <ClCompile Include="importfromfile.cpp" />
     <ClCompile Include="include.cpp" />
     <ClCompile Include="Lesson.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="settings.cpp" />
     <ClCompile Include="showalllessons.cpp" />
     <ClCompile Include="showmoreinfo.cpp" />
     <ClCompile Include="todayalllessons.cpp" />
+    <ClCompile Include="UIElementBase.cpp" />
     <ClCompile Include="WindowItem.cpp" />
     <ClCompile Include="WindowSettings.cpp" />
     <QtRcc Include="TimeTableQt.qrc" />
     <QtUic Include="about.ui" />
     <QtUic Include="changeconfigpath.ui" />
     <QtUic Include="importfromfile.ui" />
+    <QtUic Include="MainWindow.ui" />
     <QtUic Include="settings.ui" />
     <QtUic Include="showalllessons.ui" />
     <QtUic Include="showmoreinfo.ui" />
@@ -149,18 +153,21 @@
   <ItemGroup>
     <QtMoc Include="about.h" />
     <QtMoc Include="changeconfigpath.h" />
+    <QtMoc Include="BasicWindow.h" />
     <ClInclude Include="CSVEditor.h" />
     <QtMoc Include="importfromfile.h" />
     <ClInclude Include="include.h" />
     <ClInclude Include="Lesson.h" />
     <QtMoc Include="showalllessons.h" />
     <QtMoc Include="showmoreinfo.h" />
+    <QtMoc Include="MainWindow.h" />
     <ClInclude Include="resource1.h" />
     <QtMoc Include="settings.h" />
     <ClInclude Include="TextFormat.h" />
     <ClInclude Include="Timetable.h" />
     <QtMoc Include="todayalllessons.h" />
     <ClInclude Include="ToWString.h" />
+    <ClInclude Include="UIElementBase.h" />
     <ClInclude Include="WindowItem.h" />
     <ClInclude Include="WindowSettings.h" />
   </ItemGroup>

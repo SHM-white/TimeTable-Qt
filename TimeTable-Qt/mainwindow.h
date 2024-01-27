@@ -1,28 +1,20 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+﻿#pragma once
 
 #include <QWidget>
-#include <QTimer>
-#include "WindowSettings.h"
+#include "ui_MainWindow.h"
+#include "BasicWindow.h"
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow;}
-QT_END_NAMESPACE
-
-class MainWindow : public QWidget
+class MainWindow : public BasicWindow
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
-    WindowSettings windowsettings{ ".\\Config.json" };
-    TimeTable timetable{ windowsettings.msLessonInfoFile };
-private slots:
-    void UpdateWindow();
+	MainWindow(Json::Value& settings, QWidget* parent = nullptr);
+	~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
-    QTimer *time_calendar;
+	Ui::MainWindowClass ui;
+
+	// 通过 BasicWindow 继承
+	Json::Value SaveJson(Json::Value& value) const override;
 };
-#endif // MAINWINDOW_H

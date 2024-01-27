@@ -1,43 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ui version="4.0">
- <class>MainWindow</class>
- <widget class="QWidget" name="MainWindow">
-  <property name="geometry">
+<UI version="4.0" >
+ <class>MainWindowClass</class>
+ <widget class="QWidget" name="MainWindowClass" >
+  <property name="objectName" >
+   <string notr="true">MainWindowClass</string>
+  </property>
+  <property name="geometry" >
    <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>250</width>
-    <height>131</height>
+	<x>0</x>
+	<y>0</y>
+	<width>600</width>
+	<height>400</height>
    </rect>
   </property>
-  <property name="minimumSize">
-   <size>
-    <width>250</width>
-    <height>100</height>
-   </size>
-  </property>
-  <property name="maximumSize">
-   <size>
-    <width>250</width>
-    <height>16777215</height>
-   </size>
-  </property>
-  <property name="windowTitle">
+  <property name="windowTitle" >
    <string>MainWindow</string>
-  </property>
-  <widget class="QWidget" name="centralwidget"/>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>250</width>
-     <height>26</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  </property>$centralwidget$
  </widget>
- <resources/>
+ <layoutDefault spacing="6" margin="11" />
+ <pixmapfunction></pixmapfunction>
  <connections/>
-</ui>
+</UI>

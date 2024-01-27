@@ -1,0 +1,43 @@
+{
+   "About" : "该程序的目的是取代每天写在黑板上的课表和值日表等信息，可以放在教室的电脑上，也可网课期间自己使用\r\n如有bug或建议请到GitHub反馈",
+   "ConfigFile" : "config.json",
+   "LessonInfoFile" : "D:/Documents/source/repos/TimeTable-Qt/Lessons.json",
+   "Settings" : {
+      "Window" : {
+         "AcrylicEffect" : false,
+         "BackGroundColor" : [ 255, 255, 255, 40 ],
+         "BackGroundImg" : "BackGround.png",
+         "CountDownDay" : [ 2024, 6, 7, 0, 0, 0 ],
+         "CountDownDayInLine" : 4,
+         "ImgAsBackGround" : false,
+         "LessonInLine" : 2,
+         "LessonInfoFile" : "",
+         "LessonNull" : "",
+         "TextFormat" : [
+            [
+               "微软雅黑",
+               [ 0, 0, 130, 30 ],
+               16,
+               [ 0, 0, 0 ],
+               [
+                  [ "%a-%H:%M:%S ", 1 ]
+               ]
+            ],
+            [
+               "微软雅黑",
+               [ 130, 0, 260, 30 ],
+               16,
+               [ 0, 0, 0 ],
+               [
+                  [ "距离高考%03d天%02d小时%02d分钟%02d秒", 3 ],
+                  [ "值日：", 4 ],
+                  [ "课程：", 2 ]
+               ]
+            ]
+         ],
+         "WindowLocation" : [ 450, 0, 20, 20 ],
+         "WindowSize" : [ 400, 30 ]
+      }
+   },
+   "version" : [ 2, 5, 0 ]
+}
