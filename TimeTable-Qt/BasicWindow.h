@@ -16,8 +16,6 @@ public:
 
 	bool InitializeWindow(Json::Value& value);
 
-	void hideEvent(QHideEvent* event) override;
-	void closeEvent(QCloseEvent* event) override;
 	void paintEvent(QPaintEvent* event) override;
 	void mousePressEvent(QMouseEvent* event) override;
 	void mouseMoveEvent(QMouseEvent* event) override;
@@ -35,6 +33,7 @@ public:
 
 	bool m_AutoOpen{ false };
 	bool m_TopMost{ false };
+	bool m_moveable{ true };
 
 	bool m_debug{ false };
 private:
@@ -45,6 +44,7 @@ private:
 	QTimer* time_calendar_window;
 	QTimer* time_calendar_text;
 	QPoint mouseStartPoint;
+	QPoint windowTopLeftPoint;
 
 	virtual Json::Value SaveJson(Json::Value& value) const = 0;
 

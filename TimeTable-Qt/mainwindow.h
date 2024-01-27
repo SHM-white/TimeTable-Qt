@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include <QWidget>
+#include "include.h"
 #include "ui_MainWindow.h"
 #include "BasicWindow.h"
 

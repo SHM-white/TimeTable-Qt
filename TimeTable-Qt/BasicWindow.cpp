@@ -7,7 +7,6 @@ BasicWindow::BasicWindow(Json::Value& settings, QWidget* parent)
 	connect(time_calendar_window, SIGNAL(timeout()), this, SLOT(updateWindow()));
 	time_calendar_window->start((int)100 / 6);
 	InitializeWindow(settings);
-	this->show();
 #ifdef DEBUG
 	m_debug = true;
 #endif // DEBUG
@@ -40,9 +39,12 @@ bool BasicWindow::InitializeWindow(Json::Value& value)
 
 	m_AutoOpen = Settings["AutoOpen"].asBool();
 	m_TopMost = Settings["TopMost"].asBool();
+	m_moveable = Settings["Moveable"].asBool();
 
-	this->setGeometry(miWindowX, miWindowY, miWindowWeight, miWindowHeight);
-	this->setFixedSize(miWindowWeight, miWindowHeight);
+	if (!(miWindowX == 0 && miWindowY == 0 && miWindowWeight == 0 && miWindowHeight == 0)) {
+		this->setGeometry(miWindowX, miWindowY, miWindowWeight, miWindowHeight);
+		this->setFixedSize(miWindowWeight, miWindowHeight);
+	}
 
 	QString picpath = QString::fromStdWString(msBackGroundImg);
 	pic = QPixmap(picpath);
@@ -51,18 +53,19 @@ bool BasicWindow::InitializeWindow(Json::Value& value)
 	setWindowFlags(Qt::WindowMinMaxButtonsHint | Qt::FramelessWindowHint | Qt::Tool);
 	setAttribute(Qt::WA_TranslucentBackground);
 	flags = windowFlags();
-	setWindowFlags(flags | Qt::WindowStaysOnTopHint);
-
+	if (m_TopMost) {
+		setWindowFlags(flags | Qt::WindowStaysOnTopHint);
+	}
+	else {
+		setWindowFlags(flags);
+	}
+	if (m_AutoOpen) {
+		this->show();
+	}
+	else {
+		this->hide();
+	}
 	return true;
-}
-
-void BasicWindow::hideEvent(QHideEvent* event)
-{
-}
-
-void BasicWindow::closeEvent(QCloseEvent* event)
-{
-	event->accept();
 }
 
 void BasicWindow::paintEvent(QPaintEvent* event)
@@ -92,14 +95,32 @@ void BasicWindow::paintEvent(QPaintEvent* event)
 
 void BasicWindow::mousePressEvent(QMouseEvent* event)
 {
+	if ((event->button() == Qt::LeftButton)&&m_moveable)
+	{
+		m_bDrag = true;
+		mouseStartPoint = event->globalPos();
+		windowTopLeftPoint = this->frameGeometry().topLeft();
+		setCursor(QCursor(Qt::SizeAllCursor));
+	}
 }
 
 void BasicWindow::mouseMoveEvent(QMouseEvent* event)
 {
+	if (m_bDrag)
+	{
+		QPoint distance = event->globalPos() - mouseStartPoint;
+		this->move(windowTopLeftPoint + distance);
+	}
 }
 
 void BasicWindow::mouseReleaseEvent(QMouseEvent* event)
 {
+	if (event->button() == Qt::LeftButton)
+	{
+		m_bDrag = false;
+	}
+	setCursor(QCursor(Qt::ArrowCursor));
+
 }
 
 
