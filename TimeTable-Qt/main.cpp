@@ -10,7 +10,10 @@ int main(int argc, char *argv[])
         SetCurrentDirectoryA(dir2.c_str());
     }
     QApplication a(argc, argv);
-    auto value = Json::GetRootJsonValue(DEFAULT_CONFIG_PATH);
+
+    std::wstring path;
+    Json::mGetTextItem(L"ConfigFile", path, DEFAULT_CONFIG_PATH);
+    auto value = Json::GetRootJsonValue(path);
     MainWindow w{ value["MainWindow"] };
     w.show();
     return a.exec();

@@ -6,17 +6,19 @@ MainWindow::MainWindow(Json::Value& settings, QWidget* parent)
 	: BasicWindow(settings, parent)
 {
 	ui.setupUi(this);
+    m_AutoOpen = true;
+    m_hide = false;
     ui.label_version->setText(QString::fromStdString(std::format("v{}.{}.{}", currentVersion_global[0], currentVersion_global[1], currentVersion_global[2])));
     this->show();
-    ui.label_status->setText(QString("创建托盘图标"));
     CreateSystemTrayIcon();
     std::wstring path;
     Json::mGetTextItem(L"ConfigFile", path, DEFAULT_CONFIG_PATH);
     auto value = Json::GetRootJsonValue(path);
     for (auto& i : value["Windows"]) {
-        
+        //m_windows.push_back
     }
     Json::mGetTextItem(L"LessonInfoFile", path, DEFAULT_CONFIG_PATH);
+    //m_hide = true;
 }
 
 MainWindow::~MainWindow()

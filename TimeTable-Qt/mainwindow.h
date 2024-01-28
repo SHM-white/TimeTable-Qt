@@ -12,7 +12,7 @@ class MainWindow : public BasicWindow
 public:
 	MainWindow(Json::Value& settings, QWidget* parent = nullptr);
 	~MainWindow();
-
+	std::vector<std::shared_ptr<BasicWindow>> m_windows;
 private:
 	Ui::MainWindowClass ui;
 	void CreateSystemTrayIcon();

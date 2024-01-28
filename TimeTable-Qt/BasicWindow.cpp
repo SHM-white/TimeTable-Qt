@@ -1,14 +1,21 @@
 ﻿#include "BasicWindow.h"
 
 BasicWindow::BasicWindow(Json::Value& settings, QWidget* parent)
-	: QWidget(parent)
+	: QWidget(parent), m_settings{ settings }
 {
-	time_calendar_window = new QTimer(this);
-	connect(time_calendar_window, SIGNAL(timeout()), this, SLOT(updateWindow()));
-	time_calendar_window->start((int)100 / 6);
 	InitializeWindow(settings);
+
+	time_calendar_window = new QTimer(this);
+	connect(time_calendar_window, SIGNAL(timeout()), this, SLOT(update()));
+	time_calendar_window->start((int)1000 / m_maxFPS);
+
+	time_calendar_text = new QTimer(this);
+	connect(time_calendar_text, SIGNAL(timeout()), this, SLOT(updateWindowStatus()));
+	time_calendar_text->start(1000);
+
 #ifdef DEBUG
 	m_debug = true;
+	m_showFPS = true;
 #endif // DEBUG
 
 }
@@ -18,13 +25,41 @@ BasicWindow::~BasicWindow()
 
 Json::Value BasicWindow::save() const
 {
-	Json::Value value;
-	return SaveJson(value);
+	Json::Value Settings = m_settings;
+	Settings["WindowSize"].clear();
+	Settings["WindowSize"].append(miWindowWeight);
+	Settings["WindowSize"].append(miWindowHeight);
+	// Clear the "WindowLocation" array and append the window position and all lesson window position
+	Settings["WindowLocation"].clear();
+	Settings["WindowLocation"].append(miWindowX);
+	Settings["WindowLocation"].append(miWindowY);
+	Settings["ImgAsBackGround"] = mUseImgAsBackGround;
+	Settings["BackGroundColor"].clear();
+	for (auto color : miBackGroundColor) {
+		Settings["BackGroundColor"].append(color);
+	}
+	Settings["AcrylicEffect"] = bAcrylicEffect;
+	Settings["BackGroundImg"] = wtu8(msBackGroundImg);
+	Settings["UIElements"].clear();
+	for (const auto& i : m_UIElements) {
+		Settings["UIElements"].append(i->save());
+	}
+
+	Settings["AutoOpen"] = m_AutoOpen;
+	Settings["TopMost"] = m_TopMost;
+	Settings["Moveable"] = m_moveable;
+	Settings["FPS"] = m_maxFPS;
+
+	return SaveJson(Settings);
 }
 
 bool BasicWindow::InitializeWindow(Json::Value& value)
 {
+	if (value.isNull()) {
+		value = this->save();
+	}
 	Json::Value Settings = value;
+	m_settings = value;
 	miWindowHeight = Settings["WindowSize"][1].asInt();
 	miWindowWeight = Settings["WindowSize"][0].asInt();
 	miWindowX = Settings["WindowLocation"][0].asInt();
@@ -40,6 +75,7 @@ bool BasicWindow::InitializeWindow(Json::Value& value)
 	m_AutoOpen = Settings["AutoOpen"].asBool();
 	m_TopMost = Settings["TopMost"].asBool();
 	m_moveable = Settings["Moveable"].asBool();
+	m_maxFPS = (Settings["FPS"].asInt() == 0 ? 10 : Settings["FPS"].asInt());
 
 	if (!(miWindowX == 0 && miWindowY == 0 && miWindowWeight == 0 && miWindowHeight == 0)) {
 		this->setGeometry(miWindowX, miWindowY, miWindowWeight, miWindowHeight);
@@ -60,21 +96,34 @@ bool BasicWindow::InitializeWindow(Json::Value& value)
 		setWindowFlags(flags);
 	}
 	if (m_AutoOpen) {
-		this->show();
+		m_hide = false;
 	}
 	else {
-		this->hide();
+		m_hide = true;
 	}
 	return true;
 }
 
+void BasicWindow::updateWindowStatus()
+{
+	m_lastFPS = m_currentFPS;
+	m_currentFPS = 0;
+	if (m_hide) {
+		this->hide();
+	}
+	else
+	{
+		this->show();
+	}
+}
+
 void BasicWindow::paintEvent(QPaintEvent* event)
 {
-	QPainter painter(this);
-	if (m_debug)
-	{
-		painter.drawRect(rect());
+	if (m_hide == true) {
+		return;
 	}
+	m_currentFPS += 1;
+	QPainter painter(this);
 	// Draw background image
 	if (pic.isNull() || !(mUseImgAsBackGround)) {
 		painter.fillRect(rect(), QColor(miBackGroundColor[0], miBackGroundColor[1], miBackGroundColor[2], miBackGroundColor[3]));
@@ -89,6 +138,17 @@ void BasicWindow::paintEvent(QPaintEvent* event)
 		if (m_debug) {
 			i->paintRect(painter);
 		}
+	}	
+	if (m_debug)
+	{
+		painter.drawRect(rect());
+	}
+	if (m_showFPS) {
+		painter.save();
+		painter.setPen(QColor(0, 255, 0));
+		QRect temp_fpsRect{ 0, 0, 20, 15 };
+		painter.drawText(temp_fpsRect, Qt::AlignCenter, QString::number(m_lastFPS));
+		painter.restore();
 	}
 	painter.end();
 }
