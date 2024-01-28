@@ -6,6 +6,9 @@
 #include "BasicWindow.h"
 #include "SubWindow.h"
 #include "Timetable.h"
+#include "qsystemtrayicon.h"
+#include "qmenu.h"
+
 
 class MainWindow : public BasicWindow
 {
@@ -21,9 +24,13 @@ private:
 	std::shared_ptr<BasicWindow> CreateSubWindows(Json::Value& settings,std::shared_ptr<TimeTable> timetable);
 	// 通过 BasicWindow 继承
 	Json::Value SaveJson(Json::Value& value) const override;
+	QSystemTrayIcon* trayIcon;
+	QAction* action_autoLaunch;
 private slots:
-	void ShowAllWindows();
+
 	void HideAllWindows();
+	void ShowAllWindows();
 	void LaunchAsSystemBoot();
+	void OpenSetting();
 	void Exit();
 };

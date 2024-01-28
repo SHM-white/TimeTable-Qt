@@ -21,7 +21,10 @@ BasicWindow::BasicWindow(Json::Value& settings, QWidget* parent)
 }
 
 BasicWindow::~BasicWindow()
-{}
+{
+	delete time_calendar_window;
+	delete time_calendar_text;
+}
 
 Json::Value BasicWindow::save() const
 {
@@ -120,6 +123,12 @@ void BasicWindow::updateWindowStatus()
 	{
 		this->show();
 	}
+}
+
+void BasicWindow::closeEvent(QCloseEvent* event)
+{
+	m_hide = true;
+	event->accept();
 }
 
 void BasicWindow::paintEvent(QPaintEvent* event)

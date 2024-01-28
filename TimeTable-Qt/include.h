@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #define WIN32_LEAN_AND_MEAN
+#define AUTO_RUN_KEY	"HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
 
 #include <string>
 #include <locale>

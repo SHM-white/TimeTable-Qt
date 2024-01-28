@@ -1,6 +1,4 @@
 ﻿#include "MainWindow.h"
-#include "qsystemtrayicon.h"
-#include "qmenu.h"
 
 MainWindow::MainWindow(Json::Value& settings, QWidget* parent)
 	: BasicWindow(settings, parent)
@@ -35,32 +33,38 @@ MainWindow::MainWindow(Json::Value& settings, QWidget* parent)
 }
 
 MainWindow::~MainWindow()
-{}
+{
+}
 
 void MainWindow::CreateSystemTrayIcon()
 {
     // 创建QSystemTrayIcon对象并设置图标
-    QSystemTrayIcon* trayIcon = new QSystemTrayIcon(QIcon::fromTheme(":/TimeTableQt/123.ico"), this);
+    trayIcon = new QSystemTrayIcon(QIcon::fromTheme(":/TimeTableQt/123.ico"), this);
 
     // 创建菜单项
     QMenu* trayIconMenu = new QMenu();
     QAction* action_show = trayIconMenu->addAction("显示所有窗口");
     QAction* action_hide = trayIconMenu->addAction("隐藏所有窗口");
+    action_autoLaunch = trayIconMenu->addAction("开机自启动");
+    action_autoLaunch->setCheckable(true);
+    QAction* action_settings = trayIconMenu->addAction("设置");
     QAction* action_exit = trayIconMenu->addAction("退出");
 
     // 将菜单项添加到托盘图标
     trayIcon->setContextMenu(trayIconMenu);
 
     // 连接菜单项的信号到槽函数
-    QObject::connect(action_show, &QAction::triggered, []() {
-        // 实现菜单项1的功能
-        });
-    QObject::connect(action_hide, &QAction::triggered, []() {
-        // 实现菜单项2的功能
-        });
-    QObject::connect(action_exit, &QAction::triggered, []() {
-        // 实现菜单项2的功能
-        });
+    QObject::connect(action_show,       SIGNAL(triggered()), this, SLOT(ShowAllWindows()));
+    QObject::connect(action_hide,       SIGNAL(triggered()), this, SLOT(HideAllWindows()));
+    QObject::connect(action_autoLaunch, SIGNAL(triggered()), this, SLOT(LaunchAsSystemBoot()));
+    QObject::connect(action_settings,   SIGNAL(triggered()), this, SLOT(OpenSetting()));
+    QObject::connect(action_exit,       SIGNAL(triggered()), this, SLOT(Exit()));
+    {
+        QString application_name = QApplication::applicationName();
+        QSettings settings{ AUTO_RUN_KEY, QSettings::NativeFormat };
+        bool autoBoot = settings.value(application_name, "").toBool();
+        action_autoLaunch->setChecked(autoBoot);
+    }
 
     // 显示托盘图标
     trayIcon->show();
@@ -75,4 +79,48 @@ std::shared_ptr<BasicWindow> MainWindow::CreateSubWindows(Json::Value& settings,
 Json::Value MainWindow::SaveJson(Json::Value & value) const
 {
 	return value;
+}
+
+void MainWindow::HideAllWindows()
+{
+    for (auto& i : m_windows) {
+        i->m_hide = true;
+    }
+}
+
+void MainWindow::ShowAllWindows()
+{
+    for (auto& i : m_windows) {
+        i->m_hide = false;
+    }
+}
+
+void MainWindow::LaunchAsSystemBoot()
+{
+    QString application_name = QApplication::applicationName();
+    std::unique_ptr<QSettings> settings = std::make_unique<QSettings>(AUTO_RUN_KEY, QSettings::NativeFormat);
+    if (action_autoLaunch->isChecked()) {
+        QString application_path = QApplication::applicationFilePath();
+        settings->setValue(application_name, application_path.replace("/", "\\"));
+    }
+    else
+    {
+        settings->remove(application_name);
+    }
+
+}
+
+void MainWindow::OpenSetting()
+{
+}
+
+void MainWindow::Exit()
+{
+    for (auto& i : m_windows) {
+        i->m_hide = true;
+        i->close();
+    }
+    delete trayIcon;
+    this->close();
+    qApp->quit();
 }

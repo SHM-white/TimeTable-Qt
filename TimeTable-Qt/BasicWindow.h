@@ -4,6 +4,7 @@
 #include "include.h"
 #include "UIElementBase.h"
 #include "Timetable.h"
+#include "qcoreapplication.h"
 
 class BasicWindow : public QWidget
 {
@@ -17,6 +18,7 @@ public:
 
 	bool InitializeWindow(Json::Value& value);
 	
+	void closeEvent(QCloseEvent* event) override;
 	void paintEvent(QPaintEvent* event) override;
 	void mousePressEvent(QMouseEvent* event) override;
 	void mouseMoveEvent(QMouseEvent* event) override;
