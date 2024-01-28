@@ -3,6 +3,7 @@
 #include <QWidget>
 #include "include.h"
 #include "UIElementBase.h"
+#include "Timetable.h"
 
 class BasicWindow : public QWidget
 {
@@ -36,6 +37,7 @@ public:
 	bool m_AutoOpen{ true };
 	bool m_TopMost{ false };
 	bool m_moveable{ false };
+	bool m_autoResize{ false };
 
 	bool m_debug{ false };
 	bool m_showFPS{ false };
@@ -55,8 +57,13 @@ private:
 
 	virtual Json::Value SaveJson(Json::Value& value) const = 0;
 
+	std::shared_ptr<UIElementBase> CreateUIElement(Json::Value& value, std::shared_ptr<TimeTable> timetable);
+
 	std::vector<std::shared_ptr<UIElementBase>> m_UIElements;
 	Json::Value m_settings;
+protected:
+	std::shared_ptr<TimeTable> m_TimeTable;
+	bool m_successfulInitialized{ false };
 private slots:
 	void updateWindowStatus();
 

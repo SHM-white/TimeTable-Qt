@@ -14,11 +14,24 @@ MainWindow::MainWindow(Json::Value& settings, QWidget* parent)
     std::wstring path;
     Json::mGetTextItem(L"ConfigFile", path, DEFAULT_CONFIG_PATH);
     auto value = Json::GetRootJsonValue(path);
-    for (auto& i : value["Windows"]) {
-        //m_windows.push_back
-    }
     Json::mGetTextItem(L"LessonInfoFile", path, DEFAULT_CONFIG_PATH);
-    //m_hide = true;
+    m_TimeTable = std::make_shared<TimeTable>(path);
+    if (value["Windows"].isNull()) {
+        QMessageBox::warning(this, "error", "未找到窗口设置，请检查配置文件设置", QMessageBox::Ok);
+    }
+    else
+    {
+        m_successfulInitialized = true;
+    }
+    for (auto& i : value["Windows"]) {
+        m_windows.push_back(CreateSubWindows(i,m_TimeTable));
+    }
+    if(m_successfulInitialized)
+    {
+#ifndef DEBUG
+        m_hide = true;
+#endif // DEBUG
+    }
 }
 
 MainWindow::~MainWindow()
@@ -54,7 +67,12 @@ void MainWindow::CreateSystemTrayIcon()
 
 }
 
+std::shared_ptr<BasicWindow> MainWindow::CreateSubWindows(Json::Value& settings, std::shared_ptr<TimeTable> timetable)
+{
+    return std::make_shared<SubWindow>(settings, timetable);
+}
+
 Json::Value MainWindow::SaveJson(Json::Value & value) const
 {
-	return Json::Value();
+	return value;
 }

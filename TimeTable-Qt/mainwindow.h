@@ -4,6 +4,8 @@
 #include "include.h"
 #include "ui_MainWindow.h"
 #include "BasicWindow.h"
+#include "SubWindow.h"
+#include "Timetable.h"
 
 class MainWindow : public BasicWindow
 {
@@ -16,6 +18,12 @@ public:
 private:
 	Ui::MainWindowClass ui;
 	void CreateSystemTrayIcon();
+	std::shared_ptr<BasicWindow> CreateSubWindows(Json::Value& settings,std::shared_ptr<TimeTable> timetable);
 	// 通过 BasicWindow 继承
 	Json::Value SaveJson(Json::Value& value) const override;
+private slots:
+	void ShowAllWindows();
+	void HideAllWindows();
+	void LaunchAsSystemBoot();
+	void Exit();
 };

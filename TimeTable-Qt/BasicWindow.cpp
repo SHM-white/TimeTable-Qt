@@ -49,6 +49,7 @@ Json::Value BasicWindow::save() const
 	Settings["TopMost"] = m_TopMost;
 	Settings["Moveable"] = m_moveable;
 	Settings["FPS"] = m_maxFPS;
+	Settings["AutoResize"] = m_autoResize;
 
 	return SaveJson(Settings);
 }
@@ -71,11 +72,15 @@ bool BasicWindow::InitializeWindow(Json::Value& value)
 	}
 	bAcrylicEffect = Settings["AcrylicEffect"].asBool();
 	msBackGroundImg = u8tw(Settings["BackGroundImg"].asString());
+	for (auto& i : Settings["UIElements"]) {
+		m_UIElements.push_back(CreateUIElement(i, m_TimeTable));
+	}
 
 	m_AutoOpen = Settings["AutoOpen"].asBool();
 	m_TopMost = Settings["TopMost"].asBool();
 	m_moveable = Settings["Moveable"].asBool();
 	m_maxFPS = (Settings["FPS"].asInt() == 0 ? 10 : Settings["FPS"].asInt());
+	m_autoResize = Settings["AutoResize"].asBool();
 
 	if (!(miWindowX == 0 && miWindowY == 0 && miWindowWeight == 0 && miWindowHeight == 0)) {
 		this->setGeometry(miWindowX, miWindowY, miWindowWeight, miWindowHeight);
@@ -181,6 +186,11 @@ void BasicWindow::mouseReleaseEvent(QMouseEvent* event)
 	}
 	setCursor(QCursor(Qt::ArrowCursor));
 
+}
+
+std::shared_ptr<UIElementBase> BasicWindow::CreateUIElement(Json::Value& value, std::shared_ptr<TimeTable> timetable)
+{
+	return std::shared_ptr<UIElementBase>();
 }
 
 
