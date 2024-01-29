@@ -397,3 +397,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /build-TimeTable-Qt-Desktop_Qt_5_15_2_MSVC2019_64bit-Release
+/build-TimeTable-Qt-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/.qtc_clangd/compile_commands.json

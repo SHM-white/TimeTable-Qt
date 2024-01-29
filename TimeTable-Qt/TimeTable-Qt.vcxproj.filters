@@ -26,60 +26,21 @@
     <QtRcc Include="TimeTableQt.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
-    <QtUic Include="TimeTableQt.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtMoc Include="TimeTableQt.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <ClCompile Include="TimeTableQt.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CSVEditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TextFormat.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Timetable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WindowSettings.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="importfromfile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="about.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="showalllessons.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="showmoreinfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="changeconfigpath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Lesson.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="settings.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="todayalllessons.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="include.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WindowItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BasicWindow.cpp">
@@ -92,6 +53,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SubWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings_New.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -110,22 +74,10 @@
     <ClInclude Include="Lesson.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TextFormat.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Timetable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WindowSettings.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="resource1.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="WindowItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UIElementBase.h">
@@ -147,27 +99,6 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="importfromfile.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="about.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="showalllessons.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="showmoreinfo.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="changeconfigpath.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="settings.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="todayalllessons.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="BasicWindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
@@ -177,33 +108,18 @@
     <QtMoc Include="SubWindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="Settings_New.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="importfromfile.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="about.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="showalllessons.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="showmoreinfo.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="changeconfigpath.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="settings.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="todayalllessons.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
     <QtUic Include="MainWindow.ui">
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="SubWindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="Settings_New.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

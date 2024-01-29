@@ -14,59 +14,31 @@ SOURCES += \
     BasicWindow.cpp \
     CSVEditor.cpp \
     Lesson.cpp \
-    TextFormat.cpp \
+    Settings_New.cpp \
+    SubWindow.cpp \
     Timetable.cpp \
     UIElementBase.cpp \
-    WindowItem.cpp \
-    WindowSettings.cpp \
-    about.cpp \
-    changeconfigpath.cpp \
-    importfromfile.cpp \
     include.cpp \
     main.cpp \
-    TimeTableQt.cpp \
-    mainwindow.cpp \
-    settings.cpp \
-    showalllessons.cpp \
-    showmoreinfo.cpp \
-    todayalllessons.cpp
+    mainwindow.cpp
 
 HEADERS += \
     BasicWindow.h \
     CSVEditor.h \
     Lesson.h \
-    TextFormat.h \
+    Settings_New.h \
+    SubWindow.h \
     TimeTable-Qt.aps \
     Timetable.h \
     ToWString.h \
     UIElementBase.h \
-    WindowItem.h \
-    WindowSettings.h \
-    about.h \
-    changeconfigpath.h \
-    framework.h \
-    TimeTableQt.h \
-    importfromfile.h \
     include.h \
-    mainwindow.h \
-    resource.h \
-    resource1.h \
-    settings.h \
-    showalllessons.h \
-    showmoreinfo.h \
-    targetver.h \
-    todayalllessons.h
+    mainwindow.h
 
 FORMS += \
-    TimeTableQt.ui \
-    about.ui \
-    changeconfigpath.ui \
-    importfromfile.ui \
-    mainwindow.ui \
-    settings.ui \
-    showalllessons.ui \
-    showmoreinfo.ui \
-    todayalllessons.ui
+    Settings_New.ui \
+    SubWindow.ui \
+    mainwindow.ui
 
 TRANSLATIONS += \
     TimeTable-Qt_zh_CN.ts

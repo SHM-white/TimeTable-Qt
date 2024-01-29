@@ -44,6 +44,10 @@
 #include <qcolor.h>
 #include <qcolordialog.h>
 #include <qmessagebox.h>
+#include "qrect.h"
+#include "qpoint.h"
+#include "qpainter.h"
+
 
 #pragma  comment(lib, "shell32.lib")
 
