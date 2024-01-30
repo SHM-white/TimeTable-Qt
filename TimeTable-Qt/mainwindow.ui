@@ -23,6 +23,7 @@
       <widget class="QLabel" name="label_status">
        <property name="font">
         <font>
+         <family>Microsoft YaHei</family>
          <pointsize>12</pointsize>
         </font>
        </property>
@@ -35,6 +36,7 @@
       <widget class="QLabel" name="label_version">
        <property name="font">
         <font>
+         <family>Microsoft YaHei</family>
          <pointsize>12</pointsize>
         </font>
        </property>
@@ -64,6 +66,7 @@
       <widget class="QLabel" name="label_2">
        <property name="font">
         <font>
+         <family>Microsoft YaHei</family>
          <pointsize>40</pointsize>
         </font>
        </property>

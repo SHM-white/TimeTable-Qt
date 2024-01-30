@@ -14,7 +14,10 @@ SOURCES += \
     BasicWindow.cpp \
     CSVEditor.cpp \
     Lesson.cpp \
+    MultiItemAllDisplayUIElementBase.cpp \
+    MultiItemInOrderUIElementBase.cpp \
     Settings_New.cpp \
+    SingleItemUIElementBase.cpp \
     SubWindow.cpp \
     Timetable.cpp \
     UIElementBase.cpp \
@@ -26,7 +29,10 @@ HEADERS += \
     BasicWindow.h \
     CSVEditor.h \
     Lesson.h \
+    MultiItemAllDisplayUIElementBase.h \
+    MultiItemInOrderUIElementBase.h \
     Settings_New.h \
+    SingleItemUIElementBase.h \
     SubWindow.h \
     TimeTable-Qt.aps \
     Timetable.h \

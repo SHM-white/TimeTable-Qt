@@ -1,0 +1,113 @@
+{
+   "About" : "该程序的目的是取代每天写在黑板上的课表和值日表等信息，可以放在教室的电脑上，也可网课期间自己使用\r\n如有bug或建议请到GitHub反馈",
+   "ConfigFile" : "config.json",
+   "LessonInfoFile" : "D:/Documents/source/repos/TimeTable-Qt/Lessons.json",
+   "version" : [ 3, 0, 0 ],
+   "Windows" : [
+      {
+         "name":"",
+         "AcrylicEffect":false,
+         "BackGroundColor":[255,255,255,100],
+         "BackGroundImg":"BackGround.png",
+         "ImgAsBackGround":false,
+         "WindowLocation":[0,0],
+         "WindowSize":[0,0],
+         "AutoOpen":true,
+         "TopMost":true,
+         "Moveable":true,
+         "FPS":10,
+         "AutoResize":false,
+         "UIElements":[]
+      },
+      {
+         "name":"",
+         "AcrylicEffect":false,
+         "BackGroundColor":[255,255,255,100],
+         "BackGroundImg":"BackGround.png",
+         "ImgAsBackGround":false,
+         "WindowLocation":[0,0],
+         "WindowSize":[0,0],
+         "AutoOpen":true,
+         "TopMost":false,
+         "Moveable":true,
+         "FPS":1,
+         "AutoResize":false,
+         "UIElements":[]
+      }
+   ],
+   "MainWindow":{
+      "AcrylicEffect" : false,
+      "BackGroundColor" : [ 255, 255, 255, 100 ],
+      "BackGroundImg" : "BackGround.png",
+      "ImgAsBackGround" : false,
+      "WindowLocation" : [ 0, 0 ],
+      "WindowSize" : [ 0, 0 ],
+      "AutoOpen":true,
+      "TopMost":true,
+      "Moveable":true,
+      "FPS":1,
+      "AutoResize":false,
+      "UIElements" : [
+         {
+            "ElementType" : 0,
+            "Location" : [ 0, 0 ],
+            "Size" : [ 0, 0 ],
+            "Data":
+            [
+               {
+                  "Type":2,              
+                  "Font":"微软雅黑",
+                  "TextColor":[0,0,0,255],
+                  "TextSize":16,
+                  "TextFormat":"%a-%H:%M:%S"
+               }
+            ]  
+         },
+         {
+            "ElementType" : 1,
+            "Location" : [ 0, 0 ],
+            "Size" : [ 0, 0 ],
+            "Data":
+            [
+               {
+                  "Type":3,
+                  "Font":"微软雅黑",
+                  "TextColor":[0,0,0,255],
+                  "TextSize":16,
+                  "TextFormat":"当前课程:"
+               },
+               {
+                  "Type":4,
+                  "Font":"微软雅黑",
+                  "TextColor":[0,0,0,255],
+                  "TextSize":16,
+                  "TextFormat":"值日:"
+               },
+               {
+                  "Type":5,
+                  "Font":"微软雅黑",
+                  "TextColor":[0,0,0,255],
+                  "TextSize":16,
+                  "TextFormat":"距离高考%03d天%02d小时%02d分%02d秒",
+                  "Data":{
+                     "TargetTime":[2024,6,18,0,0,0]
+                  }
+               },
+               {
+                  "Type":6,
+                  "Font":"微软雅黑",
+                  "TextColor":[0,0,0,255],
+                  "TextSize":16,
+                  "TextFormat":"",
+                  "Data":{
+                     "APIKey":"",
+                     "Address":"",
+                     "City":"北京",
+                     "Adcode":100000
+                  }
+               }
+            ]
+         }
+      ]
+   }
+}

@@ -38,30 +38,18 @@ public:
 	Json::Value save() const;
 private:
 	std::shared_ptr<TimeTable> m_timetable;
-	ElementType m_type{ ElementType::Default };
+	UIElementType m_type{ UIElementType::SingleItem };
 	mutable std::chrono::system_clock::time_point m_lastUpdateTime;
 	QRect m_rect;
 	Json::Value m_selfJson;
 	virtual Json::Value SaveAsJson(Json::Value& value) const = 0;
 };
 
-class SingleItemUIElementBase :
-	public UIElementBase
-{
+class SingleItemUIElementBase;
 
-};
+class MultiItemInOrderUIElementBase;
 
-class MultiItemInOrderUIElementBase :
-	public UIElementBase
-{
-
-};
-
-class MultiItemAllDisplayUIElementBase :
-	public UIElementBase
-{
-
-};
+class MultiItemAllDisplayUIElementBase;
 
 class EmptyUIElement :
 	public UIElementBase

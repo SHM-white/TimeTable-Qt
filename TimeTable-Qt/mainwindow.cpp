@@ -16,7 +16,7 @@ MainWindow::MainWindow(Json::Value& settings, QWidget* parent)
     Json::mGetTextItem(L"LessonInfoFile", path, DEFAULT_CONFIG_PATH);
     m_TimeTable = std::make_shared<TimeTable>(path);
     if (value["Windows"].isNull()) {
-        QMessageBox::warning(this, "error", "未找到窗口设置，请检查配置文件设置", QMessageBox::Ok);
+        QMessageBox::warning(this, QString::fromStdWString(L"error"), QString::fromStdWString(L"未找到窗口设置，请检查配置文件设置"), QMessageBox::Ok);
     }
     else
     {
@@ -42,12 +42,12 @@ void MainWindow::CreateSystemTrayIcon()
 
     // 创建菜单项
     QMenu* trayIconMenu = new QMenu();
-    QAction* action_show = trayIconMenu->addAction("显示所有窗口");
-    QAction* action_hide = trayIconMenu->addAction("隐藏所有窗口");
-    action_autoLaunch = trayIconMenu->addAction("开机自启动");
+    QAction* action_show = trayIconMenu->addAction(QString::fromStdWString(L"显示所有窗口"));
+    QAction* action_hide = trayIconMenu->addAction(QString::fromStdWString(L"隐藏所有窗口"));
+    action_autoLaunch = trayIconMenu->addAction(QString::fromStdWString(L"开机自启动"));
     action_autoLaunch->setCheckable(true);
-    QAction* action_settings = trayIconMenu->addAction("设置");
-    QAction* action_exit = trayIconMenu->addAction("退出");
+    QAction* action_settings = trayIconMenu->addAction(QString::fromStdWString(L"设置"));
+    QAction* action_exit = trayIconMenu->addAction(QString::fromStdWString(L"退出"));
 
     // 将菜单项添加到托盘图标
     trayIcon->setContextMenu(trayIconMenu);

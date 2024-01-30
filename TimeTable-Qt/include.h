@@ -65,6 +65,11 @@
 #define DEFAULT_CONFIG_PATH L"config.json"
 #define DEFAULT_LESSONINFO_PATH L"Lessons.json"
 
+#if QT_VERSION > 0x060000
+#define QT6
+#else
+#define QT5
+#endif
 const int minVersion_global[3]{ 2,5,0 };
 const int currentVersion_global[3]{ 3,0,0 };
 

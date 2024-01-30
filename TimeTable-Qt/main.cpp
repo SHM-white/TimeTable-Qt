@@ -10,7 +10,10 @@ int main(int argc, char *argv[])
         SetCurrentDirectoryA(dir2.c_str());
     }
     QApplication a(argc, argv);
-
+#ifdef QT5
+    QApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
+    QApplication::setFont(QFont("Microsoft YaHei", 9));
+#endif // QT5
     std::wstring path;
     Json::mGetTextItem(L"ConfigFile", path, DEFAULT_CONFIG_PATH);
     auto value = Json::GetRootJsonValue(path);
