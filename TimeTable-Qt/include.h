@@ -48,8 +48,9 @@
 #include "qpoint.h"
 #include "qpainter.h"
 
-
 #pragma  comment(lib, "shell32.lib")
+
+#undef max
 
 #ifdef QT_DEBUG
 #define DEBUG

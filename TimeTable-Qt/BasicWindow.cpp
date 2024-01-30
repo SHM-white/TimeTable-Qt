@@ -82,7 +82,7 @@ bool BasicWindow::InitializeWindow(Json::Value& value)
 	m_AutoOpen = Settings["AutoOpen"].asBool();
 	m_TopMost = Settings["TopMost"].asBool();
 	m_moveable = Settings["Moveable"].asBool();
-	m_maxFPS = (Settings["FPS"].asInt() == 0 ? 2 : Settings["FPS"].asInt());
+	m_maxFPS = (Settings["FPS"].asInt() <= 0 ? 2 : Settings["FPS"].asInt());
 	m_autoResize = Settings["AutoResize"].asBool();
 
 	if (!(miWindowX == 0 && miWindowY == 0 && miWindowWeight == 0 && miWindowHeight == 0)) {
@@ -122,6 +122,15 @@ void BasicWindow::updateWindowStatus()
 	else
 	{
 		this->show();
+	}
+	if (m_autoResize) {
+		QRect rect;
+		for (auto& i : m_UIElements) {
+			auto a = i->getNeededRect();
+			rect.setRight(std::max(a.right(), rect.right()));
+			rect.setBottom(std::max(a.bottom(), rect.bottom()));
+		}
+		setFixedSize(rect.right(), rect.bottom());
 	}
 }
 
@@ -199,7 +208,7 @@ void BasicWindow::mouseReleaseEvent(QMouseEvent* event)
 
 std::shared_ptr<UIElementBase> BasicWindow::CreateUIElement(Json::Value& value, std::shared_ptr<TimeTable> timetable)
 {
-	return std::make_shared<DefaultUIElement>(value,timetable);
+	return std::make_shared<EmptyUIElement>(value,timetable);
 }
 
 
