@@ -23,7 +23,7 @@ private:
 	void CreateSystemTrayIcon();
 	std::shared_ptr<BasicWindow> CreateSubWindows(Json::Value& settings,std::shared_ptr<TimeTable> timetable);
 	// 通过 BasicWindow 继承
-	Json::Value SaveJson(Json::Value& value) const override;
+	Json::Value SaveAsJson(Json::Value& value) const override;
 	QSystemTrayIcon* trayIcon;
 	QAction* action_autoLaunch;
 private slots:

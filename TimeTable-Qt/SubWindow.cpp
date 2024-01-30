@@ -10,7 +10,7 @@ SubWindow::SubWindow(Json::Value& settings, std::shared_ptr<TimeTable> timetable
 SubWindow::~SubWindow()
 {}
 
-Json::Value SubWindow::SaveJson(Json::Value & value) const
+Json::Value SubWindow::SaveAsJson(Json::Value & value) const
 {
 	return value;
 }

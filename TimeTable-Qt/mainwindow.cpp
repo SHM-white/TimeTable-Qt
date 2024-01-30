@@ -1,4 +1,5 @@
 ﻿#include "MainWindow.h"
+#include "Settings_New.h"
 
 MainWindow::MainWindow(Json::Value& settings, QWidget* parent)
 	: BasicWindow(settings, parent)
@@ -30,6 +31,10 @@ MainWindow::MainWindow(Json::Value& settings, QWidget* parent)
         m_hide = true;
 #endif // DEBUG
     }
+
+#ifdef DEBUG
+    OpenSetting();
+#endif // DEBUG
 }
 
 MainWindow::~MainWindow()
@@ -76,7 +81,7 @@ std::shared_ptr<BasicWindow> MainWindow::CreateSubWindows(Json::Value& settings,
     return std::make_shared<SubWindow>(settings, timetable);
 }
 
-Json::Value MainWindow::SaveJson(Json::Value & value) const
+Json::Value MainWindow::SaveAsJson(Json::Value & value) const
 {
 	return value;
 }
@@ -112,6 +117,10 @@ void MainWindow::LaunchAsSystemBoot()
 
 void MainWindow::OpenSetting()
 {
+    Json::Value value;
+    value[""] = 0;
+    Settings_New* setting = new Settings_New{ Json::GetRootJsonValue(Json::mGetTextItem(L"configPath",DEFAULT_CONFIG_PATH,0)),value,this };
+    setting->show();
 }
 
 void MainWindow::Exit()

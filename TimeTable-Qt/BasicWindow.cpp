@@ -22,8 +22,8 @@ BasicWindow::BasicWindow(Json::Value& settings, QWidget* parent)
 
 BasicWindow::~BasicWindow()
 {
-	delete time_calendar_window;
-	delete time_calendar_text;
+	//delete time_calendar_window;
+	//delete time_calendar_text;
 }
 
 Json::Value BasicWindow::save() const
@@ -54,16 +54,16 @@ Json::Value BasicWindow::save() const
 	Settings["FPS"] = m_maxFPS;
 	Settings["AutoResize"] = m_autoResize;
 
-	return SaveJson(Settings);
+	return SaveAsJson(Settings);
 }
 
 bool BasicWindow::InitializeWindow(Json::Value& value)
 {
-	if (value.isNull()) {
+	m_settings = value;
+	if (value.isNull()&&m_rewriteEmptyJsonValue) {
 		value = this->save();
 	}
 	Json::Value Settings = value;
-	m_settings = value;
 	miWindowHeight = Settings["WindowSize"][1].asInt();
 	miWindowWeight = Settings["WindowSize"][0].asInt();
 	miWindowX = Settings["WindowLocation"][0].asInt();
@@ -82,7 +82,7 @@ bool BasicWindow::InitializeWindow(Json::Value& value)
 	m_AutoOpen = Settings["AutoOpen"].asBool();
 	m_TopMost = Settings["TopMost"].asBool();
 	m_moveable = Settings["Moveable"].asBool();
-	m_maxFPS = (Settings["FPS"].asInt() == 0 ? 10 : Settings["FPS"].asInt());
+	m_maxFPS = (Settings["FPS"].asInt() == 0 ? 2 : Settings["FPS"].asInt());
 	m_autoResize = Settings["AutoResize"].asBool();
 
 	if (!(miWindowX == 0 && miWindowY == 0 && miWindowWeight == 0 && miWindowHeight == 0)) {
@@ -199,7 +199,7 @@ void BasicWindow::mouseReleaseEvent(QMouseEvent* event)
 
 std::shared_ptr<UIElementBase> BasicWindow::CreateUIElement(Json::Value& value, std::shared_ptr<TimeTable> timetable)
 {
-	return std::shared_ptr<UIElementBase>();
+	return std::make_shared<DefaultUIElement>(value,timetable);
 }
 
 

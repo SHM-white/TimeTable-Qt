@@ -17,5 +17,5 @@ private:
 	Ui::SubWindowClass ui;
 
 	// 通过 BasicWindow 继承
-	Json::Value SaveJson(Json::Value& value) const override;
+	Json::Value SaveAsJson(Json::Value& value) const override;
 };
