@@ -67,7 +67,7 @@ private:
 protected:
 	std::shared_ptr<TimeTable> m_TimeTable;
 	bool m_successfulInitialized{ false };
-private slots:
-	void updateWindowStatus();
+protected slots:
+	virtual void updateWindowStatus();
 
 };

@@ -25,12 +25,6 @@ MainWindow::MainWindow(Json::Value& settings, QWidget* parent)
     for (auto& i : value["Windows"]) {
         m_windows.push_back(CreateSubWindows(i,m_TimeTable));
     }
-    if(m_successfulInitialized)
-    {
-#ifndef DEBUG
-        m_hide = true;
-#endif // DEBUG
-    }
 
 #ifdef DEBUG
     OpenSetting();
@@ -93,6 +87,20 @@ void MainWindow::HideAllWindows()
     }
 }
 
+void MainWindow::updateWindowStatus()
+{
+    static int counter{ 0 };
+    static const int limit{ 3 };
+    if (counter <= limit) {
+        counter++;
+    }
+    else if (counter == limit + 1)
+    {
+        m_hide = true;
+    }
+    BasicWindow::updateWindowStatus();
+}
+
 void MainWindow::ShowAllWindows()
 {
     for (auto& i : m_windows) {
@@ -118,7 +126,7 @@ void MainWindow::LaunchAsSystemBoot()
 void MainWindow::OpenSetting()
 {
     Json::Value value;
-    value[""] = 0;
+    value["Moveable"] = true;
     Settings_New* setting = new Settings_New{ Json::GetRootJsonValue(Json::mGetTextItem(L"configPath",DEFAULT_CONFIG_PATH,0)),value,this };
     setting->show();
 }

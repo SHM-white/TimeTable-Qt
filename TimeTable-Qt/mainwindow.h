@@ -29,6 +29,7 @@ private:
 private slots:
 
 	void HideAllWindows();
+	void updateWindowStatus() override;
 	void ShowAllWindows();
 	void LaunchAsSystemBoot();
 	void OpenSetting();

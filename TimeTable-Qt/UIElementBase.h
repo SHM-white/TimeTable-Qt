@@ -32,7 +32,7 @@ public:
 	UIElementBase(Json::Value& setting, std::shared_ptr<TimeTable> timetable);
 	virtual bool paintRect(QPainter& painter) const;
 	virtual bool paint(QPainter& painter) const;
-	virtual bool update() const = 0;
+	virtual bool update() const;
 	virtual QSize getNeededSize() const = 0;
 	virtual QRect getNeededRect() const;
 	Json::Value save() const;
@@ -57,7 +57,7 @@ class MultiItemInOrderUIElementBase :
 
 };
 
-class MultiItemAllDisplayUIElement :
+class MultiItemAllDisplayUIElementBase :
 	public UIElementBase
 {
 
