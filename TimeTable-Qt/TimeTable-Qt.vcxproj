@@ -33,7 +33,7 @@
     <Import Project="$(QtMsBuild)\qt_defaults.props" />
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
-    <QtInstall>5.15.2_msvc2019_64</QtInstall>
+    <QtInstall>6.4.3_msvc2019_64</QtInstall>
     <QtModules>core;gui;widgets</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
   </PropertyGroup>
@@ -112,15 +112,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BasicWindow.cpp" />
+    <ClCompile Include="EmptyUIElement.cpp" />
     <ClCompile Include="include.cpp" />
     <ClCompile Include="Lesson.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="MultiItemAllDisplayUIElementBase.cpp" />
     <ClCompile Include="MultiItemInOrderUIElementBase.cpp" />
+    <ClCompile Include="MultiTextItem.cpp" />
     <ClCompile Include="Settings_New.cpp" />
     <ClCompile Include="SingleItemUIElementBase.cpp" />
     <ClCompile Include="SubWindow.cpp" />
+    <ClCompile Include="SingleTextItem.cpp" />
     <ClCompile Include="UIElementBase.cpp" />
     <QtRcc Include="TimeTableQt.qrc" />
     <QtUic Include="MainWindow.ui" />
@@ -140,6 +143,7 @@
   <ItemGroup>
     <QtMoc Include="BasicWindow.h" />
     <ClInclude Include="CSVEditor.h" />
+    <ClInclude Include="EmptyUIElement.h" />
     <ClInclude Include="include.h" />
     <ClInclude Include="Lesson.h" />
     <QtMoc Include="MainWindow.h" />
@@ -147,7 +151,9 @@
     <QtMoc Include="Settings_New.h" />
     <ClInclude Include="MultiItemAllDisplayUIElementBase.h" />
     <ClInclude Include="MultiItemInOrderUIElementBase.h" />
+    <ClInclude Include="MultiTextItem.h" />
     <ClInclude Include="SingleItemUIElementBase.h" />
+    <ClInclude Include="SingleTextItem.h" />
     <ClInclude Include="Timetable.h" />
     <ClInclude Include="UIElementBase.h" />
   </ItemGroup>

@@ -1,11 +1,7 @@
 ﻿#include "MultiItemInOrderUIElementBase.h"
 
-QSize MultiItemInOrderUIElementBase::getNeededSize() const
+MultiItemInOrderUIElementBase::MultiItemInOrderUIElementBase(Json::Value& value, std::shared_ptr<TimeTable> timetable)
+	:UIElementBase(value, timetable)
 {
-    return QSize();
-}
-
-Json::Value MultiItemInOrderUIElementBase::SaveAsJson(Json::Value& value) const
-{
-    return Json::Value();
+	m_type = UIElementType::MultiItemInOrder;
 }

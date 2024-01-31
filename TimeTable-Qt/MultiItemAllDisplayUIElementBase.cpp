@@ -7,5 +7,5 @@ QSize MultiItemAllDisplayUIElementBase::getNeededSize() const
 
 Json::Value MultiItemAllDisplayUIElementBase::SaveAsJson(Json::Value& value) const
 {
-    return Json::Value();
+    return value;
 }

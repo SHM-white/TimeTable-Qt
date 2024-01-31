@@ -12,9 +12,13 @@ public:
 	Settings_New(Json::Value ApplicationRootSettings, Json::Value WindowSettings, QWidget *parent = nullptr);
 	~Settings_New();
 
+private slots:
+
+    void on_pushButton_close_clicked();
+
 private:
 	Ui::Settings_NewClass ui;
 	Json::Value m_ApplicationSettings;
 	// 通过 BasicWindow 继承
-	Json::Value SaveAsJson(Json::Value& value) const override;
+	Json::Value SaveAsJson(Json::Value value) const override;
 };

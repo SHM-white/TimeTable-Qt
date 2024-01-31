@@ -30,15 +30,16 @@ class UIElementBase
 {
 public:
 	UIElementBase(Json::Value& setting, std::shared_ptr<TimeTable> timetable);
+	virtual ~UIElementBase() = default;
 	virtual bool paintRect(QPainter& painter) const;
 	virtual bool paint(QPainter& painter) const;
 	virtual bool update() const;
 	virtual QSize getNeededSize() const = 0;
 	virtual QRect getNeededRect() const;
 	Json::Value save() const;
-private:
+protected:
 	std::shared_ptr<TimeTable> m_timetable;
-	UIElementType m_type{ UIElementType::SingleItem };
+	UIElementType m_type;
 	mutable std::chrono::system_clock::time_point m_lastUpdateTime;
 	QRect m_rect;
 	Json::Value m_selfJson;
@@ -47,19 +48,12 @@ private:
 
 class SingleItemUIElementBase;
 
+class SingleTextItem;
+
 class MultiItemInOrderUIElementBase;
+
+class MultiTextItem;
 
 class MultiItemAllDisplayUIElementBase;
 
-class EmptyUIElement :
-	public UIElementBase
-{
-public:
-	EmptyUIElement(Json::Value& value,std::shared_ptr<TimeTable> timetable);
-	// 通过 UIElementBase 继承
-	bool paint(QPainter& painter) const override;
-	bool update() const override;
-	QSize getNeededSize() const override;
-	Json::Value SaveAsJson(Json::Value& value) const override;
-};
-
+class EmptyUIElement;

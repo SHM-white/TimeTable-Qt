@@ -1,11 +1,7 @@
 ﻿#include "SingleItemUIElementBase.h"
 
-QSize SingleItemUIElementBase::getNeededSize() const
+SingleItemUIElementBase::SingleItemUIElementBase(Json::Value& value, std::shared_ptr<TimeTable> timetable)
+	:UIElementBase(value, timetable)
 {
-    return QSize();
-}
-
-Json::Value SingleItemUIElementBase::SaveAsJson(Json::Value& value) const
-{
-    return Json::Value();
+	m_type = UIElementType::SingleItem;
 }

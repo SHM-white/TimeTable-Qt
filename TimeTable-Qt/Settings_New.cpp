@@ -11,7 +11,13 @@ Settings_New::Settings_New(Json::Value ApplicationRootSettings, Json::Value Wind
 Settings_New::~Settings_New()
 {}
 
-Json::Value Settings_New::SaveAsJson(Json::Value & value) const
+Json::Value Settings_New::SaveAsJson(Json::Value value) const
 {
 	return value;
 }
+
+void Settings_New::on_pushButton_close_clicked()
+{
+    this->close();
+}
+

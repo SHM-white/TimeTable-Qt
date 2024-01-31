@@ -23,7 +23,14 @@ MainWindow::MainWindow(Json::Value& settings, QWidget* parent)
         m_successfulInitialized = true;
     }
     for (auto& i : value["Windows"]) {
-        m_windows.push_back(CreateSubWindows(i,m_TimeTable));
+        try
+        {
+            m_windows.push_back(CreateSubWindows(i, m_TimeTable));
+        }
+        catch (const std::exception&)
+        {
+            QMessageBox::warning(this, QString::fromStdWString(L"error"), QString::fromStdWString(L"请检查配置文件"), QMessageBox::Ok);
+        }
     }
 
 #ifdef DEBUG
@@ -75,7 +82,7 @@ std::shared_ptr<BasicWindow> MainWindow::CreateSubWindows(Json::Value& settings,
     return std::make_shared<SubWindow>(settings, timetable);
 }
 
-Json::Value MainWindow::SaveAsJson(Json::Value & value) const
+Json::Value MainWindow::SaveAsJson(Json::Value value) const
 {
 	return value;
 }

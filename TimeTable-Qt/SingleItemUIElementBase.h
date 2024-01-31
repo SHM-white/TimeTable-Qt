@@ -3,8 +3,9 @@
 class SingleItemUIElementBase :
     public UIElementBase
 {
-    // 通过 UIElementBase 继承
-    QSize getNeededSize() const override;
-    Json::Value SaveAsJson(Json::Value& value)const override;
+public:
+    SingleItemUIElementBase(Json::Value& value, std::shared_ptr<TimeTable> timetable);
+protected:
+    ElementType m_ItemType;
 };
 

@@ -58,7 +58,7 @@ private:
 	QPoint mouseStartPoint;
 	QPoint windowTopLeftPoint;
 
-	virtual Json::Value SaveAsJson(Json::Value& value) const = 0;
+	virtual Json::Value SaveAsJson(Json::Value value) const = 0;
 
 	std::shared_ptr<UIElementBase> CreateUIElement(Json::Value& value, std::shared_ptr<TimeTable> timetable);
 

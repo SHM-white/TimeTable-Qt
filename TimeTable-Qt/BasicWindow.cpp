@@ -1,4 +1,5 @@
 ﻿#include "BasicWindow.h"
+#include "EmptyUIElement.h"
 
 BasicWindow::BasicWindow(Json::Value& settings, QWidget* parent)
 	: QWidget(parent), m_settings{ settings }
@@ -208,7 +209,8 @@ void BasicWindow::mouseReleaseEvent(QMouseEvent* event)
 
 std::shared_ptr<UIElementBase> BasicWindow::CreateUIElement(Json::Value& value, std::shared_ptr<TimeTable> timetable)
 {
-	return std::make_shared<EmptyUIElement>(value,timetable);
+	auto ptr = std::make_shared<EmptyUIElement>(value, timetable);
+	return std::dynamic_pointer_cast<UIElementBase, EmptyUIElement>(ptr);
 }
 
 
