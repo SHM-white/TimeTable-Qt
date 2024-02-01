@@ -21,3 +21,15 @@ void Settings_New::on_pushButton_close_clicked()
     this->close();
 }
 
+
+void Settings_New::on_spinBox_BackGroundAlpha_valueChanged(int arg1)
+{
+    this->ui.horizontalSlider_BackGroundAlpha->setValue(arg1);
+}
+
+
+void Settings_New::on_horizontalSlider_BackGroundAlpha_valueChanged(int value)
+{
+    this->ui.spinBox_BackGroundAlpha->setValue(value);
+}
+

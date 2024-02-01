@@ -16,6 +16,10 @@ private slots:
 
     void on_pushButton_close_clicked();
 
+    void on_spinBox_BackGroundAlpha_valueChanged(int arg1);
+
+    void on_horizontalSlider_BackGroundAlpha_valueChanged(int value);
+
 private:
 	Ui::Settings_NewClass ui;
 	Json::Value m_ApplicationSettings;

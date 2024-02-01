@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>606</width>
-    <height>402</height>
+    <width>862</width>
+    <height>539</height>
    </rect>
+  </property>
+  <property name="sizeIncrement">
+   <size>
+    <width>30</width>
+    <height>2</height>
+   </size>
   </property>
   <property name="font">
    <font>
@@ -73,18 +79,21 @@ QTabBar::tab {
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_6">
        <item>
-        <widget class="QColumnView" name="columnView">
+        <widget class="QColumnView" name="columnView_Lessons">
          <property name="font">
           <font>
            <family>Microsoft YaHei</family>
           </font>
+         </property>
+         <property name="lineWidth">
+          <number>2</number>
          </property>
         </widget>
        </item>
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
-          <widget class="QPushButton" name="pushButton_8">
+          <widget class="QPushButton" name="pushButton_AddLesson">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -108,7 +117,7 @@ QTabBar::tab {
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_7">
+          <widget class="QPushButton" name="pushButton_DeleteLesson">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -132,7 +141,7 @@ QTabBar::tab {
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_9">
+          <widget class="QPushButton" name="pushButton_SortLessons">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -156,7 +165,7 @@ QTabBar::tab {
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_6">
+          <widget class="QPushButton" name="pushButton_FreshLessonList">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -189,12 +198,16 @@ QTabBar::tab {
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_7">
        <item>
-        <widget class="QListWidget" name="listWidget"/>
+        <widget class="QListWidget" name="listWidget_Infos">
+         <property name="lineWidth">
+          <number>2</number>
+         </property>
+        </widget>
        </item>
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
-          <widget class="QPushButton" name="pushButton_5">
+          <widget class="QPushButton" name="pushButton_AddInfo">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -215,7 +228,7 @@ QTabBar::tab {
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_4">
+          <widget class="QPushButton" name="pushButton_DeleteInfo">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -236,7 +249,7 @@ QTabBar::tab {
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_16">
+          <widget class="QPushButton" name="pushButton_FreshInfo">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -266,16 +279,25 @@ QTabBar::tab {
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_9">
        <item>
-        <widget class="QColumnView" name="columnView_2">
+        <widget class="QColumnView" name="columnView_Windows">
          <property name="font">
           <font>
            <family>Microsoft YaHei</family>
           </font>
          </property>
+         <property name="lineWidth">
+          <number>2</number>
+         </property>
         </widget>
        </item>
        <item>
         <widget class="QScrollArea" name="scrollArea">
+         <property name="maximumSize">
+          <size>
+           <width>300</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="font">
           <font>
            <family>Microsoft YaHei</family>
@@ -283,6 +305,12 @@ QTabBar::tab {
          </property>
          <property name="autoFillBackground">
           <bool>false</bool>
+         </property>
+         <property name="lineWidth">
+          <number>2</number>
+         </property>
+         <property name="horizontalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOff</enum>
          </property>
          <property name="widgetResizable">
           <bool>true</bool>
@@ -292,13 +320,13 @@ QTabBar::tab {
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>277</width>
-            <height>355</height>
+            <width>298</width>
+            <height>448</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
            <item>
-            <widget class="QCheckBox" name="checkBox_2">
+            <widget class="QCheckBox" name="checkBox_AutoOpen">
              <property name="font">
               <font>
                <family>Microsoft YaHei</family>
@@ -324,7 +352,7 @@ QTabBar::tab {
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="spinBox">
+              <widget class="QSpinBox" name="spinBox_FPS">
                <property name="font">
                 <font>
                  <family>Microsoft YaHei</family>
@@ -379,7 +407,7 @@ QTabBar::tab {
                 </widget>
                </item>
                <item>
-                <widget class="QSpinBox" name="spinBox_5">
+                <widget class="QSpinBox" name="spinBox_X">
                  <property name="maximum">
                   <number>9999</number>
                  </property>
@@ -399,7 +427,7 @@ QTabBar::tab {
                 </widget>
                </item>
                <item>
-                <widget class="QSpinBox" name="spinBox_2">
+                <widget class="QSpinBox" name="spinBox_Y">
                  <property name="font">
                   <font>
                    <family>Microsoft YaHei</family>
@@ -455,7 +483,7 @@ QTabBar::tab {
                 </widget>
                </item>
                <item>
-                <widget class="QSpinBox" name="spinBox_3">
+                <widget class="QSpinBox" name="spinBox_W">
                  <property name="font">
                   <font>
                    <family>Microsoft YaHei</family>
@@ -480,7 +508,7 @@ QTabBar::tab {
                 </widget>
                </item>
                <item>
-                <widget class="QSpinBox" name="spinBox_4">
+                <widget class="QSpinBox" name="spinBox_H">
                  <property name="font">
                   <font>
                    <family>Microsoft YaHei</family>
@@ -503,7 +531,7 @@ QTabBar::tab {
             </widget>
            </item>
            <item>
-            <widget class="QCheckBox" name="checkBox">
+            <widget class="QCheckBox" name="checkBox_TopMost">
              <property name="font">
               <font>
                <family>Microsoft YaHei</family>
@@ -515,19 +543,7 @@ QTabBar::tab {
             </widget>
            </item>
            <item>
-            <widget class="QCheckBox" name="checkBox_4">
-             <property name="font">
-              <font>
-               <family>Microsoft YaHei</family>
-              </font>
-             </property>
-             <property name="text">
-              <string>自动显示</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="checkBox_5">
+            <widget class="QCheckBox" name="checkBox_Moveable">
              <property name="font">
               <font>
                <family>Microsoft YaHei</family>
@@ -539,7 +555,7 @@ QTabBar::tab {
             </widget>
            </item>
            <item>
-            <widget class="QCheckBox" name="checkBox_3">
+            <widget class="QCheckBox" name="checkBox_AutoResize">
              <property name="font">
               <font>
                <family>Microsoft YaHei</family>
@@ -551,7 +567,7 @@ QTabBar::tab {
             </widget>
            </item>
            <item>
-            <widget class="QCheckBox" name="checkBox_6">
+            <widget class="QCheckBox" name="checkBox_ColorBackGround">
              <property name="text">
               <string>使用纯色背景</string>
              </property>
@@ -573,7 +589,23 @@ QTabBar::tab {
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="lineEdit_3">
+              <widget class="QLabel" name="label_ColorSample">
+               <property name="minimumSize">
+                <size>
+                 <width>20</width>
+                 <height>20</height>
+                </size>
+               </property>
+               <property name="frameShape">
+                <enum>QFrame::Box</enum>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="lineEdit_BackGroundColor">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
                  <horstretch>9</horstretch>
@@ -583,7 +615,7 @@ QTabBar::tab {
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_17">
+              <widget class="QPushButton" name="pushButton_ChooseColor">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -628,7 +660,7 @@ QTabBar::tab {
               </widget>
              </item>
              <item>
-              <widget class="QSlider" name="horizontalSlider">
+              <widget class="QSlider" name="horizontalSlider_BackGroundAlpha">
                <property name="maximum">
                 <number>255</number>
                </property>
@@ -638,7 +670,7 @@ QTabBar::tab {
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="spinBox_6">
+              <widget class="QSpinBox" name="spinBox_BackGroundAlpha">
                <property name="maximum">
                 <number>255</number>
                </property>
@@ -647,7 +679,7 @@ QTabBar::tab {
             </layout>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_18">
+            <widget class="QPushButton" name="pushButton_EditElements">
              <property name="text">
               <string>编辑界面元素</string>
              </property>
@@ -657,7 +689,7 @@ QTabBar::tab {
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton">
+            <widget class="QPushButton" name="pushButton_Save">
              <property name="font">
               <font>
                <family>Microsoft YaHei</family>
@@ -672,7 +704,7 @@ QTabBar::tab {
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_2">
+            <widget class="QPushButton" name="pushButton_Cancel">
              <property name="font">
               <font>
                <family>Microsoft YaHei</family>
@@ -685,6 +717,19 @@ QTabBar::tab {
               <bool>true</bool>
              </property>
             </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>
