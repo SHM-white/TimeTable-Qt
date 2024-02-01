@@ -148,20 +148,42 @@ void MainWindow::SelfInitial()
     {
         m_successfulInitialized = true;
     }
-    for (auto& i : value["Windows"]) {
-        try
+    bool lowVersion{ false };
+    for (int i = 0; i < 3; i++) {
+        lowVersion |= value["version"][i].asInt() < minVersion_global[i];
+    }
+    if (lowVersion) {
+        auto choose = QMessageBox::warning(this, QString::fromStdWString(L"error"), QString::fromStdWString(L"配置文件版本过低，是否继续加载？"), QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+        switch (choose)
         {
-            m_windows.push_back(CreateSubWindows(i, m_TimeTable));
-        }
-        catch (const std::exception&)
-        {
-            QMessageBox::warning(this, QString::fromStdWString(L"error"), QString::fromStdWString(L"请检查配置文件"), QMessageBox::Ok);
+        case QMessageBox::Yes:
+            lowVersion = false;
+            break;
+        case QMessageBox::No:
+        default:
+            lowVersion = true;
+            break;
         }
     }
-
+    if (!lowVersion)
+    {
+        for (auto& i : value["Windows"]) {
+            try
+            {
+                m_windows.push_back(CreateSubWindows(i, m_TimeTable));
+            }
+            catch (const std::exception&)
+            {
+                QMessageBox::warning(this, QString::fromStdWString(L"error"), QString::fromStdWString(L"请检查配置文件"), QMessageBox::Ok);
+            }
+        }
 #ifdef DEBUG
-    OpenSetting();
+        OpenSetting();
 #endif // DEBUG
-
+    }
+    else
+    {
+        qApp->quit();
+    }
     delete timer;
 }

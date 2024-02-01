@@ -84,7 +84,7 @@
 #else
 #define QT5
 #endif
-const int minVersion_global[3]{ 2,5,0 };
+const int minVersion_global[3]{ 3,0,0 };
 const int currentVersion_global[3]{ 3,0,0 };
 
 namespace Json {

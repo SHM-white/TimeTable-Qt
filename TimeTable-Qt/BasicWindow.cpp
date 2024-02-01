@@ -103,6 +103,7 @@ bool BasicWindow::InitializeWindow(Json::Value& value)
 
 	setWindowFlags(Qt::WindowMinMaxButtonsHint | Qt::FramelessWindowHint | Qt::Tool);
 	setAttribute(Qt::WA_TranslucentBackground);
+	setAttribute(Qt::WA_DeleteOnClose);
 	flags = windowFlags();
 	if (m_TopMost) {
 		setWindowFlags(flags | Qt::WindowStaysOnTopHint);
