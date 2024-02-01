@@ -9,33 +9,9 @@ MainWindow::MainWindow(Json::Value& settings, QWidget* parent)
     m_hide = false;
     ui.label_version->setText(QString::fromStdString(std::format("v{}.{}.{}", currentVersion_global[0], currentVersion_global[1], currentVersion_global[2])));
     this->show();
-    CreateSystemTrayIcon();
-    std::wstring path;
-    Json::mGetTextItem(L"ConfigFile", path, DEFAULT_CONFIG_PATH);
-    auto value = Json::GetRootJsonValue(path);
-    Json::mGetTextItem(L"LessonInfoFile", path, DEFAULT_CONFIG_PATH);
-    m_TimeTable = std::make_shared<TimeTable>(path);
-    if (value["Windows"].isNull()) {
-        QMessageBox::warning(this, QString::fromStdWString(L"error"), QString::fromStdWString(L"未找到窗口设置，请检查配置文件设置"), QMessageBox::Ok);
-    }
-    else
-    {
-        m_successfulInitialized = true;
-    }
-    for (auto& i : value["Windows"]) {
-        try
-        {
-            m_windows.push_back(CreateSubWindows(i, m_TimeTable));
-        }
-        catch (const std::exception&)
-        {
-            QMessageBox::warning(this, QString::fromStdWString(L"error"), QString::fromStdWString(L"请检查配置文件"), QMessageBox::Ok);
-        }
-    }
-
-#ifdef DEBUG
-    OpenSetting();
-#endif // DEBUG
+    timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(SelfInitial()));
+    timer->start(1000);
 }
 
 MainWindow::~MainWindow()
@@ -132,10 +108,18 @@ void MainWindow::LaunchAsSystemBoot()
 
 void MainWindow::OpenSetting()
 {
-    Json::Value value;
-    value["Moveable"] = true;
-    Settings_New* setting = new Settings_New{ Json::GetRootJsonValue(Json::mGetTextItem(L"configPath",DEFAULT_CONFIG_PATH,0)),value,this };
-    setting->show();
+#if STRANGE_TEST
+    while (true)
+    {
+#endif // DEBUG
+        Json::Value value;
+        value["Moveable"] = true;
+        Settings_New* setting = new Settings_New{ Json::GetRootJsonValue(Json::mGetTextItem(L"configPath",DEFAULT_CONFIG_PATH,0)),value,this };
+        setting->show();
+#if STRANGE_TEST
+    }
+#endif // DEBUG
+
 }
 
 void MainWindow::Exit()
@@ -147,4 +131,37 @@ void MainWindow::Exit()
     delete trayIcon;
     this->close();
     qApp->quit();
+}
+
+void MainWindow::SelfInitial()
+{
+    CreateSystemTrayIcon();
+    std::wstring path;
+    Json::mGetTextItem(L"ConfigFile", path, DEFAULT_CONFIG_PATH);
+    auto value = Json::GetRootJsonValue(path);
+    Json::mGetTextItem(L"LessonInfoFile", path, DEFAULT_CONFIG_PATH);
+    m_TimeTable = std::make_shared<TimeTable>(path);
+    if (value["Windows"].isNull()) {
+        QMessageBox::warning(this, QString::fromStdWString(L"error"), QString::fromStdWString(L"未找到窗口设置，请检查配置文件设置"), QMessageBox::Ok);
+    }
+    else
+    {
+        m_successfulInitialized = true;
+    }
+    for (auto& i : value["Windows"]) {
+        try
+        {
+            m_windows.push_back(CreateSubWindows(i, m_TimeTable));
+        }
+        catch (const std::exception&)
+        {
+            QMessageBox::warning(this, QString::fromStdWString(L"error"), QString::fromStdWString(L"请检查配置文件"), QMessageBox::Ok);
+        }
+    }
+
+#ifdef DEBUG
+    OpenSetting();
+#endif // DEBUG
+
+    delete timer;
 }

@@ -13,11 +13,14 @@ CONFIG += \
 SOURCES += \
     BasicWindow.cpp \
     CSVEditor.cpp \
+    EmptyUIElement.cpp \
     Lesson.cpp \
     MultiItemAllDisplayUIElementBase.cpp \
     MultiItemInOrderUIElementBase.cpp \
+    MultiTextItem.cpp \
     Settings_New.cpp \
     SingleItemUIElementBase.cpp \
+    SingleTextItem.cpp \
     SubWindow.cpp \
     Timetable.cpp \
     UIElementBase.cpp \
@@ -28,11 +31,14 @@ SOURCES += \
 HEADERS += \
     BasicWindow.h \
     CSVEditor.h \
+    EmptyUIElement.h \
     Lesson.h \
     MultiItemAllDisplayUIElementBase.h \
     MultiItemInOrderUIElementBase.h \
+    MultiTextItem.h \
     Settings_New.h \
     SingleItemUIElementBase.h \
+    SingleTextItem.h \
     SubWindow.h \
     TimeTable-Qt.aps \
     Timetable.h \

@@ -26,6 +26,7 @@ private:
 	Json::Value SaveAsJson(Json::Value value) const override;
 	QSystemTrayIcon* trayIcon;
 	QAction* action_autoLaunch;
+	QTimer* timer;
 private slots:
 
 	void HideAllWindows();
@@ -34,4 +35,5 @@ private slots:
 	void LaunchAsSystemBoot();
 	void OpenSetting();
 	void Exit();
+	void SelfInitial();
 };

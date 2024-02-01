@@ -2,28 +2,30 @@
 #include "include.h"
 #include "TimeTable.h"
 
+
 enum UIElementType 
 {
 	SingleItem,
 	MultiItemInOrder,
 	MultiItemAllDisplay
 };
+
 enum ElementType
 {
 	Default,
 	CurrentTime,
 	CurrentLesson,
-	CurrentLessonProgress,
 	NextLesson,
 	NextLessonTime,
 	CountDownDay,
 	TodayInfo,
-	AllLessons,
 	News,
+	DailyWord,
 	Weather,
+	AllLessons,
+	CurrentLessonProgress,
 	WeatherBlock,
 	Clock,
-	DailyWord,
 };
 
 class UIElementBase
@@ -47,13 +49,12 @@ protected:
 };
 
 class SingleItemUIElementBase;
-
 class SingleTextItem;
-
 class MultiItemInOrderUIElementBase;
-
 class MultiTextItem;
-
 class MultiItemAllDisplayUIElementBase;
-
 class EmptyUIElement;
+
+std::shared_ptr<SingleItemUIElementBase> CreateSingleItemUIElement(Json::Value& value, std::shared_ptr<TimeTable> timetable);
+std::shared_ptr<MultiItemInOrderUIElementBase> CreateMultiItemInOrderUIElement(Json::Value& value, std::shared_ptr<TimeTable> timetable);
+std::shared_ptr<MultiItemAllDisplayUIElementBase> CreateMultiItemAllDisplayUIElement(Json::Value& value, std::shared_ptr<TimeTable> timetable);

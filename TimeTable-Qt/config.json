@@ -55,7 +55,7 @@
             "Data":
             [
                {
-                  "Type":2,              
+                  "Type":1,              
                   "Font":"微软雅黑",
                   "TextColor":[0,0,0,255],
                   "TextSize":16,
@@ -70,14 +70,14 @@
             "Data":
             [
                {
-                  "Type":3,
+                  "Type":2,
                   "Font":"微软雅黑",
                   "TextColor":[0,0,0,255],
                   "TextSize":16,
                   "TextFormat":"当前课程:"
                },
                {
-                  "Type":4,
+                  "Type":6,
                   "Font":"微软雅黑",
                   "TextColor":[0,0,0,255],
                   "TextSize":16,
@@ -94,7 +94,7 @@
                   }
                },
                {
-                  "Type":6,
+                  "Type":9,
                   "Font":"微软雅黑",
                   "TextColor":[0,0,0,255],
                   "TextSize":16,

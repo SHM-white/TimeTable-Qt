@@ -1,4 +1,10 @@
 ﻿#include "UIElementBase.h"
+#include "EmptyUIElement.h"
+#include "SingleItemUIElementBase.h"
+#include "MultiItemInOrderUIElementBase.h"
+#include "MultiItemAllDisplayUIElementBase.h"
+#include "MultiTextItem.h"
+#include "SingleTextItem.h"
 
 UIElementBase::UIElementBase(Json::Value& setting, std::shared_ptr<TimeTable> timetable)
 	:m_timetable{ timetable }, m_selfJson{ setting }
@@ -43,3 +49,41 @@ Json::Value UIElementBase::save() const
 	return SaveAsJson(value);
 }
 
+std::shared_ptr<SingleItemUIElementBase> CreateSingleItemUIElement(Json::Value& value, std::shared_ptr<TimeTable> timetable)
+{
+	bool textOnly{ true };
+#ifdef DEBUG
+	OutputDebugStringW(L"CreateSingleItemUIElement() value:");
+	OutputDebugStringW(u8tw(value.toStyledString()).c_str());
+#endif // DEBUG
+	for (auto& i : value["Data"]) {
+		textOnly &= (i["Type"].asInt() <= (int)ElementType::Weather);
+	}
+	if (textOnly) {
+		return std::dynamic_pointer_cast<SingleItemUIElementBase, SingleTextItem>(std::make_shared<SingleTextItem>(value, timetable));
+	}
+	else
+	{
+		throw std::exception("Hasn't support!");
+	}
+}
+
+std::shared_ptr<MultiItemInOrderUIElementBase> CreateMultiItemInOrderUIElement(Json::Value& value, std::shared_ptr<TimeTable> timetable)
+{
+	bool textOnly{ true };
+	for (auto& i : value["Data"]) {
+		textOnly &= (i["Type"].asInt() <= (int)ElementType::Weather);
+	}
+	if (textOnly) {
+		return std::dynamic_pointer_cast<MultiItemInOrderUIElementBase, MultiTextItem>(std::make_shared<MultiTextItem>(value, timetable));
+	}
+	else
+	{
+		throw std::exception("Hasn't support!");
+	}
+}
+
+std::shared_ptr<MultiItemAllDisplayUIElementBase> CreateMultiItemAllDisplayUIElement(Json::Value& value, std::shared_ptr<TimeTable> timetable)
+{
+	return std::shared_ptr<MultiItemAllDisplayUIElementBase>();
+}

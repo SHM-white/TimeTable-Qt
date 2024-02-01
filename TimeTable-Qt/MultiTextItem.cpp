@@ -4,6 +4,19 @@
 MultiTextItem::MultiTextItem(Json::Value& value, std::shared_ptr<TimeTable> timetable)
 	:MultiItemInOrderUIElementBase(value, timetable)
 {
+	Json::Value temp = value;
+	while (!temp["Data"].empty())
+	{
+		Json::Value removed;
+		m_Texts.push_back(std::make_shared<SingleTextItem>(temp, timetable));
+		temp["Data"].removeIndex(0, &removed);
+#ifdef DEBUG
+		OutputDebugStringW(L"removed:");
+		OutputDebugStringW(u8tw(removed.toStyledString()).c_str());
+		OutputDebugStringW(L"after remove:");
+		OutputDebugStringW(u8tw(value.toStyledString()).c_str());
+#endif // DEBUG
+	}
 }
 
 QSize MultiTextItem::getNeededSize() const
@@ -18,5 +31,8 @@ QSize MultiTextItem::getNeededSize() const
 
 Json::Value MultiTextItem::SaveAsJson(Json::Value& value) const
 {
+	for (auto& i : m_Texts) {
+		value["Data"].append(i->save()["Data"][0]);
+	}
 	return value;
 }

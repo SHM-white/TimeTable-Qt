@@ -47,6 +47,15 @@
 #include "qrect.h"
 #include "qpoint.h"
 #include "qpainter.h"
+/*
+#include "UIElementBase.h"
+#include "EmptyUIElement.h"
+#include "SingleItemUIElementBase.h"
+#include "MultiItemInOrderUIElementBase.h"
+#include "MultiItemAllDisplayUIElementBase.h"
+#include "MultiTextItem.h"
+#include "SingleTextItem.h"
+*/
 
 #pragma  comment(lib, "shell32.lib")
 
@@ -61,6 +70,11 @@
 #else
 #define SHOW_ITEM_RECT false
 #endif // 
+
+#ifdef DEBUG
+#define STRANGE_TEST false
+#endif // DEBUG
+
 
 #define DEFAULT_CONFIG_PATH L"config.json"
 #define DEFAULT_LESSONINFO_PATH L"Lessons.json"

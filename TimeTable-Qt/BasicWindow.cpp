@@ -1,5 +1,11 @@
 ﻿#include "BasicWindow.h"
+#include "UIElementBase.h"
 #include "EmptyUIElement.h"
+#include "SingleItemUIElementBase.h"
+#include "MultiItemInOrderUIElementBase.h"
+#include "MultiItemAllDisplayUIElementBase.h"
+#include "MultiTextItem.h"
+#include "SingleTextItem.h"
 
 BasicWindow::BasicWindow(Json::Value& settings, QWidget* parent)
 	: QWidget(parent), m_settings{ settings }
@@ -209,8 +215,19 @@ void BasicWindow::mouseReleaseEvent(QMouseEvent* event)
 
 std::shared_ptr<UIElementBase> BasicWindow::CreateUIElement(Json::Value& value, std::shared_ptr<TimeTable> timetable)
 {
-	auto ptr = std::make_shared<EmptyUIElement>(value, timetable);
-	return std::dynamic_pointer_cast<UIElementBase, EmptyUIElement>(ptr);
+	switch (UIElementType(value["ElementType"].asInt()))
+	{
+	case SingleItem:
+		return std::dynamic_pointer_cast<UIElementBase, SingleItemUIElementBase>(CreateSingleItemUIElement(value, timetable));
+		break;
+	case MultiItemInOrder:
+		return std::dynamic_pointer_cast<UIElementBase, MultiItemInOrderUIElementBase>(CreateMultiItemInOrderUIElement(value, timetable));
+		break;
+	case MultiItemAllDisplay:
+		//return std::dynamic_pointer_cast<UIElementBase, MultiItemAllDisplayUIElementBase>(CreateMultiItemAllDisplayUIElement(value, timetable));
+		//break;
+	default:
+		return std::dynamic_pointer_cast<UIElementBase, EmptyUIElement>(std::make_shared<EmptyUIElement>(value, timetable));
+		break;
+	}
 }
-
-
