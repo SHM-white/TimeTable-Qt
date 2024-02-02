@@ -452,7 +452,7 @@ int TimeTable::GetCurrentLesson(int)
 	// Return the index of the current lesson
 	return currentIndex;
 }
-std::wstring TimeTable::GetWeather(int code, const std::wstring& APIKey, bool* isSuccess)
+std::wstring TimeTable::GetWeather(const std::wstring& code, const std::wstring& APIKey, bool* isSuccess)
 {
 	static std::wstring weather{L"getting...."};
 	static std::future<requests::Response> result;
@@ -559,37 +559,25 @@ std::wstring TimeTable::GetCountDown(tm tmIn, const std::wstring &TimeFormat)
 	return tmp;
 }
 
-std::wstring TimeTable::GetInfo()
+std::wstring TimeTable::GetInfo(bool next)
 {
-	return GetInfo(GetCurrentTime(L"%a"));
+	return GetInfo(GetCurrentTime(L"%a"), next);
 }
 
-std::wstring TimeTable::GetInfo(const std::wstring &week)
+std::wstring TimeTable::GetInfo(const std::wstring &week, bool next)
 {
 	std::vector<std::wstring> Infos;
 	Infos.clear();
 	GetTodayMoreInfo(Infos, week);
-	static int count{0};
-	static int currentItem{0};
-	const int changeAfterTimes{19};
 	if (Infos.empty())
 	{
 		return L"";
 	}
-	if (currentItem >= Infos.size() - 1)
-	{
-		currentItem = 0;
+	if (next) {
+		m_InfoCount++;
+		m_InfoCount = (m_InfoCount % Infos.size());
 	}
-	else if (count >= changeAfterTimes)
-	{
-		++currentItem;
-		count = 0;
-	}
-	else
-	{
-		++count;
-	}
-	return Infos[currentItem];
+	return Infos[m_InfoCount];
 }
 
 int TimeTable::GetLesson(std::vector<std::wstring> &input, const std::wstring &week)

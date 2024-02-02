@@ -39,13 +39,17 @@ Json::Value MultiTextItem::SaveAsJson(Json::Value& value) const
 
 bool MultiTextItem::update() const
 {
+	m_currentIndex = (m_currentIndex + 1) % m_Texts.size();
 	return false;
 }
 
 bool MultiTextItem::paint(QPainter& painter) const
 {
-	for (auto& i : m_Texts) {
-		i->paint(painter);
+	auto currentText = m_Texts[m_currentIndex];
+	currentText->paint(painter);
+	if (currentText->m_CanChange) {
+		currentText->SetChanged();		
+		update();
 	}
 	return 0;
 }

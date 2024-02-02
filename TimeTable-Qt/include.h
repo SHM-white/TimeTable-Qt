@@ -77,6 +77,7 @@
 #define STRANGE_TEST false
 #endif // DEBUG
 
+#define ITEM_SCROLL_SPEED 50
 
 #define DEFAULT_CONFIG_PATH L"config.json"
 #define DEFAULT_LESSONINFO_PATH L"Lessons.json"

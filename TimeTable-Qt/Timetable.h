@@ -42,13 +42,13 @@ public:
 	int changeInfo(size_t index, const std::wstring& day, const std::wstring& info, const std::wstring& Path);
 	int SaveJson(const std::wstring& TargetPath, const Json::Value& root);
 	int GetCurrentLesson(int);
-	static std::wstring GetWeather(int code,const std::wstring& APIKey,bool* isSuccess);
+	static std::wstring GetWeather(const std::wstring& code,const std::wstring& APIKey,bool* isSuccess);
 	static std::wstring GetWeather(const std::wstring& first, const std::wstring& second);
 	static std::wstring GetAdcodeSync(const std::wstring& address,const std::wstring& city, const std::wstring& APIKey);
 	static requests::Response GetResponseFromUrlSync(const std::wstring& url);
 	std::wstring GetCountDown(tm tmIn, const std::wstring& TimeFormat);
-	std::wstring GetInfo();
-	std::wstring GetInfo(const std::wstring& week);
+	std::wstring GetInfo(bool next = false);
+	std::wstring GetInfo(const std::wstring& week, bool next = false);
 	std::wstring GetCurrentLesson(const std::wstring& LessonNull);
 	std::wstring ReplacePath(const std::wstring& Path);
 	Lesson GetLesson(const std::wstring& week, int index);
@@ -62,6 +62,7 @@ private:
 	std::vector<Lesson> Lessons;
 	std::wstring mLessonInfoPath{ L"Lessons.json" };
 	bool m_needUpdateWeather{true};
+	int m_InfoCount{ 0 };
 };
 
 
