@@ -3,6 +3,7 @@
 Settings_New::Settings_New(Json::Value ApplicationRootSettings, Json::Value WindowSettings, QWidget* parent)
 	: BasicWindow(WindowSettings, parent), m_ApplicationSettings{ ApplicationRootSettings }
 {
+	setAttribute(Qt::WA_DeleteOnClose);
 	ui.setupUi(this);
 	m_hide = false;
 	m_moveable = true;

@@ -21,11 +21,6 @@ bool UIElementBase::paintRect(QPainter& painter) const
 	return false;
 }
 
-bool UIElementBase::paint(QPainter& painter) const
-{
-	return false;
-}
-
 bool UIElementBase::update() const
 {
 	m_lastUpdateTime = std::chrono::system_clock::now();

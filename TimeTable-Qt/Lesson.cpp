@@ -7,37 +7,42 @@ std::strong_ordering Lesson::operator<=>(const Lesson& another) const
 {
 	auto result{ this->mGetName() <=> another.mGetName() };
 	if (result == std::strong_ordering::equivalent) {
-		result = this->mGetBeginTime() <=> another.mGetBeginTime();
+		result = this->GetBeginTime() <=> another.GetBeginTime();
 	}
 	return result;
 }
 
 Lesson::Lesson(const std::wstring& Day, const std::wstring& Name, int begin, int end)
 {
-	mSetValue(Day, Name, begin, end);
+	SetValue(Day, Name, begin, end);
 }
 
-Lesson::Lesson(int Day, const std::wstring& Name, int begin, int end)
+//Lesson::Lesson(int Day, const std::wstring& Name, int begin, int end)
+//{
+//	mSetValue(Days[Day], Name, begin, end);
+//}
+
+Lesson::Lesson(Days day, const std::wstring& Name, int begin, int end)
 {
-	mSetValue(Days[Day], Name, begin, end);
+	SetValue(GetWStrDay(day), Name, begin, end);
 }
 
 Lesson::Lesson(const std::wstring& Name, int begin, int end)
 {
-	mSetValue(Name, begin, end);
+	SetValue(Name, begin, end);
 }
 
-const std::wstring Lesson::mGetBeginTimeAsString() const
+const std::wstring Lesson::GetBeginTimeAsString() const
 {
 	return std::to_wstring(iBeginTime);
 }
 
-const std::wstring Lesson::mGetEndTimeAsString() const
+const std::wstring Lesson::GetEndTimeAsString() const
 {
 	return std::to_wstring(iEndTime);
 }
 
-int Lesson::mSetValue(const std::wstring& Day, const std::wstring& s, int b, int e)
+int Lesson::SetValue(const std::wstring& Day, const std::wstring& s, int b, int e)
 {
 	iBeginTime = b;
 	iEndTime = e;
@@ -46,14 +51,14 @@ int Lesson::mSetValue(const std::wstring& Day, const std::wstring& s, int b, int
 	return 0;
 }
 
-int Lesson::mSetValue(int Day, const std::wstring& s, int b, int e)
+int Lesson::SetValue(int Day, const std::wstring& s, int b, int e)
 {
-	return mSetValue(Days[Day], s, b, e);
+	return SetValue(GetWStrDay(Days(Day)), s, b, e);
 }
 
-int Lesson::mSetValue(const std::wstring& s, int b, int e)
+int Lesson::SetValue(const std::wstring& s, int b, int e)
 {
-	return mSetValue(Days[0], s, b, e);
+	return SetValue(GetWStrDay(Days::Null), s, b, e);
 }
 
 const std::wstring Lesson::GetValue(const std::wstring& seprator) const
@@ -73,7 +78,7 @@ const Json::Value Lesson::GetJsonValue() const
 
 Lesson& Lesson::operator=(const Lesson& another)
 {
-	mSetValue(another.sDay, another.mGetName(), another.mGetBeginTime(), another.mGetEndTime());
+	SetValue(another.sDay, another.mGetName(), another.GetBeginTime(), another.GetEndTime());
 	return *this;
 }
 
@@ -89,6 +94,16 @@ int Lesson::getMinFromHHmm(int input)
 
 bool Lesson::operator<(const Lesson& another) const
 {
-	return this->mGetBeginTime()<another.mGetBeginTime();
+	return this->GetBeginTime()<another.GetBeginTime();
+}
+// 转换时间为分钟数便于比较大小
+int Lesson::mHHMMToMin(int input)
+{
+	return (input - input % 100) / 100 * 60 + input % 100;
+}
+int Lesson::mMinToHHMM(int input)
+{
+	int Hour = (input - input % 60) / 60;
+	return Hour * 100 + input % 60;
 }
 

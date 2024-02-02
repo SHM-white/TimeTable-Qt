@@ -17,6 +17,7 @@
 #include <fstream>
 #include <strsafe.h>
 #include <ctime>
+#include <time.h>
 #include <exception>
 #include <shellapi.h>
 #include <shlobj.h>
@@ -60,6 +61,7 @@
 #pragma  comment(lib, "shell32.lib")
 
 #undef max
+#undef GetCurrentTime
 
 #ifdef QT_DEBUG
 #define DEBUG
@@ -122,7 +124,25 @@ std::wstring to_byte_string(const std::wstring& input)
 namespace ToolFunctions {
     std::string wstringToU8string(const std::wstring& wstring);
     std::wstring u8stringToWstring(const std::string& u8string);
+    std::string wstringToAnsiString(const std::wstring& u8wstring);
 }
 
 static auto u8tw = ToolFunctions::u8stringToWstring;
 static auto wtu8 = ToolFunctions::wstringToU8string;
+
+enum Days
+{
+    Null,
+    Mon, 
+    Tue, 
+    Wed, 
+    Thu, 
+    Fri, 
+    Sat, 
+    Sun, 
+};
+
+std::wstring GetWStrDay(Days day);
+//std::string GetStrDay(Days day);
+const std::wstring DaysCollectionW[8]{ L"Null",L"Mon", L"Tue", L"Wed", L"Thu", L"Fri", L"Sat", L"Sun" };
+//const std::string DaysCollection[8]{ "Null","Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };

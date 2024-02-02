@@ -122,6 +122,25 @@ void MainWindow::OpenSetting()
 
 }
 
+void MainWindow::OpenSubWindows()
+{
+    m_windows.clear();
+    std::wstring path;
+    Json::mGetTextItem(L"ConfigFile", path, DEFAULT_CONFIG_PATH);
+    auto value = Json::GetRootJsonValue(path);
+    for (auto& i : value["Windows"]) {
+        try
+        {
+            m_windows.push_back(CreateSubWindows(i, m_TimeTable));
+        }
+        catch (const std::exception&)
+        {
+            QMessageBox::warning(this, QString::fromStdWString(L"error"), QString::fromStdWString(L"请检查配置文件"), QMessageBox::Ok);
+        }
+    }
+
+}
+
 void MainWindow::Exit()
 {
     for (auto& i : m_windows) {
@@ -139,8 +158,6 @@ void MainWindow::SelfInitial()
     std::wstring path;
     Json::mGetTextItem(L"ConfigFile", path, DEFAULT_CONFIG_PATH);
     auto value = Json::GetRootJsonValue(path);
-    Json::mGetTextItem(L"LessonInfoFile", path, DEFAULT_CONFIG_PATH);
-    m_TimeTable = std::make_shared<TimeTable>(path);
     if (value["Windows"].isNull()) {
         QMessageBox::warning(this, QString::fromStdWString(L"error"), QString::fromStdWString(L"未找到窗口设置，请检查配置文件设置"), QMessageBox::Ok);
     }
@@ -167,16 +184,7 @@ void MainWindow::SelfInitial()
     }
     if (!lowVersion)
     {
-        for (auto& i : value["Windows"]) {
-            try
-            {
-                m_windows.push_back(CreateSubWindows(i, m_TimeTable));
-            }
-            catch (const std::exception&)
-            {
-                QMessageBox::warning(this, QString::fromStdWString(L"error"), QString::fromStdWString(L"请检查配置文件"), QMessageBox::Ok);
-            }
-        }
+        OpenSubWindows();
 #ifdef DEBUG
         OpenSetting();
 #endif // DEBUG

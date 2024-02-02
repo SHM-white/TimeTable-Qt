@@ -34,6 +34,7 @@ private slots:
 	void ShowAllWindows();
 	void LaunchAsSystemBoot();
 	void OpenSetting();
+	void OpenSubWindows();
 	void Exit();
 	void SelfInitial();
 };

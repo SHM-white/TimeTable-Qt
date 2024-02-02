@@ -34,7 +34,7 @@ public:
 	UIElementBase(Json::Value& setting, std::shared_ptr<TimeTable> timetable);
 	virtual ~UIElementBase() = default;
 	virtual bool paintRect(QPainter& painter) const;
-	virtual bool paint(QPainter& painter) const;
+	virtual bool paint(QPainter& painter) const = 0;
 	virtual bool update() const;
 	virtual QSize getNeededSize() const = 0;
 	virtual QRect getNeededRect() const;
@@ -43,6 +43,7 @@ protected:
 	std::shared_ptr<TimeTable> m_timetable;
 	UIElementType m_type;
 	mutable std::chrono::system_clock::time_point m_lastUpdateTime;
+	mutable std::chrono::seconds m_updateAfterTime;
 	QRect m_rect;
 	Json::Value m_selfJson;
 	virtual Json::Value SaveAsJson(Json::Value& value) const = 0;

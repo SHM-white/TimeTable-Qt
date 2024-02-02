@@ -74,3 +74,45 @@ std::wstring ToolFunctions::u8stringToWstring(const std::string& u8string)
     std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
     return converter.from_bytes(u8string);
 }
+
+std::string ToolFunctions::wstringToAnsiString(const std::wstring& u8wstring)
+{
+    
+    char ansiChar[1024];
+    WideCharToMultiByte(CP_ACP, 0, u8wstring.c_str(), u8wstring.size(), ansiChar, sizeof(ansiChar) / sizeof(char), NULL, NULL);
+    return ansiChar;
+}
+
+std::wstring GetWStrDay(Days day)
+{
+	std::wstring strDay;
+	switch (day)
+	{
+	case Mon:
+		strDay = L"Mon";
+		break;
+	case Tue:
+		strDay = L"Tue";
+		break;
+	case Wed:
+		strDay = L"Wed";
+		break;
+	case Thu:
+		strDay = L"Thu";
+		break;
+	case Fri:
+		strDay = L"Fri";
+		break;
+	case Sat:
+		strDay = L"Sat";
+		break;
+	case Sun:
+		strDay = L"Sun";
+		break;
+	case Null:
+	default:
+		strDay = L"Null";
+		break;
+	}
+    return strDay;
+}

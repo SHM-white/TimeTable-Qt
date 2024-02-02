@@ -36,3 +36,16 @@ Json::Value MultiTextItem::SaveAsJson(Json::Value& value) const
 	}
 	return value;
 }
+
+bool MultiTextItem::update() const
+{
+	return false;
+}
+
+bool MultiTextItem::paint(QPainter& painter) const
+{
+	for (auto& i : m_Texts) {
+		i->paint(painter);
+	}
+	return 0;
+}

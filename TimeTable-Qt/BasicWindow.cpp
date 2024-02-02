@@ -10,6 +10,10 @@
 BasicWindow::BasicWindow(Json::Value& settings, QWidget* parent)
 	: QWidget(parent), m_settings{ settings }
 {
+	std::wstring path;
+	Json::mGetTextItem(L"LessonInfoFile", path, DEFAULT_CONFIG_PATH);
+	m_TimeTable = std::make_shared<TimeTable>(path);
+
 	InitializeWindow(settings);
 
 	time_calendar_window = new QTimer(this);
@@ -103,7 +107,6 @@ bool BasicWindow::InitializeWindow(Json::Value& value)
 
 	setWindowFlags(Qt::WindowMinMaxButtonsHint | Qt::FramelessWindowHint | Qt::Tool);
 	setAttribute(Qt::WA_TranslucentBackground);
-	setAttribute(Qt::WA_DeleteOnClose);
 	flags = windowFlags();
 	if (m_TopMost) {
 		setWindowFlags(flags | Qt::WindowStaysOnTopHint);

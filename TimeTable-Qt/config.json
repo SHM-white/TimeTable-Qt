@@ -74,14 +74,16 @@
                   "Font":"微软雅黑",
                   "TextColor":[0,0,0,255],
                   "TextSize":16,
-                  "TextFormat":"当前课程:"
+                  "TextFormat":"当前课程:",
+                  "Data":null
                },
                {
                   "Type":6,
                   "Font":"微软雅黑",
                   "TextColor":[0,0,0,255],
                   "TextSize":16,
-                  "TextFormat":"值日:"
+                  "TextFormat":"值日:",
+                  "Data":null
                },
                {
                   "Type":5,

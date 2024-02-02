@@ -8,14 +8,14 @@
 // It adds a lesson with four parameters: week, Lesson, sBegin, sEnd.
 // If the fifth parameter, mLessonInfoPath, is not provided, it defaults to the value of the member variable mLessonInfoPath.
 // Returns the result of calling the mAddLesson function with the provided parameters.
-int TimeTable::mAddLesson(const std::wstring &week, const std::wstring &Lesson, const std::wstring &sBegin, const std::wstring &sEnd)
+int TimeTable::AddLesson(const std::wstring &week, const std::wstring &Lesson, const std::wstring &sBegin, const std::wstring &sEnd)
 {
 	// Call the mAddLesson function with the provided parameters and the default mLessonInfoPath.
-	return mAddLesson(week, Lesson, sBegin, sEnd, mLessonInfoPath);
+	return AddLesson(week, Lesson, sBegin, sEnd, mLessonInfoPath);
 }
 
 // 添加课程5参数函数
-int TimeTable::mAddLesson(const std::wstring &week, const std::wstring &Lesson, const std::wstring &sBegin, const std::wstring &sEnd, const std::wstring &TargetFilePath)
+int TimeTable::AddLesson(const std::wstring &week, const std::wstring &Lesson, const std::wstring &sBegin, const std::wstring &sEnd, const std::wstring &TargetFilePath)
 {
 	if (!((bool)week.size() && (bool)Lesson.size() && (bool)sBegin.size() && (bool)sEnd.size() && (bool)TargetFilePath.size()))
 	{
@@ -29,16 +29,16 @@ int TimeTable::mAddLesson(const std::wstring &week, const std::wstring &Lesson, 
 	root[wtu8(week)]["Lessons"].append(Current);
 	return SaveJson(TargetFilePath, root);
 }
-int TimeTable::mAddLesson(const Lesson &lesson)
+int TimeTable::AddLesson(const Lesson &lesson)
 {
-	return mAddLesson(lesson, mLessonInfoPath);
+	return AddLesson(lesson, mLessonInfoPath);
 }
-int TimeTable::mAddLesson(const Lesson &lesson, const std::wstring &TargetFilePath)
+int TimeTable::AddLesson(const Lesson &lesson, const std::wstring &TargetFilePath)
 {
-	return mAddLesson(lesson.mGetDay(), lesson.mGetName(), lesson.mGetBeginTimeAsString(), lesson.mGetEndTimeAsString(), TargetFilePath);
+	return AddLesson(lesson.mGetDay(), lesson.mGetName(), lesson.GetBeginTimeAsString(), lesson.GetEndTimeAsString(), TargetFilePath);
 }
 // 添加更多信息，有空也加个重载
-int TimeTable::mAddMoreInfo(const std::wstring &Days, const std::wstring &Info)
+int TimeTable::AddMoreInfo(const std::wstring &Days, const std::wstring &Info)
 {
 	std::fstream os;
 	os.open(mLessonInfoPath, std::ios::out | std::ios::in);
@@ -57,7 +57,7 @@ int TimeTable::mAddMoreInfo(const std::wstring &Days, const std::wstring &Info)
 	os.clear();
 	return 0;
 }
-int TimeTable::mReloadLesson()
+int TimeTable::ReloadLesson()
 {
 	CurrentLesson = Lesson();
 	return 0;
@@ -68,14 +68,14 @@ int TimeTable::mHHMMToMin(int input)
 	return (input - input % 100) / 100 * 60 + input % 100;
 }
 // 暂时替换文件路径，同时返回旧的文件路径
-std::wstring TimeTable::mReplacePath(const std::wstring &Path)
+std::wstring TimeTable::ReplacePath(const std::wstring &Path)
 {
 	std::wstring old = mLessonInfoPath;
 	Json::ChangeValue(L"LessonInfoFile", wtu8(Path), DEFAULT_CONFIG_PATH);
 	mLessonInfoPath = Path;
 	return old;
 }
-Lesson TimeTable::mGetLesson(const std::wstring &week, int index)
+Lesson TimeTable::GetLesson(const std::wstring &week, int index)
 {
 	Json::Reader reader;
 	Json::Value root;
@@ -90,23 +90,23 @@ Lesson TimeTable::mGetLesson(const std::wstring &week, int index)
 }
 
 // 获取所有的课程并返回至传入的数组
-int TimeTable::mGetLesson(std::vector<std::wstring> &input)
+int TimeTable::GetLesson(std::vector<std::wstring> &input)
 {
 	input.clear();
 	std::wstring Days[]{L"Mon", L"Tue", L"Wed", L"Thu", L"Fri", L"Sat", L"Sun"};
 	for (const auto &a : Days)
 	{
-		mGetLesson(input, a);
+		GetLesson(input, a);
 	}
 	return 1;
 }
 // 获取今日的信息并存入传入的数组
-int TimeTable::mGetTodayMoreInfo(std::vector<std::wstring> &input)
+int TimeTable::GetTodayMoreInfo(std::vector<std::wstring> &input)
 {
-	std::wstring week{mGetCurrentTime(L"%a")};
-	return mGetTodayMoreInfo(input, week);
+	std::wstring week{GetCurrentTime(L"%a")};
+	return GetTodayMoreInfo(input, week);
 }
-int TimeTable::mGetTodayMoreInfo(std::vector<std::wstring> &input, const std::wstring week)
+int TimeTable::GetTodayMoreInfo(std::vector<std::wstring> &input, const std::wstring week)
 {
 	std::ifstream in(mLessonInfoPath, std::ios::in);
 	if (!in.is_open())
@@ -127,9 +127,9 @@ int TimeTable::mGetTodayMoreInfo(std::vector<std::wstring> &input, const std::ws
 	return 1;
 }
 // 获取当前时间的课程
-std::wstring TimeTable::mGetCurrentLesson(const std::wstring &LessonNull)
+std::wstring TimeTable::GetCurrentLesson(const std::wstring &LessonNull)
 {
-	int lessonIndex = mGetCurrentLesson(0);
+	int lessonIndex = GetCurrentLesson(0);
 	if (lessonIndex < 0)
 	{
 		return LessonNull;
@@ -137,12 +137,12 @@ std::wstring TimeTable::mGetCurrentLesson(const std::wstring &LessonNull)
 	return CurrentLesson.mGetName();
 }
 
-std::wstring TimeTable::mGetCurrentTime(const std::wstring &TextFormat)
+std::wstring TimeTable::GetCurrentTime(const std::wstring &TextFormat)
 {
     wchar_t result[1024];
 	tm structm;
 
-	mGetCurrentTime(structm);
+	GetCurrentTime(structm);
 	auto location = TextFormat.find(L'%', 0);
 	if (location >= TextFormat.size())
 	{
@@ -150,7 +150,7 @@ std::wstring TimeTable::mGetCurrentTime(const std::wstring &TextFormat)
 	}
     if (TextFormat.size() >= 2 && !std::regex_match(TextFormat.begin() + location, TextFormat.begin() + location + 2, std::regex("%[^aAbBcCdDeFgGhHIjmMnprRStTuUVwWxXyYzZ%]|%[0-9]{1,}[a-zA-Z]")))
 	{
-        wcsftime(result, sizeof(result)/2, TextFormat.c_str(), &structm);
+        wcsftime(result, sizeof(result)/sizeof(wchar_t), TextFormat.c_str(), &structm);
 	}
 	else
 	{
@@ -159,7 +159,7 @@ std::wstring TimeTable::mGetCurrentTime(const std::wstring &TextFormat)
 	return std::wstring(result);
 }
 // 从csv导入课程至指定文件
-int TimeTable::mImportLessonsFromCsv(const std::wstring &path, const std::wstring &TargetFileName)
+int TimeTable::ImportLessonsFromCsv(const std::wstring &path, const std::wstring &TargetFileName)
 {
 	CSVEditor CsvEditor{path};
 	int a{0};
@@ -167,7 +167,7 @@ int TimeTable::mImportLessonsFromCsv(const std::wstring &path, const std::wstrin
 	{
 		for (int i{1}; i < CsvEditor.mGetLineCount(); i++)
 		{ // jump line 1
-			a = mAddLesson(CsvEditor[i][0], CsvEditor[i][1], CsvEditor[i][2], CsvEditor[i][3], TargetFileName);
+			a = AddLesson(CsvEditor[i][0], CsvEditor[i][1], CsvEditor[i][2], CsvEditor[i][3], TargetFileName);
 		}
 		return a;
 	}
@@ -200,7 +200,7 @@ int TimeTable::sortLessons(const std::wstring &lessonPath, const std::wstring &D
 
 	std::vector<Lesson> vectorLessons;
 
-	for (const auto &i : Days)
+	for (const auto &i : DaysCollectionW)
 	{
 		if ((Day != i) && (Day != L"All"))
 		{
@@ -221,7 +221,7 @@ int TimeTable::sortLessons(const std::wstring &lessonPath, const std::wstring &D
 					   atoi(value[2].asString().c_str())));
 		}
 		std::sort(vectorLessons.begin(), vectorLessons.end(), [](const Lesson &lesson1, const Lesson &lesson2)
-				  { return lesson1.mGetBeginTime() < lesson2.mGetBeginTime(); });
+				  { return lesson1.GetBeginTime() < lesson2.GetBeginTime(); });
 		valueLessons.clear();
 		valueLessons = Json::Value(Json::arrayValue);
 		for (const auto &lesson : vectorLessons)
@@ -242,7 +242,7 @@ int TimeTable::sortLessons(const std::wstring &lessonPath, const std::wstring &D
 //	return 0;
 // }
 // 获取课程信息地址
-const std::wstring &TimeTable::mGetLessonInfoPath()
+const std::wstring &TimeTable::GetLessonInfoPath()
 {
 	return mLessonInfoPath;
 }
@@ -252,7 +252,7 @@ int TimeTable::mMinToHHMM(int input)
 	return Hour * 100 + input % 60;
 }
 // 获取当前时间并存入传入的结构中
-int TimeTable::mGetCurrentTime(tm &tmTime)
+int TimeTable::GetCurrentTime(tm &tmTime)
 {
 	time_t timep;
 	time(&timep);
@@ -310,7 +310,7 @@ int TimeTable::deleteLesson(size_t index, const std::wstring &day, const std::ws
 	Json::StyledWriter sw;
 	os << sw.write(root);
 	os.close();
-	mReloadLesson();
+	ReloadLesson();
 	return 1;
 }
 int TimeTable::deleteInfo(size_t index, const std::wstring &day)
@@ -364,7 +364,7 @@ int TimeTable::changeLesson(size_t index, const std::wstring &day, const Lesson 
 	Json::StyledWriter sw;
 	os << sw.write(root);
 	os.close();
-	mReloadLesson();
+	ReloadLesson();
 	return 1;
 }
 int TimeTable::changeInfo(size_t index, const std::wstring &day, const std::wstring &info)
@@ -397,7 +397,7 @@ int TimeTable::changeInfo(size_t index, const std::wstring &day, const std::wstr
 int TimeTable::SaveJson(const std::wstring &TargetPath, const Json::Value &root)
 {
 	int result = Json::SaveJson(TargetPath, root);
-	mReloadLesson();
+	ReloadLesson();
 	return result;
 }
 /**
@@ -405,25 +405,25 @@ int TimeTable::SaveJson(const std::wstring &TargetPath, const Json::Value &root)
  * @param None
  * @return The index of the current lesson
  */
-int TimeTable::mGetCurrentLesson(int)
+int TimeTable::GetCurrentLesson(int)
 {
 	// Initialize currentIndex to 0
 	static int currentIndex{0};
 
 	// Get the current time in the format HHMM
-	std::wstring timeCurrentTime{mGetCurrentTime(L"%H%M")};
+	std::wstring timeCurrentTime{GetCurrentTime(L"%H%M")};
 
 	// Convert the current time to minutes
 	int iCurrentTime = mHHMMToMin(_wtoi(timeCurrentTime.c_str()));
 
 	// Check if the current time is within the current lesson's time range
-	if (!((CurrentLesson.mGetBeginTime() <= iCurrentTime) && (iCurrentTime <= CurrentLesson.mGetEndTime())))
+	if (!((CurrentLesson.GetBeginTime() <= iCurrentTime) && (iCurrentTime <= CurrentLesson.GetEndTime())))
 	{
 		// Get the lesson information from the lesson info JSON file
 		Json::Value root = Json::GetRootJsonValue(mLessonInfoPath);
 
 		// Get the current day of the week
-		std::wstring week{mGetCurrentTime(L"%a")};
+		std::wstring week{GetCurrentTime(L"%a")};
 
 		// Get the lessons for the current day
 		const Json::Value Lessons = root[wtu8(week)]["Lessons"];
@@ -441,7 +441,7 @@ int TimeTable::mGetCurrentLesson(int)
 			if ((iBeginTime <= iCurrentTime) && (iEndTime >= iCurrentTime))
 			{
 				// Set the current lesson and update the currentIndex
-				CurrentLesson.mSetValue(u8tw(Lessons[i][0].asString()), iBeginTime, iEndTime);
+				CurrentLesson.SetValue(u8tw(Lessons[i][0].asString()), iBeginTime, iEndTime);
 				currentIndex = i;
 				return currentIndex;
 			}
@@ -452,23 +452,28 @@ int TimeTable::mGetCurrentLesson(int)
 	// Return the index of the current lesson
 	return currentIndex;
 }
-std::wstring TimeTable::mGetWeather(int code)
+std::wstring TimeTable::GetWeather(int code, const std::string APIKey, bool* isSuccess)
 {
 	static std::wstring weather{L"getting...."};
 	static std::future<requests::Response> result;
 	static std::future_status status = std::future_status::deferred;
 	try
 	{
-		if ((status == std::future_status::deferred) && m_needUpdateWeather)
+		if ((status == std::future_status::deferred) && !(*isSuccess))
 		{
 			result = std::async(
 				std::launch::async,
-				[code]()
+				[=]()
 				{
 					requests::Response response;
+					int count{ 0 };
 					do
 					{
-						response = requests::get(std::format("https://restapi.amap.com/v3/weather/weatherInfo?city={}&key=7654cff2801031c93fba40fe770e7016&extensions=all", code).c_str());
+						response = requests::get(std::format("https://restapi.amap.com/v3/weather/weatherInfo?city={}&key={}&extensions=all", code, APIKey).c_str());
+						count++;
+						if (count > 5) {
+							throw std::exception("Time out!");
+						}
 					} while (response.get() == nullptr);
 					return response;
 				});
@@ -488,17 +493,18 @@ std::wstring TimeTable::mGetWeather(int code)
 				weather = std::format(L"今日天气: {}~{}℃,{},明日天气：{}~{}℃,{}",
 									  u8tw(root["forecasts"][0]["casts"][0]["nighttemp"].asString()),
 									  u8tw(root["forecasts"][0]["casts"][0]["daytemp"].asString()),
-									  mGetWeather(
+									  GetWeather(
 									  u8tw(root["forecasts"][0]["casts"][0]["dayweather"].asString()),
 									  u8tw(root["forecasts"][0]["casts"][0]["nightweather"].asString())
 									  ),
 									  u8tw(root["forecasts"][0]["casts"][1]["nighttemp"].asString()),
 									  u8tw(root["forecasts"][0]["casts"][1]["daytemp"].asString()),
-									  mGetWeather(
+									  GetWeather(
 									  u8tw(root["forecasts"][0]["casts"][1]["dayweather"].asString()),
 									  u8tw(root["forecasts"][0]["casts"][1]["nightweather"].asString())
 				)
 				);
+				*isSuccess = true;
 			}
 		}
 	}
@@ -513,7 +519,7 @@ std::wstring TimeTable::mGetWeather(int code)
 
 	return weather;
 }
-std::wstring TimeTable::mGetWeather(const std::wstring& first, const std::wstring& second)
+std::wstring TimeTable::GetWeather(const std::wstring& first, const std::wstring& second)
 {
 	if (first == second) {
 		return first;
@@ -523,12 +529,24 @@ std::wstring TimeTable::mGetWeather(const std::wstring& first, const std::wstrin
 		return std::format(L"{}转{}", first, second);
 	}
 }
+std::wstring TimeTable::GetCityCode(const std::wstring& address, const std::wstring& city)
+{
+	return std::wstring();
+}
 int TimeTable::deleteLesson(size_t index, const std::wstring &day)
 {
 	return deleteLesson(index, day, mLessonInfoPath);
 }
+requests::Response TimeTable::GetResponseFromUrlSync(const std::wstring& url)
+{
+	return requests::Response();
+}
+requests::Response TimeTable::GetResponseFromUrlAsync(const std::wstring& url)
+{
+	return requests::Response();
+}
 // 获取当前时间至指定时间的倒计时
-std::wstring TimeTable::mGetCountDown(tm tmIn, const std::wstring &TimeFormat)
+std::wstring TimeTable::GetCountDown(tm tmIn, const std::wstring &TimeFormat)
 {
 	time_t timeIn{mktime(&tmIn)};
 	time_t timeCurrent;
@@ -539,21 +557,21 @@ std::wstring TimeTable::mGetCountDown(tm tmIn, const std::wstring &TimeFormat)
 		timeIn = 0;
 	}
 	gmtime_s(&tmIn, &timeIn);
-	wchar_t tmp[256];
-	_snwprintf(tmp, sizeof(tmp) - 1, TimeFormat.c_str(), tmIn.tm_yday, tmIn.tm_hour, tmIn.tm_min, tmIn.tm_sec);
+	wchar_t tmp[1024];
+	_snwprintf_s(tmp, sizeof(tmp)/sizeof(wchar_t), TimeFormat.c_str(), tmIn.tm_yday, tmIn.tm_hour, tmIn.tm_min, tmIn.tm_sec);
 	return tmp;
 }
 
-std::wstring TimeTable::mGetInfo()
+std::wstring TimeTable::GetInfo()
 {
-	return mGetInfo(mGetCurrentTime(L"%a"));
+	return GetInfo(GetCurrentTime(L"%a"));
 }
 
-std::wstring TimeTable::mGetInfo(const std::wstring &week)
+std::wstring TimeTable::GetInfo(const std::wstring &week)
 {
 	std::vector<std::wstring> Infos;
 	Infos.clear();
-	mGetTodayMoreInfo(Infos, week);
+	GetTodayMoreInfo(Infos, week);
 	static int count{0};
 	static int currentItem{0};
 	const int changeAfterTimes{19};
@@ -577,10 +595,10 @@ std::wstring TimeTable::mGetInfo(const std::wstring &week)
 	return Infos[currentItem];
 }
 
-int TimeTable::mGetLesson(std::vector<std::wstring> &input, const std::wstring &week)
+int TimeTable::GetLesson(std::vector<std::wstring> &input, const std::wstring &week)
 {
 	std::vector<Lesson> lessons;
-	mGetLesson(lessons, week);
+	GetLesson(lessons, week);
 	for (const auto &i : lessons)
 	{
 		input.push_back(i.GetValue(L"\t"));
@@ -588,7 +606,7 @@ int TimeTable::mGetLesson(std::vector<std::wstring> &input, const std::wstring &
 	return 1;
 }
 
-int TimeTable::mGetLesson(std::vector<Lesson> &input, const std::wstring &week)
+int TimeTable::GetLesson(std::vector<Lesson> &input, const std::wstring &week)
 {
 	Json::Value root = Json::GetRootJsonValue(mLessonInfoPath);
 	if (root.isNull() || root[wtu8(week)].isNull())
