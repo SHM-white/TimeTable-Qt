@@ -452,7 +452,7 @@ int TimeTable::GetCurrentLesson(int)
 	// Return the index of the current lesson
 	return currentIndex;
 }
-std::wstring TimeTable::GetWeather(int code, const std::string APIKey, bool* isSuccess)
+std::wstring TimeTable::GetWeather(int code, const std::wstring& APIKey, bool* isSuccess)
 {
 	static std::wstring weather{L"getting...."};
 	static std::future<requests::Response> result;
@@ -461,22 +461,7 @@ std::wstring TimeTable::GetWeather(int code, const std::string APIKey, bool* isS
 	{
 		if ((status == std::future_status::deferred) && !(*isSuccess))
 		{
-			result = std::async(
-				std::launch::async,
-				[=]()
-				{
-					requests::Response response;
-					int count{ 0 };
-					do
-					{
-						response = requests::get(std::format("https://restapi.amap.com/v3/weather/weatherInfo?city={}&key={}&extensions=all", code, APIKey).c_str());
-						count++;
-						if (count > 5) {
-							throw std::exception("Time out!");
-						}
-					} while (response.get() == nullptr);
-					return response;
-				});
+			result = std::async(std::launch::async, GetResponseFromUrlSync, std::format(L"https://restapi.amap.com/v3/weather/weatherInfo?city={}&key={}&extensions=all", code, APIKey));
 			status = std::future_status::timeout;
 		}
 		else if (status == std::future_status::timeout)
@@ -529,9 +514,15 @@ std::wstring TimeTable::GetWeather(const std::wstring& first, const std::wstring
 		return std::format(L"{}转{}", first, second);
 	}
 }
-std::wstring TimeTable::GetCityCode(const std::wstring& address, const std::wstring& city)
+std::wstring TimeTable::GetAdcodeSync(const std::wstring& address, const std::wstring& city, const std::wstring& APIKey)
 {
-	return std::wstring();
+	//using namespace Json;
+	auto temp = GetResponseFromUrlSync(std::format(L"https://restapi.amap.com/v3/geocode/geo?address={}&city={}&key={}", address, city, APIKey));
+	Json::Value value = Json::GetJsonValueFromStr(temp.get()->Body());
+	if (u8tw(value["count"].asString()) != L"1") {
+		MessageBoxW(0, L"不能准确确定地理编码，请修改地址", L"warning", MB_OK);
+	}
+	return u8tw(value["geocodes"][0]["adcode"].asString());
 }
 int TimeTable::deleteLesson(size_t index, const std::wstring &day)
 {
@@ -539,11 +530,17 @@ int TimeTable::deleteLesson(size_t index, const std::wstring &day)
 }
 requests::Response TimeTable::GetResponseFromUrlSync(const std::wstring& url)
 {
-	return requests::Response();
-}
-requests::Response TimeTable::GetResponseFromUrlAsync(const std::wstring& url)
-{
-	return requests::Response();
+	requests::Response response;
+	int count{ 0 };
+	do
+	{
+		response = requests::get(wtu8(url).c_str());
+		count++;
+		if (count > 5) {
+			throw std::exception("Time out!");
+		}
+	} while (response.get() == nullptr);
+	return response;
 }
 // 获取当前时间至指定时间的倒计时
 std::wstring TimeTable::GetCountDown(tm tmIn, const std::wstring &TimeFormat)

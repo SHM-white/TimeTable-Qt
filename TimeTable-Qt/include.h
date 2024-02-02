@@ -95,7 +95,8 @@ namespace Json {
 	int SaveJson(const std::wstring& TargetPath, const Json::Value& root);
 	int mGetTextItem(const std::wstring& Item, std::wstring& input, const std::wstring& filePath);
 	std::wstring mGetTextItem(const std::wstring& Item, const std::wstring& filePath, int);
-	
+    Json::Value GetJsonValueFromWStr(const std::wstring& str);
+    Json::Value GetJsonValueFromStr(const std::string& str);
 }
 
 #if EXPERENCE

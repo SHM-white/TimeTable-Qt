@@ -60,6 +60,24 @@ std::wstring Json::mGetTextItem(const std::wstring& Item, const std::wstring& fi
     }
 }
 
+Json::Value Json::GetJsonValueFromWStr(const std::wstring& str)
+{
+	return GetJsonValueFromStr(wtu8(str));
+}
+
+Json::Value Json::GetJsonValueFromStr(const std::string& str)
+{
+	Json::Value root;
+	Json::Reader reader;
+	if (!reader.parse(str, root)) {
+		return Json::nullValue;
+	}
+	else
+	{
+		return root;
+	}
+}
+
 std::string ToolFunctions::wstringToU8string(const std::wstring& wstring)
 {
     // Create a wstring converter for UTF-8 encoding
