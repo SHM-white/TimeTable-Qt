@@ -109,3 +109,5 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/hv/lib/Debug/ -lhv
 
 INCLUDEPATH += $$PWD/hv/include/hv
 DEPENDPATH += $$PWD/hv/include/hv
+
+LIBS+= -luser32

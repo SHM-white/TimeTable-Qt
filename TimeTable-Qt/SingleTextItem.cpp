@@ -93,7 +93,7 @@ bool SingleTextItem::update() const
         }
         else
         {
-            m_updateAfterTime = 1h;
+            m_updateAfterTime = 3600s;
             success = false;
         }
     }
@@ -109,7 +109,7 @@ bool SingleTextItem::update() const
     case Default:
     default:
         m_formatedText = m_textFormat;
-        m_updateAfterTime = 1h;
+        m_updateAfterTime = 3600s;
         break;
     }
     return false;
@@ -121,24 +121,27 @@ bool SingleTextItem::paint(QPainter& painter) const
     painter.setClipRect(m_rect);
     painter.setFont(m_font);
     painter.setPen(m_color);
-    auto newRect = m_rect;
+
+    QRect newRect = m_rect;
     if (getNeededSize().width() > m_rect.size().width()) {
-        auto timeAfterChange = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - m_lastChangedTime).count();
-        newRect.setTopLeft(m_rect.topLeft() + QPoint(getNeededRect().width() - timeAfterChange / ITEM_SCROLL_SPEED, 0));
+        auto timeAfterChange = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - m_lastChangedTime).count();
+        newRect.setTopLeft(m_rect.topRight() - QPoint(timeAfterChange / ITEM_SCROLL_SPEED, 0));
         newRect.setSize(getNeededSize());
         if (newRect.right() < m_rect.left()) {
             m_CanChange = true;
         }
     }
     else {
-        if ((std::chrono::system_clock::now() - m_lastChangedTime) > m_CanChangeAfterTime) {
+        auto seconds = (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - m_lastChangedTime)).count();
+        //为什么？？我总运行时间都没结果大
+        if (seconds >= m_CanChangeAfterTime.count()) {
             m_CanChange = true;
         }
     }
     painter.drawText(newRect, Qt::AlignCenter, QString::fromStdWString(m_formatedText));
     painter.restore();
     
-    if (std::chrono::system_clock::now() - m_lastUpdateTime > m_updateAfterTime) {
+    if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - m_lastUpdateTime).count() >= m_updateAfterTime.count()) {
         update();
     }
     return false;

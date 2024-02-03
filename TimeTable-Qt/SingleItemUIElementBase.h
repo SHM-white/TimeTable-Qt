@@ -5,11 +5,11 @@ class SingleItemUIElementBase :
 {
 public:
     SingleItemUIElementBase(Json::Value& value, std::shared_ptr<TimeTable> timetable);
-    bool SetChanged() const;
+    virtual bool SetChanged();
     mutable bool m_CanChange{ false };
 protected:
-    std::chrono::milliseconds m_CanChangeAfterTime;
-    mutable std::chrono::system_clock::time_point m_lastChangedTime;
+    mutable std::chrono::seconds m_CanChangeAfterTime;
+    mutable std::chrono::steady_clock::time_point m_lastChangedTime;
     ElementType m_ItemType;
 };
 

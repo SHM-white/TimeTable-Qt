@@ -42,7 +42,7 @@ public:
 protected:
 	std::shared_ptr<TimeTable> m_timetable;
 	UIElementType m_type;
-	mutable std::chrono::system_clock::time_point m_lastUpdateTime;
+	mutable std::chrono::steady_clock::time_point m_lastUpdateTime;
 	mutable std::chrono::seconds m_updateAfterTime;
 	QRect m_rect;
 	Json::Value m_selfJson;
