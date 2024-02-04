@@ -132,7 +132,13 @@ bool SingleTextItem::paint(QPainter& painter) const
         }
     }
     else {
-        auto seconds = (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - m_lastChangedTime)).count();
+        auto seconds = (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - this->m_lastChangedTime)).count();
+//#ifdef DEBUG
+//        OutputDebugStringW(std::format(L"Item:{} paint() called\n", (int)m_ItemType).c_str());
+//        OutputDebugStringW(std::format(L"m_lastChangedTime:{}s\n", std::chrono::duration_cast<std::chrono::seconds>(m_lastChangedTime.time_since_epoch()).count()).c_str());
+//        OutputDebugStringW(std::format(L"seconds:{}\n", seconds).c_str());
+//#endif // DEBUG
+
         //为什么？？我总运行时间都没结果大
         if (seconds >= m_CanChangeAfterTime.count()) {
             m_CanChange = true;
@@ -140,8 +146,13 @@ bool SingleTextItem::paint(QPainter& painter) const
     }
     painter.drawText(newRect, Qt::AlignCenter, QString::fromStdWString(m_formatedText));
     painter.restore();
-    
-    if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - m_lastUpdateTime).count() >= m_updateAfterTime.count()) {
+    auto seconds = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - m_lastUpdateTime).count();
+    if ( seconds >= m_updateAfterTime.count()) {
+//#ifdef DEBUG
+//        OutputDebugStringW(std::format(L"Item:{} paint() called\n", (int)m_ItemType).c_str());
+//        OutputDebugStringW(std::format(L"m_lastUpdateTime:{}s\n", std::chrono::duration_cast<std::chrono::seconds>(m_lastUpdateTime.time_since_epoch()).count()).c_str());
+//        OutputDebugStringW(std::format(L"seconds:{}\n", seconds).c_str());
+//#endif // DEBUG
         update();
     }
     return false;

@@ -45,11 +45,13 @@ bool MultiTextItem::update() const
 
 bool MultiTextItem::paint(QPainter& painter) const
 {
-	auto currentText = m_Texts[m_currentIndex];
-	currentText->paint(painter);
-	if (currentText->m_CanChange) {
-		currentText->SetChanged();		
+	if (m_Texts.empty()) {
+		return false;
+	}
+	m_Texts[m_currentIndex]->paint(painter);
+	if (m_Texts[m_currentIndex]->m_CanChange) {
 		update();
+		m_Texts[m_currentIndex]->SetChanged();
 	}
 	return 0;
 }
