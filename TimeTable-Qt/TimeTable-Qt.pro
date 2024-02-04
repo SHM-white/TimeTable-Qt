@@ -13,6 +13,7 @@ CONFIG += \
 SOURCES += \
     BasicWindow.cpp \
     CSVEditor.cpp \
+    EditUIElements.cpp \
     EmptyUIElement.cpp \
     Lesson.cpp \
     MultiItemAllDisplayUIElementBase.cpp \
@@ -31,6 +32,7 @@ SOURCES += \
 HEADERS += \
     BasicWindow.h \
     CSVEditor.h \
+    EditUIElements.h \
     EmptyUIElement.h \
     Lesson.h \
     MultiItemAllDisplayUIElementBase.h \
@@ -48,6 +50,7 @@ HEADERS += \
     mainwindow.h
 
 FORMS += \
+    EditUIElements.ui \
     Settings_New.ui \
     SubWindow.ui \
     mainwindow.ui

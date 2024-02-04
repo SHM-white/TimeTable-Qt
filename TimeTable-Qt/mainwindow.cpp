@@ -7,7 +7,7 @@ MainWindow::MainWindow(Json::Value& settings, QWidget* parent)
 	ui.setupUi(this);
     m_AutoOpen = true;
     m_hide = false;
-    ui.label_version->setText(QString::fromStdString(std::format("v{}.{}.{}", currentVersion_global[0], currentVersion_global[1], currentVersion_global[2])));
+    ui.label_version->setText(QString::fromStdWString(GetCurrentVersion()));
     this->show();
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(SelfInitial()));
@@ -16,6 +16,12 @@ MainWindow::MainWindow(Json::Value& settings, QWidget* parent)
 
 MainWindow::~MainWindow()
 {
+}
+
+void MainWindow::ReopenWindows()
+{
+    m_windows.clear();
+    OpenSubWindows();
 }
 
 void MainWindow::CreateSystemTrayIcon()
@@ -114,7 +120,7 @@ void MainWindow::OpenSetting()
 #endif // DEBUG
         Json::Value value;
         value["Moveable"] = true;
-        Settings_New* setting = new Settings_New{ Json::GetRootJsonValue(Json::mGetTextItem(L"configPath",DEFAULT_CONFIG_PATH,0)),value,this };
+        Settings_New* setting = new Settings_New{ &m_windows,value,this };
         setting->show();
 #if STRANGE_TEST
     }

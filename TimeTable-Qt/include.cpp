@@ -101,6 +101,16 @@ std::string ToolFunctions::wstringToAnsiString(const std::wstring& u8wstring)
     return ansiChar;
 }
 
+std::wstring GetCurrentVersion()
+{
+	return std::format(L"v{}.{}.{} Beta", currentVersion_global[0], currentVersion_global[1], currentVersion_global[2]);
+}
+
+std::wstring GetCompileTime()
+{
+	return u8tw(std::format("{} {}", __DATE__, __TIME__));
+}
+
 std::wstring GetWStrDay(Days day)
 {
 	std::wstring strDay;
@@ -134,3 +144,41 @@ std::wstring GetWStrDay(Days day)
 	}
     return strDay;
 }
+
+COLORREF HexStringToColorRef(const std::wstring& input)
+{
+	int red;
+	int blue;
+	int green;
+	int i = swscanf_s(input.c_str(), L"#%02x%02x%02x", &red, &green, &blue);
+	return RGB(red, green, blue);
+}
+
+std::wstring ColorRefToHexString(COLORREF color)
+{
+	int red = GetRValue(color);
+	int blue = GetBValue(color);
+	int green = GetGValue(color);
+	return std::wstring(std::format(L"#{:02x}{:02x}{:02x}", red, green, blue));
+}
+
+QColor ColorRefToQColor(COLORREF color)
+{
+	return QColor(GetRValue(color), GetGValue(color), GetBValue(color));
+}
+
+COLORREF QColorToColorRef(QColor color)
+{
+	return RGB(color.red(),color.green(),color.blue());
+}
+
+QColor HexStringToQColor(const std::wstring& input)
+{
+	return ColorRefToQColor(HexStringToColorRef(input));
+}
+
+std::wstring QColorToHexString(QColor color)
+{
+	return ColorRefToHexString(QColorToColorRef(color));
+}
+

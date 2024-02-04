@@ -6,8 +6,6 @@
 #include "BasicWindow.h"
 #include "SubWindow.h"
 #include "Timetable.h"
-#include "qsystemtrayicon.h"
-#include "qmenu.h"
 
 
 class MainWindow : public BasicWindow
@@ -17,6 +15,7 @@ class MainWindow : public BasicWindow
 public:
 	MainWindow(Json::Value& settings, QWidget* parent = nullptr);
 	~MainWindow();
+	void ReopenWindows();
 	std::vector<std::shared_ptr<BasicWindow>> m_windows;
 private:
 	Ui::MainWindowClass ui;

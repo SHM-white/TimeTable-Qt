@@ -48,6 +48,10 @@
 #include "qrect.h"
 #include "qpoint.h"
 #include "qpainter.h"
+#include "qwindow.h"
+#include "qsystemtrayicon.h"
+#include "qmenu.h"
+#include "qpalette.h"
 /*
 #include "UIElementBase.h"
 #include "EmptyUIElement.h"
@@ -89,6 +93,9 @@
 #endif
 const int minVersion_global[3]{ 3,0,0 };
 const int currentVersion_global[3]{ 3,0,0 };
+
+std::wstring GetCurrentVersion();
+std::wstring GetCompileTime();
 
 namespace Json {
 	bool ChangeValue(const std::wstring& Item,const Json::Value& value,const std::wstring& filePath);
@@ -145,6 +152,16 @@ enum Days
 };
 
 std::wstring GetWStrDay(Days day);
+
 //std::string GetStrDay(Days day);
+
 const std::wstring DaysCollectionW[8]{ L"Null",L"Mon", L"Tue", L"Wed", L"Thu", L"Fri", L"Sat", L"Sun" };
+
 //const std::string DaysCollection[8]{ "Null","Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+
+COLORREF HexStringToColorRef(const std::wstring& input);
+std::wstring ColorRefToHexString(COLORREF color);
+QColor ColorRefToQColor(COLORREF color);
+COLORREF QColorToColorRef(QColor color);
+QColor HexStringToQColor(const std::wstring& input);
+std::wstring QColorToHexString(QColor color);
