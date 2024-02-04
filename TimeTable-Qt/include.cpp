@@ -1,5 +1,7 @@
 ﻿#include "include.h"
 
+int ITEM_SCROLL_SPEED = 10;
+
 bool Json::ChangeValue(const std::wstring& Item, const Json::Value& value, const std::wstring& filePath)
 {
 	Json::Value root = GetRootJsonValue(filePath);

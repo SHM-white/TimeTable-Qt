@@ -10,6 +10,7 @@ Settings_New::Settings_New(std::vector<std::shared_ptr<BasicWindow>>* Windows, J
 	m_moveable = true;
 	ui.label_version->setText(QString::fromStdWString(GetCurrentVersion()));
 	ui.label_complieTime->setText(QString::fromStdWString(GetCompileTime()));
+	ui.spinBox_scrollSpeed->setValue(ITEM_SCROLL_SPEED);
 	on_pushButton_FreshInfo_clicked();
 	on_pushButton_FreshLessonList_clicked();
 	on_pushButton_FreshWindowList_clicked();
@@ -58,7 +59,13 @@ void Settings_New::on_horizontalSlider_BackGroundAlpha_valueChanged(int value)
 
 void Settings_New::on_pushButton_FreshLessonList_clicked()
 {
-
+	std::vector<std::wstring> in;
+	m_TimeTable->GetLesson(in, ui.comboBox_LessonDay->currentText().toStdWString());
+	for (auto& i : in) {
+		QListWidgetItem* item = new QListWidgetItem(QString::fromStdWString(i));
+		item->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled);
+		ui.listWidget_Lessons->addItem(item); 
+	}
 }
 
 
@@ -314,5 +321,11 @@ void Settings_New::on_listWidget_Lessons_itemChanged(QListWidgetItem *item)
 void Settings_New::on_listWidget_Infos_itemChanged(QListWidgetItem *item)
 {
 
+}
+
+
+void Settings_New::on_spinBox_scrollSpeed_valueChanged(int arg1)
+{
+	ITEM_SCROLL_SPEED = arg1;
 }
 

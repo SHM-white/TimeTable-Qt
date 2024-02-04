@@ -81,7 +81,7 @@
 #define STRANGE_TEST false
 #endif // DEBUG
 
-static int ITEM_SCROLL_SPEED = 10;
+extern int ITEM_SCROLL_SPEED;
 
 #define DEFAULT_CONFIG_PATH L"config.json"
 #define DEFAULT_LESSONINFO_PATH L"Lessons.json"

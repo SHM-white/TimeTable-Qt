@@ -85,6 +85,8 @@ private slots:
 
     void on_listWidget_Infos_itemChanged(QListWidgetItem *item);
 
+    void on_spinBox_scrollSpeed_valueChanged(int arg1);
+
 private:
 	QWidget* m_pParent;
 	Ui::Settings_NewClass ui;

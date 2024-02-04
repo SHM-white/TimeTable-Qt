@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>862</width>
-    <height>539</height>
+    <width>667</width>
+    <height>463</height>
    </rect>
   </property>
   <property name="sizeIncrement">
@@ -136,7 +136,53 @@ QTabBar::tab {
         </widget>
        </item>
        <item>
+        <widget class="Line" name="line">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
         <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QComboBox" name="comboBox_LessonDay">
+           <item>
+            <property name="text">
+             <string>Mon</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Tue</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wed</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Thu</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Fri</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Sat</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Sun</string>
+            </property>
+           </item>
+          </widget>
+         </item>
          <item>
           <widget class="QPushButton" name="pushButton_AddLesson">
            <property name="sizePolicy">
@@ -250,7 +296,53 @@ QTabBar::tab {
         </widget>
        </item>
        <item>
+        <widget class="Line" name="line_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
         <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QComboBox" name="comboBox_InfoDay">
+           <item>
+            <property name="text">
+             <string>Mon</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Tue</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wed</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Thu</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Fri</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Sat</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Sun</string>
+            </property>
+           </item>
+          </widget>
+         </item>
          <item>
           <widget class="QPushButton" name="pushButton_AddInfo">
            <property name="sizePolicy">
@@ -372,8 +464,8 @@ QTabBar::tab {
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>298</width>
-            <height>464</height>
+            <width>223</width>
+            <height>447</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -396,7 +488,7 @@ QTabBar::tab {
               <item>
                <widget class="QPushButton" name="pushButton_deleteWindow">
                 <property name="text">
-                 <string>删除此窗口</string>
+                 <string>删除窗口</string>
                 </property>
                 <property name="flat">
                  <bool>true</bool>
@@ -1038,7 +1130,7 @@ QTabBar::tab {
             </font>
            </property>
            <property name="text">
-            <string>文本滚动速度</string>
+            <string>文本滚动速度(不会保存，仅供测试，如需修改请直接修改配置文件)</string>
            </property>
           </widget>
          </item>
@@ -1049,6 +1141,18 @@ QTabBar::tab {
              <family>Microsoft YaHei</family>
              <pointsize>10</pointsize>
             </font>
+           </property>
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;文本滚动速度，越小越快&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="toolTipDuration">
+            <number>2</number>
+           </property>
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>1000</number>
            </property>
           </widget>
          </item>
@@ -1180,6 +1284,12 @@ QTabBar::tab {
        </item>
        <item>
         <widget class="QGroupBox" name="groupBox">
+         <property name="font">
+          <font>
+           <family>Microsoft YaHei</family>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="title">
           <string>Github开源地址：</string>
          </property>
@@ -1189,7 +1299,8 @@ QTabBar::tab {
             <property name="font">
              <font>
               <family>Microsoft YaHei</family>
-              <pointsize>15</pointsize>
+              <pointsize>14</pointsize>
+              <underline>true</underline>
              </font>
             </property>
             <property name="text">
@@ -1202,7 +1313,8 @@ QTabBar::tab {
             <property name="font">
              <font>
               <family>Microsoft YaHei</family>
-              <pointsize>15</pointsize>
+              <pointsize>14</pointsize>
+              <underline>true</underline>
              </font>
             </property>
             <property name="text">

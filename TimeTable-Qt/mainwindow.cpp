@@ -134,6 +134,7 @@ void MainWindow::OpenSubWindows()
     std::wstring path;
     Json::GetTextItem(L"ConfigFile", path, DEFAULT_CONFIG_PATH);
     auto value = Json::GetRootJsonValue(path);
+    ITEM_SCROLL_SPEED = std::max(value["ItemScrollSpeed"].asInt(),1);
     for (auto& i : value["Windows"]) {
         try
         {
