@@ -46,6 +46,7 @@ public:
 
 	bool m_hide{ false };
 	bool m_rewriteEmptyJsonValue{ true };
+	std::wstring m_name{ L"Window" };
 private:
 	Qt::WindowFlags flags;
 	QPixmap pic;

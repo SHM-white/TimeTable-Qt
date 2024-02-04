@@ -32,7 +32,7 @@ int Json::SaveJson(const std::wstring& TargetPath, const Json::Value& root)
 }
 
 
-int Json::mGetTextItem(const std::wstring& Item, std::wstring& input, const std::wstring& filePath)
+int Json::GetTextItem(const std::wstring& Item, std::wstring& input, const std::wstring& filePath)
 {
     std::ifstream in(filePath);
     if (!in.is_open()) {
@@ -50,10 +50,10 @@ int Json::mGetTextItem(const std::wstring& Item, std::wstring& input, const std:
     return 1;
 }
 
-std::wstring Json::mGetTextItem(const std::wstring& Item, const std::wstring& filePath, int)
+std::wstring Json::GetTextItem(const std::wstring& Item, const std::wstring& filePath, int)
 {
     std::wstring value;
-    if (Json::mGetTextItem(Item, value, filePath)) {
+    if (Json::GetTextItem(Item, value, filePath)) {
         return value;
     } else {
         throw std::runtime_error("error");

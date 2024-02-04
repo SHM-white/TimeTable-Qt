@@ -4,6 +4,9 @@ EditUIElements::EditUIElements(std::shared_ptr<BasicWindow> window, Json::Value 
 	: BasicWindow(WindowSettings,parent),m_window{window}
 {
 	ui.setupUi(this);
+	m_hide = false;
+	m_moveable = true;
+
 	this->setAttribute(Qt::WA_DeleteOnClose);
 	connect(this, SIGNAL(QWidget::destroyed), this, SLOT(QDialog::deleteLater));
 	this->setWindowModality(Qt::ApplicationModal);

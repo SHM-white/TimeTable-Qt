@@ -132,7 +132,7 @@ void MainWindow::OpenSubWindows()
 {
     m_windows.clear();
     std::wstring path;
-    Json::mGetTextItem(L"ConfigFile", path, DEFAULT_CONFIG_PATH);
+    Json::GetTextItem(L"ConfigFile", path, DEFAULT_CONFIG_PATH);
     auto value = Json::GetRootJsonValue(path);
     for (auto& i : value["Windows"]) {
         try
@@ -162,7 +162,7 @@ void MainWindow::SelfInitial()
 {
     CreateSystemTrayIcon();
     std::wstring path;
-    Json::mGetTextItem(L"ConfigFile", path, DEFAULT_CONFIG_PATH);
+    Json::GetTextItem(L"ConfigFile", path, DEFAULT_CONFIG_PATH);
     auto value = Json::GetRootJsonValue(path);
     if (value["Windows"].isNull()) {
         QMessageBox::warning(this, QString::fromStdWString(L"error"), QString::fromStdWString(L"未找到窗口设置，请检查配置文件设置"), QMessageBox::Ok);

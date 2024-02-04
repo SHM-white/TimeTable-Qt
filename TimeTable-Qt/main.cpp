@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     QApplication::setFont(QFont("Microsoft YaHei", 9));
 #endif // QT5
     std::wstring path;
-    Json::mGetTextItem(L"ConfigFile", path, DEFAULT_CONFIG_PATH);
+    Json::GetTextItem(L"ConfigFile", path, DEFAULT_CONFIG_PATH);
     auto value = Json::GetRootJsonValue(path);
     MainWindow w{ value["MainWindow"] };
     w.show();

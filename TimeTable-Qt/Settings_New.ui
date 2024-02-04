@@ -29,6 +29,7 @@
 	border-top:0px solid #e8f3f9;
     background:transparent;
 }
+
 QListView {
     background-color: transparent;
 }
@@ -108,14 +109,14 @@ QTabBar::tab {
      <property name="font">
       <font>
        <family>Microsoft YaHei</family>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="tabPosition">
       <enum>QTabWidget::South</enum>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -123,7 +124,7 @@ QTabBar::tab {
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_6">
        <item>
-        <widget class="QColumnView" name="columnView_Lessons">
+        <widget class="QListWidget" name="listWidget_Lessons">
          <property name="font">
           <font>
            <family>Microsoft YaHei</family>
@@ -323,14 +324,21 @@ QTabBar::tab {
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_9">
        <item>
-        <widget class="QColumnView" name="columnView_Windows">
+        <widget class="QListWidget" name="listWidget_Windows">
          <property name="font">
           <font>
            <family>Microsoft YaHei</family>
+           <pointsize>11</pointsize>
           </font>
          </property>
          <property name="lineWidth">
           <number>2</number>
+         </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -365,10 +373,59 @@ QTabBar::tab {
             <x>0</x>
             <y>0</y>
             <width>298</width>
-            <height>462</height>
+            <height>464</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <widget class="QGroupBox" name="groupBox_2">
+             <property name="title">
+              <string/>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_8">
+              <item>
+               <widget class="QPushButton" name="pushButton_newWindow">
+                <property name="text">
+                 <string>新建窗口</string>
+                </property>
+                <property name="flat">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_deleteWindow">
+                <property name="text">
+                 <string>删除此窗口</string>
+                </property>
+                <property name="flat">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_FreshWindowList">
+                <property name="text">
+                 <string>刷新列表</string>
+                </property>
+                <property name="flat">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_reloadWindows">
+                <property name="text">
+                 <string>重新加载窗口</string>
+                </property>
+                <property name="flat">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
            <item>
             <widget class="QCheckBox" name="checkBox_AutoOpen">
              <property name="font">
@@ -640,6 +697,12 @@ QTabBar::tab {
                  <height>20</height>
                 </size>
                </property>
+               <property name="maximumSize">
+                <size>
+                 <width>20</width>
+                 <height>20</height>
+                </size>
+               </property>
                <property name="frameShape">
                 <enum>QFrame::Box</enum>
                </property>
@@ -786,7 +849,7 @@ QTabBar::tab {
      </widget>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">
-       <string>路径设置</string>
+       <string>全局设置</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item alignment="Qt::AlignLeft">
@@ -799,7 +862,14 @@ QTabBar::tab {
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
-          <widget class="QLineEdit" name="lineEdit"/>
+          <widget class="QLineEdit" name="lineEdit">
+           <property name="font">
+            <font>
+             <family>Microsoft YaHei</family>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QPushButton" name="pushButton_ChangeConfigPath">
@@ -831,6 +901,7 @@ QTabBar::tab {
            <property name="font">
             <font>
              <family>Microsoft YaHei</family>
+             <pointsize>10</pointsize>
             </font>
            </property>
            <property name="text">
@@ -846,6 +917,7 @@ QTabBar::tab {
            <property name="font">
             <font>
              <family>Microsoft YaHei</family>
+             <pointsize>10</pointsize>
             </font>
            </property>
            <property name="text">
@@ -868,7 +940,14 @@ QTabBar::tab {
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_4">
          <item>
-          <widget class="QLineEdit" name="lineEdit_2"/>
+          <widget class="QLineEdit" name="lineEdit_2">
+           <property name="font">
+            <font>
+             <family>Microsoft YaHei</family>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QPushButton" name="pushButton_ChangeLessonPath">
@@ -906,6 +985,7 @@ QTabBar::tab {
            <property name="font">
             <font>
              <family>Microsoft YaHei</family>
+             <pointsize>10</pointsize>
             </font>
            </property>
            <property name="text">
@@ -921,6 +1001,7 @@ QTabBar::tab {
            <property name="font">
             <font>
              <family>Microsoft YaHei</family>
+             <pointsize>10</pointsize>
             </font>
            </property>
            <property name="text">
@@ -935,10 +1016,43 @@ QTabBar::tab {
        </item>
        <item>
         <widget class="QLabel" name="label_13">
+         <property name="font">
+          <font>
+           <family>Microsoft YaHei</family>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>注：相对路径为相对于应用程序exe所在位置的路径</string>
          </property>
         </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_19">
+         <item>
+          <widget class="QLabel" name="label_18">
+           <property name="font">
+            <font>
+             <family>Microsoft YaHei</family>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>文本滚动速度</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="spinBox_scrollSpeed">
+           <property name="font">
+            <font>
+             <family>Microsoft YaHei</family>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <spacer name="verticalSpacer">

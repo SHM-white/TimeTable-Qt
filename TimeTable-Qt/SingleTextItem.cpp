@@ -34,7 +34,7 @@ Json::Value SingleTextItem::SaveAsJson(Json::Value& value) const
     Json::Value temp;
     temp["TextFormat"] = wtu8(m_textFormat);
     temp["Type"] = (int)m_textType;
-    temp["Font"] = wtu8(m_font.toString().toStdWString());
+    temp["Font"] = wtu8(m_font.family().toStdWString());
     temp["TextSize"] = m_font.pointSize();
     temp["TextColor"][0] = m_color.red();
     temp["TextColor"][1] = m_color.green();
@@ -139,7 +139,6 @@ bool SingleTextItem::paint(QPainter& painter) const
 //        OutputDebugStringW(std::format(L"seconds:{}\n", seconds).c_str());
 //#endif // DEBUG
 
-        //为什么？？我总运行时间都没结果大
         if (seconds >= m_CanChangeAfterTime.count()) {
             m_CanChange = true;
         }

@@ -11,7 +11,7 @@ BasicWindow::BasicWindow(Json::Value& settings, QWidget* parent)
 	: QWidget(parent), m_settings{ settings }
 {
 	std::wstring path;
-	Json::mGetTextItem(L"LessonInfoFile", path, DEFAULT_CONFIG_PATH);
+	Json::GetTextItem(L"LessonInfoFile", path, DEFAULT_CONFIG_PATH);
 	m_TimeTable = std::make_shared<TimeTable>(path);
 
 	InitializeWindow(settings);
@@ -64,6 +64,7 @@ Json::Value BasicWindow::save() const
 	Settings["Moveable"] = m_moveable;
 	Settings["FPS"] = m_maxFPS;
 	Settings["AutoResize"] = m_autoResize;
+	Settings["Name"] = wtu8(m_name);
 
 	return SaveAsJson(Settings);
 }
@@ -95,7 +96,7 @@ bool BasicWindow::InitializeWindow(Json::Value& value)
 	m_moveable = Settings["Moveable"].asBool();
 	m_maxFPS = (Settings["FPS"].asInt() <= 0 ? 2 : Settings["FPS"].asInt());
 	m_autoResize = Settings["AutoResize"].asBool();
-
+	m_name = u8tw(Settings["Name"].asString());
 	if (!(miWindowX == 0 && miWindowY == 0 && miWindowWeight == 0 && miWindowHeight == 0)) {
 		this->setGeometry(miWindowX, miWindowY, miWindowWeight, miWindowHeight);
 		this->setFixedSize(miWindowWeight, miWindowHeight);

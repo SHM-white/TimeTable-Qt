@@ -31,6 +31,7 @@ QSize MultiTextItem::getNeededSize() const
 
 Json::Value MultiTextItem::SaveAsJson(Json::Value& value) const
 {
+	value["Data"].clear();
 	for (auto& i : m_Texts) {
 		value["Data"].append(i->save()["Data"][0]);
 	}

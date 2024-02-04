@@ -81,7 +81,7 @@
 #define STRANGE_TEST false
 #endif // DEBUG
 
-#define ITEM_SCROLL_SPEED 10
+static int ITEM_SCROLL_SPEED = 10;
 
 #define DEFAULT_CONFIG_PATH L"config.json"
 #define DEFAULT_LESSONINFO_PATH L"Lessons.json"
@@ -101,8 +101,8 @@ namespace Json {
 	bool ChangeValue(const std::wstring& Item,const Json::Value& value,const std::wstring& filePath);
 	Json::Value GetRootJsonValue(const std::wstring& TargetPath);
 	int SaveJson(const std::wstring& TargetPath, const Json::Value& root);
-	int mGetTextItem(const std::wstring& Item, std::wstring& input, const std::wstring& filePath);
-	std::wstring mGetTextItem(const std::wstring& Item, const std::wstring& filePath, int);
+	int GetTextItem(const std::wstring& Item, std::wstring& input, const std::wstring& filePath);
+	std::wstring GetTextItem(const std::wstring& Item, const std::wstring& filePath, int);
     Json::Value GetJsonValueFromWStr(const std::wstring& str);
     Json::Value GetJsonValueFromStr(const std::string& str);
 }
