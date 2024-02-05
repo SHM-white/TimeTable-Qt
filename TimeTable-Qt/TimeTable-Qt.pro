@@ -44,7 +44,6 @@ HEADERS += \
     SubWindow.h \
     TimeTable-Qt.aps \
     Timetable.h \
-    ToWString.h \
     UIElementBase.h \
     include.h \
     mainwindow.h

@@ -1,13 +1,7 @@
 ﻿#pragma once
 
 #include "include.h"
-#include<string>
-#include<string_view>
-#include<format>
-#include<vector>
-#include "resource.h"
-#include<Windows.h>
-#include"Lesson.h"
+#include "Lesson.h"
 
 
 //TimeTable类，包含与获取课程有关的函数，需初始化配置文件路径
@@ -42,24 +36,28 @@ public:
 	int changeInfo(size_t index, const std::wstring& day, const std::wstring& info, const std::wstring& Path);
 	int SaveJson(const std::wstring& TargetPath, const Json::Value& root);
 	int GetCurrentLesson(int);
+	static int GetCurrentTimeMin();
 	static std::wstring GetWeather(const std::wstring& code,const std::wstring& APIKey,bool* isSuccess);
 	static std::wstring GetWeather(const std::wstring& first, const std::wstring& second);
 	static std::wstring GetAdcodeSync(const std::wstring& address,const std::wstring& city, const std::wstring& APIKey);
 	static requests::Response GetResponseFromUrlSync(const std::wstring& url);
-	std::wstring GetCountDown(tm tmIn, const std::wstring& TimeFormat);
+	static std::wstring GetCountDown(tm tmIn, const std::wstring& TimeFormat, int begin = 0);
 	std::wstring GetInfo(bool next = false);
 	std::wstring GetInfo(const std::wstring& week, bool next = false);
 	std::wstring GetCurrentLesson(const std::wstring& LessonNull);
 	std::wstring ReplacePath(const std::wstring& Path);
+	std::vector<Lesson> GetLessons();
+	Lesson GetNextLesson();
+	Lesson GetCurrentLesson();
 	Lesson GetLesson(const std::wstring& week, int index);
+	const std::wstring& GetLessonInfoPath();
 	static std::wstring GetCurrentTime(const std::wstring& TextFormat);
 	static int GetCurrentTime(tm& tmTime);
-	const std::wstring& GetLessonInfoPath();
 	static int mHHMMToMin(int input);
 	static int mMinToHHMM(int input);
 private:
 	Lesson CurrentLesson;
-	std::vector<Lesson> Lessons;
+	//std::vector<Lesson> Lessons;
 	std::wstring mLessonInfoPath{ L"Lessons.json" };
 	bool m_needUpdateWeather{true};
 	int m_InfoCount{ 0 };

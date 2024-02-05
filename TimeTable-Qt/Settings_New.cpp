@@ -59,13 +59,14 @@ void Settings_New::on_horizontalSlider_BackGroundAlpha_valueChanged(int value)
 
 void Settings_New::on_pushButton_FreshLessonList_clicked()
 {
-	std::vector<std::wstring> in;
-	m_TimeTable->GetLesson(in, ui.comboBox_LessonDay->currentText().toStdWString());
-	for (auto& i : in) {
-		QListWidgetItem* item = new QListWidgetItem(QString::fromStdWString(i));
-		item->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled);
-		ui.listWidget_Lessons->addItem(item); 
-	}
+	//ui.listWidget_Lessons->clear();
+	//std::vector<std::wstring> in;
+	//m_TimeTable->GetLesson(in, ui.comboBox_LessonDay->currentText().toStdWString());
+	//for (auto& i : in) {
+	//	QListWidgetItem* item = new QListWidgetItem(QString::fromStdWString(i));
+	//	item->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled);
+	//	ui.listWidget_Lessons->addItem(item); 
+	//}
 }
 
 
@@ -101,6 +102,14 @@ void Settings_New::on_pushButton_DeleteInfo_clicked()
 
 void Settings_New::on_pushButton_FreshInfo_clicked()
 {
+	ui.listWidget_Infos->clear();
+	std::vector<std::wstring> in;
+	m_TimeTable->GetTodayMoreInfo(in, ui.comboBox_LessonDay->currentText().toStdWString());
+	for (auto& i : in) {
+		QListWidgetItem* item = new QListWidgetItem(QString::fromStdWString(i));
+		item->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled);
+		ui.listWidget_Infos->addItem(item);
+	}
 
 }
 
@@ -242,7 +251,9 @@ void Settings_New::on_commandLinkButton_2_clicked()
 void Settings_New::on_pushButton_newWindow_clicked()
 {
 	Json::Value value;
+	value["Moveable"] = true;
 	m_Windows->push_back(std::make_shared<SubWindow>(value, m_TimeTable));
+	on_pushButton_FreshWindowList_clicked();
 }
 
 void Settings_New::on_pushButton_deleteWindow_clicked()
@@ -327,5 +338,11 @@ void Settings_New::on_listWidget_Infos_itemChanged(QListWidgetItem *item)
 void Settings_New::on_spinBox_scrollSpeed_valueChanged(int arg1)
 {
 	ITEM_SCROLL_SPEED = arg1;
+}
+
+
+void Settings_New::on_comboBox_LessonDay_currentIndexChanged(int index)
+{
+	on_pushButton_FreshLessonList_clicked();
 }
 

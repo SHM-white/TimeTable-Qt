@@ -75,6 +75,44 @@ std::wstring TimeTable::ReplacePath(const std::wstring &Path)
 	mLessonInfoPath = Path;
 	return old;
 }
+std::vector<Lesson> TimeTable::GetLessons()
+{
+	auto root = Json::GetRootJsonValue(mLessonInfoPath);
+	std::string Days[]{ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+	std::vector<Lesson> lessons;
+	for (const auto& a : Days)
+	{
+		for (auto& i : root[a]["Lessons"]) {
+			lessons.push_back(Lesson(u8tw(a), i));
+		}
+	}
+	return lessons;
+}
+Lesson TimeTable::GetNextLesson()
+{
+	using namespace std::ranges::views;
+	auto lessons = GetLessons();
+	std::sort(lessons.begin(), lessons.end());
+	bool lesson_future{ false };
+	for (auto& i : lessons | std::views::filter([](Lesson& lesson) {return lesson.mGetDay() == GetCurrentTime(L"%a"); })) {
+		if (i.GetEndMin() > GetCurrentTimeMin()) {
+			lesson_future = true;
+		}
+		if (i.GetBeginMin() > GetCurrentTimeMin() && lesson_future == true) {
+			return i;
+		}
+	}
+}
+Lesson TimeTable::GetCurrentLesson()
+{
+	auto lessons = GetLessons();
+	using namespace std::ranges::views;
+	for (auto& i : lessons | std::views::filter([](Lesson& lesson) {return lesson.mGetDay() == GetCurrentTime(L"%a"); })) {
+		if (i.IsOnLesson(GetCurrentTimeMin())) {
+			return i;
+		}
+	}
+}
 Lesson TimeTable::GetLesson(const std::wstring &week, int index)
 {
 	Json::Reader reader;
@@ -452,6 +490,10 @@ int TimeTable::GetCurrentLesson(int)
 	// Return the index of the current lesson
 	return currentIndex;
 }
+int TimeTable::GetCurrentTimeMin()
+{
+	return mHHMMToMin(_wtoi(GetCurrentTime(L"%H%M").c_str()));
+}
 std::wstring TimeTable::GetWeather(const std::wstring& code, const std::wstring& APIKey, bool* isSuccess)
 {
 	static std::wstring weather{L"getting...."};
@@ -543,7 +585,7 @@ requests::Response TimeTable::GetResponseFromUrlSync(const std::wstring& url)
 	return response;
 }
 // 获取当前时间至指定时间的倒计时
-std::wstring TimeTable::GetCountDown(tm tmIn, const std::wstring &TimeFormat)
+std::wstring TimeTable::GetCountDown(tm tmIn, const std::wstring &TimeFormat, int begin)
 {
 	time_t timeIn{mktime(&tmIn)};
 	time_t timeCurrent;
@@ -555,7 +597,12 @@ std::wstring TimeTable::GetCountDown(tm tmIn, const std::wstring &TimeFormat)
 	}
 	gmtime_s(&tmIn, &timeIn);
 	wchar_t tmp[1024];
-	_snwprintf_s(tmp, sizeof(tmp)/sizeof(wchar_t), TimeFormat.c_str(), tmIn.tm_yday, tmIn.tm_hour, tmIn.tm_min, tmIn.tm_sec);
+	int times[10]{0};
+	times[0] = tmIn.tm_yday;
+	times[1] = tmIn.tm_hour;
+	times[2] = tmIn.tm_min;
+	times[3] = tmIn.tm_sec;
+	_snwprintf_s(tmp, sizeof(tmp) / sizeof(wchar_t), TimeFormat.c_str(), times[begin], times[begin + 1], times[begin + 2], times[begin + 3]);
 	return tmp;
 }
 

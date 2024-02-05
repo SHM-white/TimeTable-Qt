@@ -1,15 +1,21 @@
 ﻿#include "Lesson.h"
 #include "include.h"
-#include <compare>
-#include <format>
+#include "Timetable.h"
 
-std::strong_ordering Lesson::operator<=>(const Lesson& another) const
+Lesson::Lesson(const std::wstring& day, const std::wstring& Name, const std::string& begin, const std::string& end)
 {
-	auto result{ this->mGetName() <=> another.mGetName() };
-	if (result == std::strong_ordering::equivalent) {
-		result = this->GetBeginTime() <=> another.GetBeginTime();
-	}
-	return result;
+	sDay = day;
+	sName = Name;
+	iBeginTime = atoi(begin.c_str());
+	iEndTime = atoi(end.c_str());
+}
+
+Lesson::Lesson(const std::wstring& day, const Json::Value& value)
+{
+	sDay = day;
+	sName = u8tw(value[0].asString());
+	iBeginTime = atoi(value[1].asString().c_str());
+	iEndTime = atoi(value[2].asString().c_str());
 }
 
 Lesson::Lesson(const std::wstring& Day, const std::wstring& Name, int begin, int end)
@@ -76,10 +82,45 @@ const Json::Value Lesson::GetJsonValue() const
 	return result;
 }
 
+std::strong_ordering Lesson::operator<=>(const Lesson& another) const
+{
+	auto result{ this->mGetName() <=> another.mGetName() };
+	if (result == std::strong_ordering::equivalent) {
+		result = this->GetBeginTime() <=> another.GetBeginTime();
+	}
+	return result;
+}
+
 Lesson& Lesson::operator=(const Lesson& another)
 {
 	SetValue(another.sDay, another.mGetName(), another.GetBeginTime(), another.GetEndTime());
 	return *this;
+}
+
+int Lesson::GetBeginMin() const
+{
+	return mHHMMToMin(iBeginTime);
+}
+
+int Lesson::GetEndMin() const
+{
+	return mHHMMToMin(iEndTime);
+}
+
+bool Lesson::IsOnLesson(int timeMin) const
+{
+	return (timeMin > GetBeginMin()) && (timeMin < GetEndMin());
+}
+
+std::wstring Lesson::GetCountDown() const
+{
+	tm time;
+	TimeTable::GetCurrentTime(time);
+	tm lessonTime = time;
+	time.tm_hour = getHourFromHHmm(GetBeginTime());
+	time.tm_min = getMinFromHHmm(GetBeginTime());
+	time.tm_sec = 0;
+	return TimeTable::GetCountDown(lessonTime, std::format(L"距离下一节课{}还有%d分钟%d秒", sName), 2);
 }
 
 int Lesson::getHourFromHHmm(int input)

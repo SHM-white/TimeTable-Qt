@@ -87,6 +87,8 @@ private slots:
 
     void on_spinBox_scrollSpeed_valueChanged(int arg1);
 
+    void on_comboBox_LessonDay_currentIndexChanged(int index);
+
 private:
 	QWidget* m_pParent;
 	Ui::Settings_NewClass ui;

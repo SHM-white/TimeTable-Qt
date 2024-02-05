@@ -33,7 +33,9 @@
 QListView {
     background-color: transparent;
 }
-
+QTableWidget {
+    background-color: transparent;
+}
 QColumnView {
     background-color: transparent;
 }
@@ -124,7 +126,7 @@ QTabBar::tab {
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_6">
        <item>
-        <widget class="QListWidget" name="listWidget_Lessons">
+        <widget class="QTableWidget" name="tableWidget_Lessons">
          <property name="font">
           <font>
            <family>Microsoft YaHei</family>
@@ -464,7 +466,7 @@ QTabBar::tab {
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>223</width>
+            <width>288</width>
             <height>447</height>
            </rect>
           </property>
