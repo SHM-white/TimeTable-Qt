@@ -67,6 +67,37 @@ void Settings_New::on_pushButton_FreshLessonList_clicked()
 	//	item->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled);
 	//	ui.listWidget_Lessons->addItem(item); 
 	//}
+	using namespace std::ranges::views;
+	ui.tableWidget_Lessons->clear();
+	ui.tableWidget_Lessons->setColumnCount(3);
+	ui.tableWidget_Lessons->setHorizontalHeaderLabels(QStringList() << QString::fromStdWString(L"名称") << QString::fromStdWString(L"开始时间") << QString::fromStdWString(L"结束时间"));
+	auto lessons = m_TimeTable->GetTodayLessons();
+	ui.tableWidget_Lessons->setRowCount(lessons.size());
+	for (int i = 0; i < lessons.size();++i) {
+		auto currentLesson = lessons[i];
+		auto* comboBox = new QComboBox();
+		comboBox->addItem("语文");
+		comboBox->addItem("数学");
+		comboBox->addItem("英语");
+		comboBox->addItem("物理");
+		comboBox->addItem("化学");
+		comboBox->addItem("生物");
+		comboBox->addItem("历史");
+		comboBox->addItem("政治");
+		comboBox->addItem("地理");
+		comboBox->addItem("班会");
+		comboBox->addItem("自习");
+		comboBox->setEditable(true);
+		comboBox->view()->parentWidget()->setWindowFlags(Qt::Popup | Qt::FramelessWindowHint);
+		comboBox->view()->parentWidget()->setAttribute(Qt::WA_TranslucentBackground);
+		comboBox->setCurrentText(QString::fromStdWString(currentLesson.mGetName()));
+		connect(comboBox, SIGNAL(currentTextChanged(QString)), this, SLOT(on_LessonComboBox_TextChanged(QString)));
+		auto* item2 = new QTableWidgetItem(QString::fromStdWString(currentLesson.GetBeginTimeAsString()));
+		auto* item3 = new QTableWidgetItem(QString::fromStdWString(currentLesson.GetEndTimeAsString()));
+		ui.tableWidget_Lessons->setCellWidget(i, 0, comboBox);
+		ui.tableWidget_Lessons->setItem(i, 1, item2);
+		ui.tableWidget_Lessons->setItem(i, 2, item3);
+	}
 }
 
 
@@ -323,12 +354,6 @@ void Settings_New::on_listWidget_Windows_itemChanged(QListWidgetItem *item)
 }
 
 
-void Settings_New::on_listWidget_Lessons_itemChanged(QListWidgetItem *item)
-{
-
-}
-
-
 void Settings_New::on_listWidget_Infos_itemChanged(QListWidgetItem *item)
 {
 
@@ -344,5 +369,26 @@ void Settings_New::on_spinBox_scrollSpeed_valueChanged(int arg1)
 void Settings_New::on_comboBox_LessonDay_currentIndexChanged(int index)
 {
 	on_pushButton_FreshLessonList_clicked();
+}
+
+void Settings_New::on_LessonComboBox_TextChanged(QString arg)
+{
+
+	QComboBox* comBox_ = dynamic_cast<QComboBox*>(this->sender());
+	if (NULL == comBox_)
+	{
+		return;
+	}
+	int x = comBox_->frameGeometry().x();
+	int y = comBox_->frameGeometry().y();
+	QModelIndex index = ui.tableWidget_Lessons->indexAt(QPoint(x, y));
+	int row = index.row();
+	int column = index.column();
+}
+
+
+void Settings_New::on_tableWidget_Lessons_itemChanged(QTableWidgetItem *item)
+{
+
 }
 

@@ -29,7 +29,14 @@
 	border-top:0px solid #e8f3f9;
     background:transparent;
 }
-
+QComboBox{
+	background:transparent;
+	background-color: rgba(255, 255, 255, 100);
+}
+QComboBox QAbstractItemView{
+	
+	background-color: rgb(255, 255, 255);
+}
 QListView {
     background-color: transparent;
 }
@@ -430,9 +437,6 @@ QTabBar::tab {
          </property>
          <property name="editTriggers">
           <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
-         </property>
-         <property name="alternatingRowColors">
-          <bool>true</bool>
          </property>
         </widget>
        </item>

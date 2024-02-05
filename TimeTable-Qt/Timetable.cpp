@@ -88,6 +88,24 @@ std::vector<Lesson> TimeTable::GetLessons()
 	}
 	return lessons;
 }
+std::vector<Lesson> TimeTable::GetTodayLessons(const std::wstring& day)
+{
+	std::vector<Lesson> todayLesson;
+	auto lessons = GetLessons();
+	auto isNeededDayLesson = [&](Lesson& lesson) {
+		if (day == L"Null") {
+			return lesson.mGetDay() == GetCurrentTime(L"%a");
+		}
+		else
+		{
+			return lesson.mGetDay() == day;
+		}
+		};
+	for (auto& i : lessons | std::views::filter(isNeededDayLesson)) {
+		todayLesson.push_back(std::move(i));
+	}
+	return todayLesson;
+}
 Lesson TimeTable::GetNextLesson()
 {
 	using namespace std::ranges::views;
@@ -102,6 +120,7 @@ Lesson TimeTable::GetNextLesson()
 			return i;
 		}
 	}
+	return Lesson(L"Null", L"Null", 0, 2400);
 }
 Lesson TimeTable::GetCurrentLesson()
 {
@@ -112,6 +131,7 @@ Lesson TimeTable::GetCurrentLesson()
 			return i;
 		}
 	}
+	return Lesson(L"Null", L"Null", 0, 2400);
 }
 Lesson TimeTable::GetLesson(const std::wstring &week, int index)
 {
@@ -184,7 +204,7 @@ std::wstring TimeTable::GetCurrentTime(const std::wstring &TextFormat)
 	auto location = TextFormat.find(L'%', 0);
 	if (location >= TextFormat.size())
 	{
-		location = 0;
+		return TextFormat;
 	}
     if (TextFormat.size() >= 2 && !std::regex_match(TextFormat.begin() + location, TextFormat.begin() + location + 2, std::regex("%[^aAbBcCdDeFgGhHIjmMnprRStTuUVwWxXyYzZ%]|%[0-9]{1,}[a-zA-Z]")))
 	{

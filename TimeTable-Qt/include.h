@@ -54,6 +54,8 @@
 #include <qsettings.h>
 #include <qtimer.h>
 #include <QtWidgets/QWidget>
+#include <qtablewidget.h>
+
 /*
 #include "UIElementBase.h"
 #include "EmptyUIElement.h"

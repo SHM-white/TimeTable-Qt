@@ -47,6 +47,7 @@ public:
 	std::wstring GetCurrentLesson(const std::wstring& LessonNull);
 	std::wstring ReplacePath(const std::wstring& Path);
 	std::vector<Lesson> GetLessons();
+	std::vector<Lesson> GetTodayLessons(const std::wstring& day = L"Null");
 	Lesson GetNextLesson();
 	Lesson GetCurrentLesson();
 	Lesson GetLesson(const std::wstring& week, int index);

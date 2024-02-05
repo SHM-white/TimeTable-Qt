@@ -81,13 +81,15 @@ private slots:
 
     void on_listWidget_Windows_itemChanged(QListWidgetItem *item);
 
-    void on_listWidget_Lessons_itemChanged(QListWidgetItem *item);
-
     void on_listWidget_Infos_itemChanged(QListWidgetItem *item);
 
     void on_spinBox_scrollSpeed_valueChanged(int arg1);
 
     void on_comboBox_LessonDay_currentIndexChanged(int index);
+
+    void on_LessonComboBox_TextChanged(QString arg);
+
+    void on_tableWidget_Lessons_itemChanged(QTableWidgetItem *item);
 
 private:
 	QWidget* m_pParent;
