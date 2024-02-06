@@ -26,60 +26,57 @@
     <QtRcc Include="TimeTableQt.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
-    <QtUic Include="TimeTableQt.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtMoc Include="TimeTableQt.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <ClCompile Include="TimeTableQt.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CSVEditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TextFormat.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Timetable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WindowSettings.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="importfromfile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="about.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="showalllessons.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="showmoreinfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="changeconfigpath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Lesson.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="settings.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="todayalllessons.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="include.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WindowItem.cpp">
+    <ClCompile Include="BasicWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElementBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SubWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings_New.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SingleItemUIElementBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiItemInOrderUIElementBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiItemAllDisplayUIElementBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SingleTextItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiTextItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EmptyUIElement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EditUIElements.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -98,25 +95,31 @@
     <ClInclude Include="Lesson.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TextFormat.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Timetable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="WindowSettings.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="resource1.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ToWString.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WindowItem.h">
+    <ClInclude Include="UIElementBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SingleItemUIElementBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiItemInOrderUIElementBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiItemAllDisplayUIElementBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SingleTextItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiTextItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EmptyUIElement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -135,48 +138,33 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="importfromfile.h">
+    <QtMoc Include="BasicWindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="about.h">
+    <QtMoc Include="MainWindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="showalllessons.h">
+    <QtMoc Include="SubWindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="showmoreinfo.h">
+    <QtMoc Include="Settings_New.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="changeconfigpath.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="settings.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="todayalllessons.h">
+    <QtMoc Include="EditUIElements.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="importfromfile.ui">
+    <QtUic Include="MainWindow.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <QtUic Include="about.ui">
+    <QtUic Include="SubWindow.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <QtUic Include="showalllessons.ui">
+    <QtUic Include="Settings_New.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <QtUic Include="showmoreinfo.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="changeconfigpath.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="settings.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="todayalllessons.ui">
+    <QtUic Include="EditUIElements.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

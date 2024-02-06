@@ -11,55 +11,48 @@ CONFIG += \
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    BasicWindow.cpp \
     CSVEditor.cpp \
+    EditUIElements.cpp \
+    EmptyUIElement.cpp \
     Lesson.cpp \
-    TextFormat.cpp \
+    MultiItemAllDisplayUIElementBase.cpp \
+    MultiItemInOrderUIElementBase.cpp \
+    MultiTextItem.cpp \
+    Settings_New.cpp \
+    SingleItemUIElementBase.cpp \
+    SingleTextItem.cpp \
+    SubWindow.cpp \
     Timetable.cpp \
-    WindowItem.cpp \
-    WindowSettings.cpp \
-    about.cpp \
-    changeconfigpath.cpp \
-    importfromfile.cpp \
+    UIElementBase.cpp \
     include.cpp \
     main.cpp \
-    TimeTableQt.cpp \
-    settings.cpp \
-    showalllessons.cpp \
-    showmoreinfo.cpp \
-    todayalllessons.cpp
+    mainwindow.cpp
 
 HEADERS += \
+    BasicWindow.h \
     CSVEditor.h \
+    EditUIElements.h \
+    EmptyUIElement.h \
     Lesson.h \
-    TextFormat.h \
+    MultiItemAllDisplayUIElementBase.h \
+    MultiItemInOrderUIElementBase.h \
+    MultiTextItem.h \
+    Settings_New.h \
+    SingleItemUIElementBase.h \
+    SingleTextItem.h \
+    SubWindow.h \
     TimeTable-Qt.aps \
     Timetable.h \
-    ToWString.h \
-    WindowItem.h \
-    WindowSettings.h \
-    about.h \
-    changeconfigpath.h \
-    framework.h \
-    TimeTableQt.h \
-    importfromfile.h \
+    UIElementBase.h \
     include.h \
-    resource.h \
-    resource1.h \
-    settings.h \
-    showalllessons.h \
-    showmoreinfo.h \
-    targetver.h \
-    todayalllessons.h
+    mainwindow.h
 
 FORMS += \
-    TimeTableQt.ui \
-    about.ui \
-    changeconfigpath.ui \
-    importfromfile.ui \
-    settings.ui \
-    showalllessons.ui \
-    showmoreinfo.ui \
-    todayalllessons.ui
+    EditUIElements.ui \
+    Settings_New.ui \
+    SubWindow.ui \
+    mainwindow.ui
 
 TRANSLATIONS += \
     TimeTable-Qt_zh_CN.ts
@@ -118,3 +111,5 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/hv/lib/Debug/ -lhv
 
 INCLUDEPATH += $$PWD/hv/include/hv
 DEPENDPATH += $$PWD/hv/include/hv
+
+LIBS+= -luser32

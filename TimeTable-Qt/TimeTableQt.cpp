@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #define EXPERENCE false
-#define AUTO_RUN_KEY	"HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
 
 #include "TimeTableQt.h"
 #include "importfromfile.h"

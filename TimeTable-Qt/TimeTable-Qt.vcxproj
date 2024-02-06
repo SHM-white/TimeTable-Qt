@@ -33,12 +33,12 @@
     <Import Project="$(QtMsBuild)\qt_defaults.props" />
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
-    <QtInstall>6.5.1_msvc2019_64</QtInstall>
+    <QtInstall>6.4.3_msvc2019_64</QtInstall>
     <QtModules>core;gui;widgets</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
-    <QtInstall>6.5.1_msvc2019_64</QtInstall>
+    <QtInstall>6.4.3_msvc2019_64</QtInstall>
     <QtModules>core;gui;widgets</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
   </PropertyGroup>
@@ -65,6 +65,9 @@
     <ExternalIncludePath>$(ProjectDir)jsoncpp\include;$(ProjectDir)jsoncpp\include\json;$(ProjectDir)hv\include\hv</ExternalIncludePath>
     <PublicIncludeDirectories>$(ProjectDir)jsoncpp\include\jsoncpp;$(ProjectDir)jsoncpp\include;$(ProjectDir)hv\include\hv</PublicIncludeDirectories>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
+  </PropertyGroup>
+  <PropertyGroup Label="QtDeploy" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <QtDeploy>true</QtDeploy>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -111,32 +114,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="about.cpp" />
-    <ClCompile Include="changeconfigpath.cpp" />
-    <ClCompile Include="importfromfile.cpp" />
+    <ClCompile Include="BasicWindow.cpp" />
+    <ClCompile Include="EditUIElements.cpp" />
+    <ClCompile Include="EmptyUIElement.cpp" />
     <ClCompile Include="include.cpp" />
     <ClCompile Include="Lesson.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="settings.cpp" />
-    <ClCompile Include="showalllessons.cpp" />
-    <ClCompile Include="showmoreinfo.cpp" />
-    <ClCompile Include="todayalllessons.cpp" />
-    <ClCompile Include="WindowItem.cpp" />
-    <ClCompile Include="WindowSettings.cpp" />
+    <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="MultiItemAllDisplayUIElementBase.cpp" />
+    <ClCompile Include="MultiItemInOrderUIElementBase.cpp" />
+    <ClCompile Include="MultiTextItem.cpp" />
+    <ClCompile Include="Settings_New.cpp" />
+    <ClCompile Include="SingleItemUIElementBase.cpp" />
+    <ClCompile Include="SubWindow.cpp" />
+    <ClCompile Include="SingleTextItem.cpp" />
+    <ClCompile Include="UIElementBase.cpp" />
     <QtRcc Include="TimeTableQt.qrc" />
-    <QtUic Include="about.ui" />
-    <QtUic Include="changeconfigpath.ui" />
-    <QtUic Include="importfromfile.ui" />
-    <QtUic Include="settings.ui" />
-    <QtUic Include="showalllessons.ui" />
-    <QtUic Include="showmoreinfo.ui" />
-    <QtUic Include="TimeTableQt.ui" />
-    <QtMoc Include="TimeTableQt.h" />
+    <QtUic Include="EditUIElements.ui" />
+    <QtUic Include="MainWindow.ui" />
+    <QtUic Include="Settings_New.ui" />
+    <QtUic Include="SubWindow.ui" />
     <ClCompile Include="CSVEditor.cpp" />
-    <ClCompile Include="TextFormat.cpp" />
     <ClCompile Include="Timetable.cpp" />
-    <ClCompile Include="TimeTableQt.cpp" />
-    <QtUic Include="todayalllessons.ui" />
   </ItemGroup>
   <ItemGroup>
     <None Include="config.json" />
@@ -147,22 +146,22 @@
     <None Include="TimeTable-Qt.pro" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="about.h" />
-    <QtMoc Include="changeconfigpath.h" />
+    <QtMoc Include="BasicWindow.h" />
     <ClInclude Include="CSVEditor.h" />
-    <QtMoc Include="importfromfile.h" />
+    <QtMoc Include="EditUIElements.h" />
+    <ClInclude Include="EmptyUIElement.h" />
     <ClInclude Include="include.h" />
     <ClInclude Include="Lesson.h" />
-    <QtMoc Include="showalllessons.h" />
-    <QtMoc Include="showmoreinfo.h" />
-    <ClInclude Include="resource1.h" />
-    <QtMoc Include="settings.h" />
-    <ClInclude Include="TextFormat.h" />
+    <QtMoc Include="MainWindow.h" />
+    <QtMoc Include="SubWindow.h" />
+    <QtMoc Include="Settings_New.h" />
+    <ClInclude Include="MultiItemAllDisplayUIElementBase.h" />
+    <ClInclude Include="MultiItemInOrderUIElementBase.h" />
+    <ClInclude Include="MultiTextItem.h" />
+    <ClInclude Include="SingleItemUIElementBase.h" />
+    <ClInclude Include="SingleTextItem.h" />
     <ClInclude Include="Timetable.h" />
-    <QtMoc Include="todayalllessons.h" />
-    <ClInclude Include="ToWString.h" />
-    <ClInclude Include="WindowItem.h" />
-    <ClInclude Include="WindowSettings.h" />
+    <ClInclude Include="UIElementBase.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="123.ico" />

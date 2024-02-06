@@ -1,28 +1,39 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+﻿#pragma once
 
 #include <QWidget>
-#include <QTimer>
-#include "WindowSettings.h"
+#include "include.h"
+#include "ui_MainWindow.h"
+#include "BasicWindow.h"
+#include "SubWindow.h"
+#include "Timetable.h"
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow;}
-QT_END_NAMESPACE
 
-class MainWindow : public QWidget
+class MainWindow : public BasicWindow
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
-    WindowSettings windowsettings{ ".\\Config.json" };
-    TimeTable timetable{ windowsettings.msLessonInfoFile };
-private slots:
-    void UpdateWindow();
-
+	MainWindow(Json::Value& settings, QWidget* parent = nullptr);
+	~MainWindow();
+	void ReopenWindows();
+	std::vector<std::shared_ptr<BasicWindow>> m_windows;
 private:
-    Ui::MainWindow *ui;
-    QTimer *time_calendar;
+	Ui::MainWindowClass ui;
+	void CreateSystemTrayIcon();
+	std::shared_ptr<BasicWindow> CreateSubWindows(Json::Value& settings,std::shared_ptr<TimeTable> timetable);
+	// 通过 BasicWindow 继承
+	Json::Value SaveAsJson(Json::Value value) const override;
+	QSystemTrayIcon* trayIcon;
+	QAction* action_autoLaunch;
+	QTimer* timer;
+private slots:
+
+	void HideAllWindows();
+	void updateWindowStatus() override;
+	void ShowAllWindows();
+	void LaunchAsSystemBoot();
+	void OpenSetting();
+	void OpenSubWindows();
+	void Exit();
+	void SelfInitial();
 };
-#endif // MAINWINDOW_H

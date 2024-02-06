@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "include.h"
-#include "resource.h"
 #include"Lesson.h"
 
 enum TextType
