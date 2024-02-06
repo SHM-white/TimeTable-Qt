@@ -29,6 +29,7 @@
 #include <time.h>
 #include <vector>
 #include <Winsock2.h>
+#include <crtdbg.h>
 
 #include "hv.h"
 #include "include\json\json.h"

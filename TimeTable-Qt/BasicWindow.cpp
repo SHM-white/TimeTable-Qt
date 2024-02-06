@@ -16,9 +16,12 @@ BasicWindow::BasicWindow(Json::Value& settings, QWidget* parent)
 
 	InitializeWindow(settings);
 
-	time_calendar_window = new QTimer(this);
-	connect(time_calendar_window, SIGNAL(timeout()), this, SLOT(update()));
-	time_calendar_window->start((int)1000 / m_maxFPS);
+	if (m_maxFPS != 0)
+	{
+		time_calendar_window = new QTimer(this);
+		connect(time_calendar_window, SIGNAL(timeout()), this, SLOT(update()));
+		time_calendar_window->start((int)1000 / m_maxFPS);
+	}
 
 	time_calendar_text = new QTimer(this);
 	connect(time_calendar_text, SIGNAL(timeout()), this, SLOT(updateWindowStatus()));
@@ -94,7 +97,7 @@ bool BasicWindow::InitializeWindow(Json::Value& value)
 	m_AutoOpen = Settings["AutoOpen"].asBool();
 	m_TopMost = Settings["TopMost"].asBool();
 	m_moveable = Settings["Moveable"].asBool();
-	m_maxFPS = (Settings["FPS"].asInt() <= 0 ? 2 : Settings["FPS"].asInt());
+	m_maxFPS = (Settings["FPS"].asInt() < 0 ? 0 : Settings["FPS"].asInt());
 	m_autoResize = Settings["AutoResize"].asBool();
 	m_name = u8tw(Settings["Name"].asString());
 	if (!(miWindowX == 0 && miWindowY == 0 && miWindowWeight == 0 && miWindowHeight == 0)) {

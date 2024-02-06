@@ -250,11 +250,6 @@ int TimeTable::sortLessons(const std::wstring &lessonPath, const std::wstring &D
 		in.close();
 		return 0;
 	}
-	std::fstream os(lessonPath, std::ios::out | std::ios::trunc);
-	if (!os.is_open())
-	{
-		return 0;
-	}
 
 	std::vector<Lesson> vectorLessons;
 
@@ -287,6 +282,12 @@ int TimeTable::sortLessons(const std::wstring &lessonPath, const std::wstring &D
 			Json::Value a = lesson.GetJsonValue();
 			valueLessons.append(a);
 		}
+	}
+
+	std::fstream os(lessonPath, std::ios::out | std::ios::trunc);
+	if (!os.is_open())
+	{
+		return 0;
 	}
 
 	Json::StyledWriter sw;
@@ -337,11 +338,6 @@ int TimeTable::deleteLesson(size_t index, const std::wstring &day, const std::ws
 		in.close();
 		return 0;
 	}
-	std::fstream os(lessonPath, std::ios::out | std::ios::trunc);
-	if (!os.is_open())
-	{
-		return 0;
-	}
 
 	Json::Value &valueLessons = root[wtu8(day)]["Lessons"];
 	std::vector<Lesson> vectorLessons;
@@ -363,6 +359,12 @@ int TimeTable::deleteLesson(size_t index, const std::wstring &day, const std::ws
 	for (const auto &lesson : vectorLessons)
 	{
 		valueLessons.append(lesson.GetJsonValue());
+	}
+
+	std::fstream os(lessonPath, std::ios::out | std::ios::trunc);
+	if (!os.is_open())
+	{
+		return 0;
 	}
 
 	Json::StyledWriter sw;
@@ -410,14 +412,15 @@ int TimeTable::changeLesson(size_t index, const std::wstring &day, const Lesson 
 		in.close();
 		return 0;
 	}
+
+	Json::Value &valueLessons = root[wtu8(day)]["Lessons"];
+	valueLessons[(int)index] = lesson.GetJsonValue();
+
 	std::fstream os(lessonPath, std::ios::out | std::ios::trunc);
 	if (!os.is_open())
 	{
 		return 0;
 	}
-
-	Json::Value &valueLessons = root[wtu8(day)]["Lessons"];
-	valueLessons[(int)index] = lesson.GetJsonValue();
 
 	Json::StyledWriter sw;
 	os << sw.write(root);

@@ -11,15 +11,20 @@ Settings_New::Settings_New(std::vector<std::shared_ptr<BasicWindow>>* Windows, J
 	ui.label_version->setText(QString::fromStdWString(GetCurrentVersion()));
 	ui.label_complieTime->setText(QString::fromStdWString(GetCompileTime()));
 	ui.spinBox_scrollSpeed->setValue(ITEM_SCROLL_SPEED);
+	ui.comboBox_InfoDay->setCurrentText(QString::fromStdWString(m_TimeTable->GetCurrentTime(L"%a")));
+	ui.comboBox_LessonDay->setCurrentText(QString::fromStdWString(m_TimeTable->GetCurrentTime(L"%a")));
 	on_pushButton_FreshInfo_clicked();
 	on_pushButton_FreshLessonList_clicked();
 	on_pushButton_FreshWindowList_clicked();
 	on_lineEdit_BackGroundColor_editingFinished();
+	//on_listWidget_Windows_currentRowChanged(0);
+	_ASSERTE(_CrtCheckMemory());
 
 }
 
 Settings_New::~Settings_New()
-{}
+{
+}
 
 std::shared_ptr<BasicWindow> Settings_New::GetCurrentWindow()
 {
@@ -40,6 +45,10 @@ Json::Value Settings_New::SaveAsJson(Json::Value value) const
 
 void Settings_New::on_pushButton_close_clicked()
 {
+	for (auto i : comboBoxes) {
+		delete i;
+	}
+	ListsInitialized = false;
     this->close();
 }
 
@@ -59,19 +68,20 @@ void Settings_New::on_horizontalSlider_BackGroundAlpha_valueChanged(int value)
 
 void Settings_New::on_pushButton_FreshLessonList_clicked()
 {
-	//ui.listWidget_Lessons->clear();
-	//std::vector<std::wstring> in;
-	//m_TimeTable->GetLesson(in, ui.comboBox_LessonDay->currentText().toStdWString());
-	//for (auto& i : in) {
-	//	QListWidgetItem* item = new QListWidgetItem(QString::fromStdWString(i));
-	//	item->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled);
-	//	ui.listWidget_Lessons->addItem(item); 
-	//}
-	using namespace std::ranges::views;
+	
+	ListsInitialized = false;
 	ui.tableWidget_Lessons->clear();
+	while (ui.tableWidget_Lessons->rowCount()!=0)
+	{
+		ui.tableWidget_Lessons->removeRow(0);
+	}
+	for (auto i : comboBoxes) {
+		delete i;
+	}
+	comboBoxes.clear();
 	ui.tableWidget_Lessons->setColumnCount(3);
 	ui.tableWidget_Lessons->setHorizontalHeaderLabels(QStringList() << QString::fromStdWString(L"名称") << QString::fromStdWString(L"开始时间") << QString::fromStdWString(L"结束时间"));
-	auto lessons = m_TimeTable->GetTodayLessons();
+	auto lessons = m_TimeTable->GetTodayLessons(ui.comboBox_LessonDay->currentText().toStdWString());
 	ui.tableWidget_Lessons->setRowCount(lessons.size());
 	for (int i = 0; i < lessons.size();++i) {
 		auto currentLesson = lessons[i];
@@ -98,41 +108,53 @@ void Settings_New::on_pushButton_FreshLessonList_clicked()
 		ui.tableWidget_Lessons->setItem(i, 1, item2);
 		ui.tableWidget_Lessons->setItem(i, 2, item3);
 	}
+	_ASSERTE(_CrtCheckMemory());
+
+	ListsInitialized = true;
 }
 
 
 void Settings_New::on_pushButton_SortLessons_clicked()
 {
-
+	m_TimeTable->sortLessons(ui.comboBox_LessonDay->currentText().toStdWString());
+	on_pushButton_FreshLessonList_clicked();
 }
 
 
 void Settings_New::on_pushButton_DeleteLesson_clicked()
 {
-
+	int row = ui.tableWidget_Lessons->currentRow();
+	if (row >= 0 && row < ui.tableWidget_Lessons->rowCount()) {
+		m_TimeTable->deleteLesson(row, ui.comboBox_LessonDay->currentText().toStdWString());
+	}
+	on_pushButton_FreshLessonList_clicked();
 }
 
 
 void Settings_New::on_pushButton_AddLesson_clicked()
 {
-
+	m_TimeTable->AddLesson(Lesson(ui.comboBox_LessonDay->currentText().toStdWString(), std::wstring(L"Null"), 0, 0));
+	on_pushButton_FreshLessonList_clicked();
 }
 
 
 void Settings_New::on_pushButton_AddInfo_clicked()
 {
-
+	m_TimeTable->AddMoreInfo(ui.comboBox_InfoDay->currentText().toStdWString(), L"Null");
+	on_pushButton_FreshInfo_clicked();
 }
 
 
 void Settings_New::on_pushButton_DeleteInfo_clicked()
 {
-
+	m_TimeTable->deleteInfo(ui.listWidget_Infos->currentRow(), ui.comboBox_InfoDay->currentText().toStdWString());
+	on_pushButton_FreshInfo_clicked();
 }
 
 
 void Settings_New::on_pushButton_FreshInfo_clicked()
 {
+	ListsInitialized = false;
 	ui.listWidget_Infos->clear();
 	std::vector<std::wstring> in;
 	m_TimeTable->GetTodayMoreInfo(in, ui.comboBox_LessonDay->currentText().toStdWString());
@@ -141,7 +163,7 @@ void Settings_New::on_pushButton_FreshInfo_clicked()
 		item->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled);
 		ui.listWidget_Infos->addItem(item);
 	}
-
+	ListsInitialized = true;
 }
 
 
@@ -285,6 +307,8 @@ void Settings_New::on_pushButton_newWindow_clicked()
 	value["Moveable"] = true;
 	m_Windows->push_back(std::make_shared<SubWindow>(value, m_TimeTable));
 	on_pushButton_FreshWindowList_clicked();
+	_ASSERTE(_CrtCheckMemory());
+
 }
 
 void Settings_New::on_pushButton_deleteWindow_clicked()
@@ -307,12 +331,14 @@ void Settings_New::on_pushButton_deleteWindow_clicked()
 
 void Settings_New::on_pushButton_FreshWindowList_clicked()
 {
+	ListsInitialized = false;
 	ui.listWidget_Windows->clear();
 	for (auto i : (*m_Windows)) {
 		auto* item = new QListWidgetItem(QString::fromStdWString(i->m_name));
 		item->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled);
 		ui.listWidget_Windows->addItem(item);
 	}
+	ListsInitialized = true;
 	ui.listWidget_Windows->setCurrentRow(0);
 }
 
@@ -324,6 +350,9 @@ void Settings_New::on_pushButton_reloadWindows_clicked()
 
 void Settings_New::on_listWidget_Windows_currentRowChanged(int currentRow)
 {
+	if (ListsInitialized == false) {
+		return;
+	}
 	if (ui.listWidget_Windows->count() > 0 && currentRow >= 0)
 	{
 		auto window = GetCurrentWindow();
@@ -346,6 +375,9 @@ void Settings_New::on_listWidget_Windows_currentRowChanged(int currentRow)
 
 void Settings_New::on_listWidget_Windows_itemChanged(QListWidgetItem *item)
 {
+	if (ListsInitialized == false) {
+		return;
+	}
 	int index = ui.listWidget_Windows->currentRow();
 	if (index >= 0 && index < m_Windows->size())
 	{
@@ -356,7 +388,10 @@ void Settings_New::on_listWidget_Windows_itemChanged(QListWidgetItem *item)
 
 void Settings_New::on_listWidget_Infos_itemChanged(QListWidgetItem *item)
 {
-
+	if (ListsInitialized == false) {
+		return;
+	}
+	m_TimeTable->changeInfo(ui.listWidget_Infos->row(item), ui.comboBox_InfoDay->currentText().toStdWString(), item->text().toStdWString());
 }
 
 
@@ -373,6 +408,9 @@ void Settings_New::on_comboBox_LessonDay_currentIndexChanged(int index)
 
 void Settings_New::on_LessonComboBox_TextChanged(QString arg)
 {
+	if (ListsInitialized == false) {
+		return;
+	}
 
 	QComboBox* comBox_ = dynamic_cast<QComboBox*>(this->sender());
 	if (NULL == comBox_)
@@ -383,12 +421,28 @@ void Settings_New::on_LessonComboBox_TextChanged(QString arg)
 	int y = comBox_->frameGeometry().y();
 	QModelIndex index = ui.tableWidget_Lessons->indexAt(QPoint(x, y));
 	int row = index.row();
-	int column = index.column();
+	LessonChangeRow(row);
 }
 
 
 void Settings_New::on_tableWidget_Lessons_itemChanged(QTableWidgetItem *item)
 {
+	LessonChangeRow(item->row());
+}
+
+void Settings_New::LessonChangeRow(int row)
+{
+	if (!ListsInitialized) {
+		return;
+	}
+	auto lessonDay = ui.comboBox_LessonDay->currentText().toStdWString();
+	auto comboBox = dynamic_cast<QComboBox*>(ui.tableWidget_Lessons->cellWidget(row, 0));
+	auto lesson = Lesson(lessonDay, comboBox->currentText().toStdWString(), 
+		ui.tableWidget_Lessons->item(row, 1)->text().toStdString(), 
+		ui.tableWidget_Lessons->item(row, 2)->text().toStdString()
+	);
+	m_TimeTable->changeLesson(row, lessonDay, lesson);
+	_ASSERTE(_CrtCheckMemory());
 
 }
 

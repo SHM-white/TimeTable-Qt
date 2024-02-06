@@ -92,10 +92,13 @@ private slots:
     void on_tableWidget_Lessons_itemChanged(QTableWidgetItem *item);
 
 private:
+    void LessonChangeRow(int row);
 	QWidget* m_pParent;
 	Ui::Settings_NewClass ui;
 	std::vector<std::shared_ptr<BasicWindow>>* m_Windows;
     std::shared_ptr<BasicWindow> GetCurrentWindow();
 	// 通过 BasicWindow 继承
 	Json::Value SaveAsJson(Json::Value value) const override;
+    bool ListsInitialized{ false };
+    std::vector<QComboBox*> comboBoxes;
 };
