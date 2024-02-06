@@ -511,12 +511,19 @@ void Settings_New::on_pushButton_restoreLessonPath_clicked()
 
 void Settings_New::on_lineEdit_BackgroundImg_textChanged(const QString &arg1)
 {
-
+    GetCurrentWindow()->msBackGroundImg=arg1.toStdWString();
 }
 
 
 void Settings_New::on_pushButton_ChooseBackgroundImg_clicked()
 {
+    QString openFileName = QFileDialog::getOpenFileName(this, QString::fromStdWString(L"请选择图片"), QString::fromStdWString(L".\\"), QString::fromStdWString(L"图片文件(*.jpg;*.png);;All(*.*)"));
+    if (openFileName.isEmpty()) {
+        QMessageBox::warning(this, QString::fromStdWString(L"提示"), QString::fromStdWString(L"未选择文件"));
+    }
+    else {
+        ui.lineEdit_BackgroundImg->setText(openFileName);
+    }
 
 }
 
