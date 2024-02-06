@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>EditUIElementsClass</class>
  <widget class="QWidget" name="EditUIElementsClass">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -18,7 +21,14 @@
 	border-top:0px solid #e8f3f9;
     background:transparent;
 }
-
+QComboBox{
+	background:transparent;
+	background-color: rgba(255, 255, 255, 100);
+}
+QComboBox QAbstractItemView{
+	
+	background-color: rgb(255, 255, 255);
+}
 QListView {
     background-color: transparent;
 }
@@ -394,6 +404,21 @@ QTextEdit{
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
+      <widget class="QLabel" name="label_7">
+       <property name="font">
+        <font>
+         <pointsize>15</pointsize>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(255, 0, 0);</string>
+       </property>
+       <property name="text">
+        <string>未完成，请直接修改配置文件</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -408,6 +433,9 @@ QTextEdit{
      </item>
      <item>
       <widget class="QPushButton" name="pushButton_close">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="text">
         <string>关闭</string>
        </property>

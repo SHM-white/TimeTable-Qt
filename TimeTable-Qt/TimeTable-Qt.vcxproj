@@ -38,7 +38,7 @@
     <QtBuildConfig>debug</QtBuildConfig>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
-    <QtInstall>6.5.1_msvc2019_64</QtInstall>
+    <QtInstall>6.4.3_msvc2019_64</QtInstall>
     <QtModules>core;gui;widgets</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
   </PropertyGroup>
@@ -65,6 +65,9 @@
     <ExternalIncludePath>$(ProjectDir)jsoncpp\include;$(ProjectDir)jsoncpp\include\json;$(ProjectDir)hv\include\hv</ExternalIncludePath>
     <PublicIncludeDirectories>$(ProjectDir)jsoncpp\include\jsoncpp;$(ProjectDir)jsoncpp\include;$(ProjectDir)hv\include\hv</PublicIncludeDirectories>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
+  </PropertyGroup>
+  <PropertyGroup Label="QtDeploy" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <QtDeploy>true</QtDeploy>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

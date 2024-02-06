@@ -91,6 +91,22 @@ private slots:
 
     void on_tableWidget_Lessons_itemChanged(QTableWidgetItem *item);
 
+    void on_pushButton_ChangeConfigPath_clicked();
+
+    void on_pushButton_ChangeLessonPath_clicked();
+
+    void on_pushButton_ApplyConfigPath_clicked();
+
+    void on_pushButton_ApplyLessonPath_clicked();
+
+    void on_pushButton_restoreConfigPath_clicked();
+
+    void on_pushButton_restoreLessonPath_clicked();
+
+    void on_lineEdit_BackgroundImg_textChanged(const QString &arg1);
+
+    void on_pushButton_ChooseBackgroundImg_clicked();
+
 private:
     void LessonChangeRow(int row);
 	QWidget* m_pParent;

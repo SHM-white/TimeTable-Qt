@@ -17,6 +17,8 @@ Settings_New::Settings_New(std::vector<std::shared_ptr<BasicWindow>>* Windows, J
 	on_pushButton_FreshLessonList_clicked();
 	on_pushButton_FreshWindowList_clicked();
 	on_lineEdit_BackGroundColor_editingFinished();
+	on_pushButton_restoreConfigPath_clicked();
+	on_pushButton_restoreLessonPath_clicked();
 	//on_listWidget_Windows_currentRowChanged(0);
 	_ASSERTE(_CrtCheckMemory());
 
@@ -234,6 +236,12 @@ void Settings_New::on_lineEdit_BackGroundColor_editingFinished()
 void Settings_New::on_checkBox_ColorBackGround_stateChanged(int arg1)
 {
 	GetCurrentWindow()->mUseImgAsBackGround = !arg1;
+	ui.lineEdit_BackGroundColor->setEnabled(arg1);
+	ui.pushButton_ChooseColor->setEnabled(arg1);
+	ui.horizontalSlider_BackGroundAlpha->setEnabled(arg1);
+	ui.spinBox_BackGroundAlpha->setEnabled(arg1);
+	ui.lineEdit_BackgroundImg->setEnabled(!arg1);
+	ui.pushButton_ChooseBackgroundImg->setEnabled(!arg1);
 }
 
 
@@ -361,7 +369,7 @@ void Settings_New::on_listWidget_Windows_currentRowChanged(int currentRow)
 		ui.checkBox_TopMost->setChecked(window->m_TopMost);
 		ui.checkBox_Moveable->setChecked(window->m_moveable);
 		ui.spinBox_FPS->setValue(window->m_maxFPS);
-		ui.checkBox_ColorBackGround->setChecked(window->mUseImgAsBackGround);
+		ui.checkBox_ColorBackGround->setChecked(!window->mUseImgAsBackGround);
 		ui.spinBox_W->setValue(window->miWindowWeight);
 		ui.spinBox_H->setValue(window->miWindowHeight);
 		ui.spinBox_X->setValue(window->miWindowX);
@@ -443,6 +451,72 @@ void Settings_New::LessonChangeRow(int row)
 	);
 	m_TimeTable->changeLesson(row, lessonDay, lesson);
 	_ASSERTE(_CrtCheckMemory());
+
+}
+
+
+void Settings_New::on_pushButton_ChangeConfigPath_clicked()
+{
+	QString openFileName = QFileDialog::getOpenFileName(this, QString::fromStdWString(L"请选择需要打开json"), QString::fromStdWString(L".\\"), QString::fromStdWString(L"JSON文件(*.json);;All(*.*)"));
+	if (openFileName.isEmpty()) {
+		QMessageBox::warning(this, QString::fromStdWString(L"提示"), QString::fromStdWString(L"未选择文件"));
+	}
+	else {
+		ui.lineEdit->setText(openFileName);
+	}
+}
+
+
+void Settings_New::on_pushButton_ChangeLessonPath_clicked()
+{
+	QString openFileName = QFileDialog::getOpenFileName(this, QString::fromStdWString(L"请选择需要打开json"), QString::fromStdWString(L".\\"), QString::fromStdWString(L"JSON文件(*.json);;All(*.*)"));
+	if (openFileName.isEmpty()) {
+		QMessageBox::warning(this, QString::fromStdWString(L"提示"), QString::fromStdWString(L"未选择文件"));
+	}
+	else {
+		ui.lineEdit_2->setText(openFileName);
+	}
+}
+
+
+void Settings_New::on_pushButton_ApplyConfigPath_clicked()
+{
+	Json::ChangeValue(L"ConfigFile", ui.lineEdit->text().toStdString(), DEFAULT_CONFIG_PATH);
+	QMessageBox::information(this, QString::fromStdWString(L"success"), QString::fromStdWString(L"success"));
+}
+
+
+void Settings_New::on_pushButton_ApplyLessonPath_clicked()
+{
+	Json::ChangeValue(L"LessonInfoFile", ui.lineEdit_2->text().toStdString(), DEFAULT_CONFIG_PATH);
+	QMessageBox::information(this, QString::fromStdWString(L"success"), QString::fromStdWString(L"success"));
+}
+
+
+void Settings_New::on_pushButton_restoreConfigPath_clicked()
+{
+	std::wstring path;
+	Json::GetTextItem(L"ConfigFile", path, DEFAULT_CONFIG_PATH);
+	ui.lineEdit->setText(QString::fromStdWString(path));
+}
+
+
+void Settings_New::on_pushButton_restoreLessonPath_clicked()
+{
+	std::wstring path;
+	Json::GetTextItem(L"LessonInfoFile", path, DEFAULT_CONFIG_PATH);
+	ui.lineEdit_2->setText(QString::fromStdWString(path));
+}
+
+
+void Settings_New::on_lineEdit_BackgroundImg_textChanged(const QString &arg1)
+{
+
+}
+
+
+void Settings_New::on_pushButton_ChooseBackgroundImg_clicked()
+{
 
 }
 
