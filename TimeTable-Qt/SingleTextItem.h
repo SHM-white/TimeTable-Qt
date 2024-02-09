@@ -18,5 +18,7 @@ public:
     // 通过 SingleItemUIElementBase 继承
     bool update() const override;
     bool paint(QPainter& painter) const override;
+private:
+    mutable Lesson* m_nextLesson{ nullptr };
 };
 

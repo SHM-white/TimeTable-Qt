@@ -78,7 +78,7 @@ bool SingleTextItem::update() const
     }
         break;
     case TodayInfo:
-        m_formatedText = m_timetable->GetInfo(true);
+        m_formatedText = m_textFormat + m_timetable->GetInfo(true);
         m_updateAfterTime = 5s;
         break;
     case Weather:
@@ -98,14 +98,22 @@ bool SingleTextItem::update() const
         }
     }
         break;
+    case NextLessonTime:
+        if (m_nextLesson == nullptr || m_nextLesson->IsOnLesson(TimeTable::GetCurrentTimeMin())) {
+            m_nextLesson = new Lesson(m_timetable->GetNextLesson());
+        }
+        m_formatedText = m_nextLesson->GetCountDown();
+        m_updateAfterTime = 1s;
+        break;
+    case NextLesson:
+        m_nextLesson = new Lesson(m_timetable->GetNextLesson());
+        m_formatedText = m_nextLesson->mGetName();
+        m_updateAfterTime = 150s;
+        break;
     case News:
         //break;
-    case NextLesson:
-//        break;
     case DailyWord:
         //break;
-    case NextLessonTime:
-//        break;
     case Default:
     default:
         m_formatedText = m_textFormat;
@@ -125,9 +133,9 @@ bool SingleTextItem::paint(QPainter& painter) const
     QRect newRect = m_rect;
     if (getNeededSize().width() > m_rect.size().width()) {
         auto timeAfterChange = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - m_lastChangedTime).count();
-        newRect.setTopLeft(m_rect.topRight() - QPoint(timeAfterChange / ITEM_SCROLL_SPEED, 0));
+        newRect.setTopLeft(m_rect.topRight() - QPoint((timeAfterChange / ITEM_SCROLL_SPEED) % (m_rect.width() + getNeededSize().width()), 0));
         newRect.setSize(getNeededSize());
-        if (newRect.right() < m_rect.left()) {
+        if (newRect.right() <= m_rect.left()) {
             m_CanChange = true;
         }
     }

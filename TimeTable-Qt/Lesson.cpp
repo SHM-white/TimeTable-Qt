@@ -117,9 +117,9 @@ std::wstring Lesson::GetCountDown() const
 	tm time;
 	TimeTable::GetCurrentTime(time);
 	tm lessonTime = time;
-	time.tm_hour = getHourFromHHmm(GetBeginTime());
-	time.tm_min = getMinFromHHmm(GetBeginTime());
-	time.tm_sec = 0;
+	lessonTime.tm_hour = getHourFromHHmm(GetBeginTime());
+	lessonTime.tm_min = getMinFromHHmm(GetBeginTime());
+	lessonTime.tm_sec = 0;
 	return TimeTable::GetCountDown(lessonTime, std::format(L"距离下一节课{}还有%d分钟%d秒", sName), 2);
 }
 
