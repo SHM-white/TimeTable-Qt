@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>667</width>
+    <width>686</width>
     <height>463</height>
    </rect>
   </property>
@@ -125,7 +125,7 @@ QTabBar::tab {
       <enum>QTabWidget::South</enum>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -469,9 +469,9 @@ QTabBar::tab {
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-87</y>
+            <y>-141</y>
             <width>288</width>
-            <height>475</height>
+            <height>529</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -969,6 +969,22 @@ QTabBar::tab {
             </widget>
            </item>
            <item>
+            <widget class="QGroupBox" name="groupBox_3">
+             <property name="title">
+              <string>调试（不会保存）</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_9">
+              <item>
+               <widget class="QCheckBox" name="checkBox_debug">
+                <property name="text">
+                 <string>显示项目边框</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
             <spacer name="verticalSpacer_2">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -1346,7 +1362,7 @@ QTabBar::tab {
            <widget class="QCommandLinkButton" name="commandLinkButton">
             <property name="font">
              <font>
-              <family>Microsoft YaHei</family>
+              <family>Segoe UI</family>
               <pointsize>14</pointsize>
               <underline>true</underline>
              </font>
@@ -1360,7 +1376,7 @@ QTabBar::tab {
            <widget class="QCommandLinkButton" name="commandLinkButton_2">
             <property name="font">
              <font>
-              <family>Microsoft YaHei</family>
+              <family>Segoe UI</family>
               <pointsize>14</pointsize>
               <underline>true</underline>
              </font>

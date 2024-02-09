@@ -47,6 +47,9 @@ public:
 	bool m_hide{ false };
 	bool m_rewriteEmptyJsonValue{ true };
 	std::wstring m_name{ L"Window" };
+
+	std::vector<std::shared_ptr<UIElementBase>> m_UIElements;
+
 private:
 	Qt::WindowFlags flags;
 	QPixmap pic;
@@ -63,7 +66,6 @@ private:
 
 	std::shared_ptr<UIElementBase> CreateUIElement(Json::Value& value, std::shared_ptr<TimeTable> timetable);
 
-	std::vector<std::shared_ptr<UIElementBase>> m_UIElements;
 	Json::Value m_settings;
 protected:
 	std::shared_ptr<TimeTable> m_TimeTable;

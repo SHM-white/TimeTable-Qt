@@ -107,6 +107,8 @@ private slots:
 
     void on_pushButton_ChooseBackgroundImg_clicked();
 
+    void on_checkBox_debug_stateChanged(int arg1);
+
 private:
     void LessonChangeRow(int row);
 	QWidget* m_pParent;

@@ -24,11 +24,7 @@ private slots:
 
     void on_lineEdit_editingFinished();
 
-    void on_comboBox_currentIndexChanged(int index);
-
     void on_pushButton_checkAndSaveData_clicked();
-
-    void on_comboBox_2_currentIndexChanged(int index);
 
     void on_pushButton_addUIElement_clicked();
 
@@ -39,9 +35,11 @@ private slots:
     void on_pushButton_deleteItem_clicked();
 
 private:
+    void FreshUIElementsList();
+    void FreshElementsList();
 	std::shared_ptr<BasicWindow> m_window;
 	Ui::EditUIElementsClass ui;
-
+    UIElementBase* GetCurrentElement();
 	// 通过 BasicWindow 继承
 	Json::Value SaveAsJson(Json::Value value) const override;
 };

@@ -39,13 +39,13 @@ public:
 	virtual QSize getNeededSize() const = 0;
 	virtual QRect getNeededRect() const;
 	Json::Value save() const;
-protected:
-	std::shared_ptr<TimeTable> m_timetable;
 	UIElementType m_type;
-	mutable std::chrono::steady_clock::time_point m_lastUpdateTime;
-	mutable std::chrono::seconds m_updateAfterTime;
 	QRect m_rect;
 	Json::Value m_selfJson;
+protected:
+	std::shared_ptr<TimeTable> m_timetable;
+	mutable std::chrono::steady_clock::time_point m_lastUpdateTime;
+	mutable std::chrono::seconds m_updateAfterTime;
 	virtual Json::Value SaveAsJson(Json::Value& value) const = 0;
 };
 

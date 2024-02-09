@@ -105,7 +105,7 @@ std::string ToolFunctions::wstringToAnsiString(const std::wstring& u8wstring)
 
 std::wstring GetCurrentVersion()
 {
-	return std::format(L"v{}.{}.{} Beta 1", currentVersion_global[0], currentVersion_global[1], currentVersion_global[2]);
+	return std::format(L"v{}.{}.{} Beta 2", currentVersion_global[0], currentVersion_global[1], currentVersion_global[2]);
 }
 
 std::wstring GetCompileTime()
