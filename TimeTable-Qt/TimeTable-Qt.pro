@@ -25,6 +25,7 @@ SOURCES += \
     SubWindow.cpp \
     Timetable.cpp \
     UIElementBase.cpp \
+    importfromfile.cpp \
     include.cpp \
     main.cpp \
     mainwindow.cpp
@@ -45,6 +46,7 @@ HEADERS += \
     TimeTable-Qt.aps \
     Timetable.h \
     UIElementBase.h \
+    importfromfile.h \
     include.h \
     mainwindow.h
 
@@ -52,6 +54,7 @@ FORMS += \
     EditUIElements.ui \
     Settings_New.ui \
     SubWindow.ui \
+    importfromfile.ui \
     mainwindow.ui
 
 TRANSLATIONS += \
