@@ -25,3 +25,4 @@ if not exist %BUILD_DIR%\release\jsoncpp.dll (
   xcopy %SRC_DIR%\TimeTable-Qt\jsoncpp\bin\Release\jsoncpp.dll %BUILD_DIR%\release\
 )
 del %BUILD_DIR%\release\*.obj
+del %BUILD_DIR%\release\*.cpp
