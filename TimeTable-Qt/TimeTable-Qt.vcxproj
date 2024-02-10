@@ -117,6 +117,7 @@
     <ClCompile Include="BasicWindow.cpp" />
     <ClCompile Include="EditUIElements.cpp" />
     <ClCompile Include="EmptyUIElement.cpp" />
+    <ClCompile Include="importfromfile.cpp" />
     <ClCompile Include="include.cpp" />
     <ClCompile Include="Lesson.cpp" />
     <ClCompile Include="main.cpp" />
@@ -131,6 +132,7 @@
     <ClCompile Include="UIElementBase.cpp" />
     <QtRcc Include="TimeTableQt.qrc" />
     <QtUic Include="EditUIElements.ui" />
+    <QtUic Include="importfromfile.ui" />
     <QtUic Include="MainWindow.ui" />
     <QtUic Include="Settings_New.ui" />
     <QtUic Include="SubWindow.ui" />
@@ -150,6 +152,7 @@
     <ClInclude Include="CSVEditor.h" />
     <QtMoc Include="EditUIElements.h" />
     <ClInclude Include="EmptyUIElement.h" />
+    <QtMoc Include="importfromfile.h" />
     <ClInclude Include="include.h" />
     <ClInclude Include="Lesson.h" />
     <QtMoc Include="MainWindow.h" />

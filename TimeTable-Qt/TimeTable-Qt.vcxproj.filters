@@ -79,6 +79,9 @@
     <ClCompile Include="EditUIElements.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="importfromfile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="config.json" />
@@ -153,6 +156,9 @@
     <QtMoc Include="EditUIElements.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="importfromfile.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="MainWindow.ui">
@@ -165,6 +171,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="EditUIElements.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="importfromfile.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

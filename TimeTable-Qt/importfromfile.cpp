@@ -1,6 +1,6 @@
 ﻿#include "importfromfile.h"
 #include "ui_importfromfile.h"
-#include "TimeTableQt.h"
+#include "Settings_New.h"
 #include <qfiledialog.h>
 #include <qmessagebox.h>
 
@@ -9,6 +9,7 @@ ImportFromFile::ImportFromFile(QWidget *parent) :
     ui(new Ui::ImportFromFile)
 {
     ui->setupUi(this);
+    setAttribute(Qt::WA_DeleteOnClose);
 }
 
 ImportFromFile::~ImportFromFile()
@@ -58,9 +59,9 @@ void ImportFromFile::on_pushButton_OK_clicked()
 {
     QString csvpath = this->ui->lineEdit->text();
     QString jsonpath = this->ui->lineEdit_2->text();
-    TimeTableQt* pParent = (TimeTableQt*)parentWidget();
+    TimeTable timetable;
     if ((!csvpath.isEmpty()) && (!jsonpath.isEmpty())) {
-        if (pParent->timetable->mImportLessonsFromCsv((std::wstring)csvpath.toStdWString(), (std::wstring)jsonpath.toStdWString())) {
+        if (timetable.ImportLessonsFromCsv((std::wstring)csvpath.toStdWString(), (std::wstring)jsonpath.toStdWString())) {
             QMessageBox::information(this, QString::fromStdWString(L"成功"), QString::fromStdWString(L"添加成功"));
         }
     }

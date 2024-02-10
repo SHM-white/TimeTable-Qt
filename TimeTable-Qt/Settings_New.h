@@ -109,6 +109,8 @@ private slots:
 
     void on_checkBox_debug_stateChanged(int arg1);
 
+    void on_pushButton_ImportFromFile_clicked();
+
 private:
     void LessonChangeRow(int row);
 	QWidget* m_pParent;

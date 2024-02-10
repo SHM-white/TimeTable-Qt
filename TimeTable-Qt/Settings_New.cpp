@@ -1,5 +1,6 @@
 ﻿#include "Settings_New.h"
 #include "EditUIElements.h"
+#include "importfromfile.h"
 
 Settings_New::Settings_New(std::vector<std::shared_ptr<BasicWindow>>* Windows, Json::Value WindowSettings, QWidget* parent)
 	: BasicWindow(WindowSettings, parent), m_Windows{ Windows }, m_pParent{ parent }
@@ -531,5 +532,12 @@ void Settings_New::on_pushButton_ChooseBackgroundImg_clicked()
 void Settings_New::on_checkBox_debug_stateChanged(int arg1)
 {
 	GetCurrentWindow()->m_debug = arg1;
+}
+
+
+void Settings_New::on_pushButton_ImportFromFile_clicked()
+{
+	auto* window = new ImportFromFile(this);
+	window->show();
 }
 
