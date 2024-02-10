@@ -9,6 +9,7 @@ MultiTextItem::MultiTextItem(Json::Value& value, std::shared_ptr<TimeTable> time
 	{
 		Json::Value removed;
 		m_Texts.push_back(std::make_shared<SingleTextItem>(temp, timetable));
+		m_Texts.back()->update();
 		temp["Data"].removeIndex(0, &removed);
 #ifdef DEBUG
 		OutputDebugStringW(L"removed:");

@@ -117,7 +117,7 @@ bool SingleTextItem::update() const
     case Default:
     default:
         m_formatedText = m_textFormat;
-        m_updateAfterTime = 3600s;
+        m_updateAfterTime = 5s;
         break;
     }
     return false;
