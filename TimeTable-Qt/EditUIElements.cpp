@@ -18,22 +18,26 @@ EditUIElements::~EditUIElements()
 
 UIElementBase* EditUIElements::GetCurrentElement()
 {
+	return nullptr;
+}
+
+void EditUIElements::CurrentElementChanged()
+{
 	int row1 = ui.listWidget->currentRow();
 	if (row1 >= 0 && row1 < m_window->m_UIElements.size()) {
 		auto p1 = m_window->m_UIElements[row1];
 		if (p1->m_type == UIElementType::MultiItemInOrder) {
 			ui.listWidget_2->setEnabled(true);
 			ui.comboBox_ElementType->setEnabled(true);
-			//auto p2 = std::dynamic_pointer_cast<MultiTextItem, UIElementBase>(p1);
-
+			
 		}
-		else if(p1->m_type==UIElementType::SingleItem)
+		else if (p1->m_type == UIElementType::SingleItem)
 		{
 			ui.listWidget_2->setEnabled(false);
 			ui.comboBox_ElementType->setEnabled(false);
 		}
 	}
-	return nullptr;
+
 }
 
 Json::Value EditUIElements::SaveAsJson(Json::Value value) const
@@ -48,12 +52,24 @@ void EditUIElements::on_pushButton_close_clicked()
 
 void EditUIElements::on_lineEdit_BackGroundColor_editingFinished()
 {
-
+	QColor color = HexStringToQColor(ui.lineEdit_BackGroundColor->text().toStdWString());
+	if (color.isValid())
+	{
+		auto pixmap = QPixmap(ui.label_ColorSample->size());
+		pixmap.fill(color);
+		ui.label_ColorSample->setAutoFillBackground(true);
+		ui.label_ColorSample->setPixmap(pixmap);
+		int icolor[4]{ color.red(),color.green(),color.blue(),color.alpha() };
+	}
 }
 
 void EditUIElements::on_pushButton_chooseColor_clicked()
 {
-
+	QColor color = QColorDialog::getColor(ui.lineEdit_BackGroundColor->text(), this);
+	if (color.isValid()) {
+		ui.lineEdit_BackGroundColor->setText(QString::fromStdWString(QColorToHexString(color)));
+		on_lineEdit_BackGroundColor_editingFinished();
+	}
 }
 
 void EditUIElements::on_fontComboBox_currentFontChanged(const QFont &f)

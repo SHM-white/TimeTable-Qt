@@ -530,6 +530,6 @@ void Settings_New::on_pushButton_ChooseBackgroundImg_clicked()
 
 void Settings_New::on_checkBox_debug_stateChanged(int arg1)
 {
-	m_debug = arg1;
+	GetCurrentWindow()->m_debug = arg1;
 }
 

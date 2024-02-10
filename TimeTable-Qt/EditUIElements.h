@@ -40,6 +40,7 @@ private:
 	std::shared_ptr<BasicWindow> m_window;
 	Ui::EditUIElementsClass ui;
     UIElementBase* GetCurrentElement();
+    void CurrentElementChanged();
 	// 通过 BasicWindow 继承
 	Json::Value SaveAsJson(Json::Value value) const override;
 };
