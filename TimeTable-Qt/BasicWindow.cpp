@@ -105,9 +105,16 @@ bool BasicWindow::InitializeWindow(Json::Value& value)
 		this->setFixedSize(miWindowWeight, miWindowHeight);
 	}
 
-	QString picpath = QString::fromStdWString(msBackGroundImg);
-	pic = QPixmap(picpath);
+	//QString picpath = QString::fromStdWString(msBackGroundImg);
+	QString picpath = QString::fromUtf8(wtu8(msBackGroundImg));
+	pic.load(picpath);
 	pic = pic.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+
+#ifdef DEBUG
+	if (pic.isNull()) {
+		OutputDebugStringW(L"pic is null");
+	}
+#endif // DEBUG
 
 	setWindowFlags(Qt::WindowMinMaxButtonsHint | Qt::FramelessWindowHint | Qt::Tool);
 	setAttribute(Qt::WA_TranslucentBackground);
@@ -164,6 +171,9 @@ void BasicWindow::paintEvent(QPaintEvent* event)
 	QPainter painter(this);
 	// Draw background image
 	if (pic.isNull() || !(mUseImgAsBackGround)) {
+		if (mUseImgAsBackGround) {
+			//QMessageBox::warning(this, "", "pixmap is null");
+		}
 		painter.fillRect(rect(), QColor(miBackGroundColor[0], miBackGroundColor[1], miBackGroundColor[2], miBackGroundColor[3]));
 	}
 	else {

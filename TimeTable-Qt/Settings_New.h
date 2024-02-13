@@ -113,6 +113,8 @@ private slots:
 
     void on_checkBox_showFPS_stateChanged(int arg1);
 
+    void on_comboBox_InfoDay_currentTextChanged(const QString &arg1);
+
 private:
     void LessonChangeRow(int row);
 	QWidget* m_pParent;

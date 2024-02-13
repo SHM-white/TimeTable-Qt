@@ -150,6 +150,9 @@ void Settings_New::on_pushButton_AddInfo_clicked()
 
 void Settings_New::on_pushButton_DeleteInfo_clicked()
 {
+	if (ui.listWidget_Infos->currentRow() < 0) {
+		return;
+	}
 	m_TimeTable->deleteInfo(ui.listWidget_Infos->currentRow(), ui.comboBox_InfoDay->currentText().toStdWString());
 	on_pushButton_FreshInfo_clicked();
 }
@@ -160,7 +163,7 @@ void Settings_New::on_pushButton_FreshInfo_clicked()
 	ListsInitialized = false;
 	ui.listWidget_Infos->clear();
 	std::vector<std::wstring> in;
-	m_TimeTable->GetTodayMoreInfo(in, ui.comboBox_LessonDay->currentText().toStdWString());
+	m_TimeTable->GetTodayMoreInfo(in, ui.comboBox_InfoDay->currentText().toStdWString());
 	for (auto& i : in) {
 		QListWidgetItem* item = new QListWidgetItem(QString::fromStdWString(i));
 		item->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled);
@@ -371,6 +374,7 @@ void Settings_New::on_listWidget_Windows_currentRowChanged(int currentRow)
 		ui.checkBox_Moveable->setChecked(window->m_moveable);
 		ui.spinBox_FPS->setValue(window->m_maxFPS);
 		ui.checkBox_ColorBackGround->setChecked(!window->mUseImgAsBackGround);
+		on_checkBox_ColorBackGround_stateChanged(!window->mUseImgAsBackGround);
 		ui.spinBox_W->setValue(window->miWindowWeight);
 		ui.spinBox_H->setValue(window->miWindowHeight);
 		ui.spinBox_X->setValue(window->miWindowX);
@@ -380,6 +384,7 @@ void Settings_New::on_listWidget_Windows_currentRowChanged(int currentRow)
 		ui.spinBox_BackGroundAlpha->setValue(color.alpha());
 		ui.checkBox_showFPS->setChecked(window->m_showFPS);
 		ui.checkBox_debug->setChecked(window->m_debug);
+		ui.lineEdit_BackgroundImg->setText(QString::fromStdWString(window->msBackGroundImg));
 	}
 }
 
@@ -547,5 +552,11 @@ void Settings_New::on_pushButton_ImportFromFile_clicked()
 void Settings_New::on_checkBox_showFPS_stateChanged(int arg1)
 {
 	GetCurrentWindow()->m_showFPS = arg1;
+}
+
+
+void Settings_New::on_comboBox_InfoDay_currentTextChanged(const QString &arg1)
+{
+	on_pushButton_FreshInfo_clicked();
 }
 
