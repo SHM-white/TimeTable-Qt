@@ -19,6 +19,7 @@ SingleTextItem::SingleTextItem(Json::Value& value, std::shared_ptr<TimeTable> ti
     );
     m_font = QFont(QString::fromStdWString(u8tw(temp["Font"].asString())),temp["TextSize"].asInt());
     m_Data = temp["Data"];
+    update();
 }
 
 QSize SingleTextItem::getNeededSize() const
