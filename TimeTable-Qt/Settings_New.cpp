@@ -378,6 +378,8 @@ void Settings_New::on_listWidget_Windows_currentRowChanged(int currentRow)
 		QColor color(window->miBackGroundColor[0], window->miBackGroundColor[1], window->miBackGroundColor[2], window->miBackGroundColor[3]);
 		ui.lineEdit_BackGroundColor->setText(QString::fromStdWString(QColorToHexString(color)));
 		ui.spinBox_BackGroundAlpha->setValue(color.alpha());
+		ui.checkBox_showFPS->setChecked(window->m_showFPS);
+		ui.checkBox_debug->setChecked(window->m_debug);
 	}
 }
 
@@ -539,5 +541,11 @@ void Settings_New::on_pushButton_ImportFromFile_clicked()
 {
 	auto* window = new ImportFromFile(this);
 	window->show();
+}
+
+
+void Settings_New::on_checkBox_showFPS_stateChanged(int arg1)
+{
+	GetCurrentWindow()->m_showFPS = arg1;
 }
 

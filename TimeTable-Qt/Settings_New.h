@@ -111,6 +111,8 @@ private slots:
 
     void on_pushButton_ImportFromFile_clicked();
 
+    void on_checkBox_showFPS_stateChanged(int arg1);
+
 private:
     void LessonChangeRow(int row);
 	QWidget* m_pParent;

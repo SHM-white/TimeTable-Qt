@@ -108,7 +108,7 @@ bool SingleTextItem::update() const
         break;
     case NextLesson:
         m_nextLesson = new Lesson(m_timetable->GetNextLesson());
-        m_formatedText = m_nextLesson->mGetName();
+        m_formatedText = m_textFormat + m_nextLesson->mGetName();
         m_updateAfterTime = 150s;
         break;
     case News:

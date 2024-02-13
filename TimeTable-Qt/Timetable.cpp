@@ -120,7 +120,7 @@ Lesson TimeTable::GetNextLesson()
 			return i;
 		}
 	}
-	return Lesson(L"Null", L"Null", 0, 2400);
+	return Lesson(L"Null", L"Null", 2359, 2400);
 }
 Lesson TimeTable::GetCurrentLesson()
 {

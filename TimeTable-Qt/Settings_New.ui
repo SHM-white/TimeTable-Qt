@@ -493,9 +493,9 @@ QTabBar::tab {
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>-163</y>
             <width>288</width>
-            <height>529</height>
+            <height>551</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1002,6 +1002,13 @@ QTabBar::tab {
                <widget class="QCheckBox" name="checkBox_debug">
                 <property name="text">
                  <string>显示项目边框</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="checkBox_showFPS">
+                <property name="text">
+                 <string>显示帧率</string>
                 </property>
                </widget>
               </item>
