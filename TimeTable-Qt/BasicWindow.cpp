@@ -105,8 +105,8 @@ bool BasicWindow::InitializeWindow(Json::Value& value)
 		this->setFixedSize(miWindowWeight, miWindowHeight);
 	}
 
-	//QString picpath = QString::fromStdWString(msBackGroundImg);
-	QString picpath = QString::fromUtf8(wtu8(msBackGroundImg));
+	QString picpath = QString::fromStdWString(msBackGroundImg);
+	//QString picpath = QString::fromUtf8(wtu8(msBackGroundImg));
 	pic.load(picpath);
 	pic = pic.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 
