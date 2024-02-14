@@ -13,6 +13,7 @@ int main(int argc, char *argv[])
 #ifdef QT5
     QApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
     QApplication::setFont(QFont("Microsoft YaHei", 9));
+    a.setQuitOnLastWindowClosed(false);
 #endif // QT5
     std::wstring path;
     Json::GetTextItem(L"ConfigFile", path, DEFAULT_CONFIG_PATH);
