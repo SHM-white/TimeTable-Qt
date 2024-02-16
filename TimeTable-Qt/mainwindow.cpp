@@ -78,15 +78,15 @@ void MainWindow::HideAllWindows()
 
 void MainWindow::updateWindowStatus()
 {
-    static int counter{ 0 };
-    static const int limit{ 3 };
-    if (counter <= limit) {
-        counter++;
-    }
-    else if (counter == limit + 1)
-    {
-        m_hide = true;
-    }
+    //static int counter{ 0 };
+    //static const int limit{ 3 };
+    //if (counter <= limit) {
+    //    counter++;
+    //}
+    //else if (counter == limit + 1)
+    //{
+    //    m_hide = true;
+    //}
     BasicWindow::updateWindowStatus();
 }
 
@@ -200,5 +200,6 @@ void MainWindow::SelfInitial()
     {
         qApp->quit();
     }
+    m_hide = true;
     delete timer;
 }

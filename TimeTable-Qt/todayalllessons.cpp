@@ -1,100 +1,51 @@
-﻿#include "todayalllessons.h"
-#include "ui_todayalllessons.h"
-#include <string>
-#include <windef.h>
-#include <QDialog>
-#include <QMouseEvent>
-#include <QPainter>
-#include <QPixmap>
-#include <algorithm>
-#include <vector>
+﻿#include "TodayAllLessons.h"
 
-
-TodayAllLessons::TodayAllLessons(QWidget *parent) :
-    QWidget(nullptr),
-    ui(new Ui::TodayAllLessons)
+TodayAllLessons::TodayAllLessons(Json::Value& value, std::shared_ptr<TimeTable> timetable)
+    :SingleItemUIElementBase(value, timetable)
 {
-    time_calendar = new QTimer(this);
-    connect(time_calendar, SIGNAL(timeout()), this, SLOT(update()));
-    time_calendar->start(1000);
-
-    ui->setupUi(this);
-    pParent = (TimeTableQt*)parent;
-    setWindowFlags(Qt::WindowMinMaxButtonsHint | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
-    setAttribute(Qt::WA_TranslucentBackground);
-
-    QRect windowRect = geometry();
-    windowRect.setY(pParent->windowsettings->miAllLessonWindowY);
-    windowRect.setX(pParent->windowsettings->miAllLessonWindowX);
-    setGeometry(windowRect);
+    Json::Value& temp = value["Data"][0];
+    m_textType = ElementType(temp["Type"].asInt());
+    m_color = QColor(
+        temp["TextColor"][0].asInt(),
+        temp["TextColor"][1].asInt(),
+        temp["TextColor"][2].asInt(),
+        temp["TextColor"][3].asInt()
+    );
+    m_font = QFont(QString::fromStdWString(u8tw(temp["Font"].asString())), temp["TextSize"].asInt());
+    m_Data = temp["Data"];
+    update();
 }
 
-TodayAllLessons::~TodayAllLessons()
+bool TodayAllLessons::paint(QPainter& painter) const
 {
-    delete ui;
+    if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - m_lastUpdateTime).count() > 10) {
+        update();
+    }
+    return false;
 }
 
-void TodayAllLessons::paintEvent(QPaintEvent*)
+QSize TodayAllLessons::getNeededSize() const
 {
-    QPainter painter(this);
-    std::vector<Lesson> allLessons;
-    pParent->timetable->mGetLesson(allLessons, pParent->timetable->mGetCurrentTime(L"%a"));
-    std::vector<QString> qAllLessons;
-    for (const auto& i : allLessons) {
-        qAllLessons.push_back(QString::fromStdWString(i.mGetName()));
-        qAllLessons.back() = qAllLessons.back().at(0);
-    }
-    painter.fillRect(rect(), QColor(255, 255, 255, 100));
-    painter.setPen(QPen(QBrush(QColor(0, 0, 0, 255)), 2));
-    painter.drawRect(rect());
-    QFont font(QString::fromStdWString(L"微软雅黑"),14);
-    painter.setFont(font);
-    int maxLength{ 0 };
-    for (const auto& i : qAllLessons) {
-        maxLength = max(maxLength, i.length());
-    }
-    QFontMetrics fontMetrics = painter.fontMetrics();
-    setFixedSize(qAllLessons.size() * fontMetrics.maxWidth(), (int)(maxLength * fontMetrics.height())+5);
-    for (int i = 0; i < qAllLessons.size(); i++) {
-        QRect rect(i * fontMetrics.maxWidth()+3, 0, fontMetrics.maxWidth(), maxLength * fontMetrics.height());
-        painter.drawText(rect, Qt::TextWordWrap | Qt::AlignVCenter, qAllLessons[i]);
-    }
-    int currentLessonIndex = pParent->timetable->mGetCurrentLesson(0);
-    painter.setPen(QPen(QBrush(QColor(67, 255, 9, 255)), 2));
-    painter.drawRect(currentLessonIndex * fontMetrics.maxWidth(), 2, fontMetrics.maxWidth(), maxLength * fontMetrics.height());
+    return QSize();
 }
 
-void TodayAllLessons::closeEvent(QCloseEvent* event)
+Json::Value TodayAllLessons::SaveAsJson(Json::Value& value) const
 {
-    pParent->ui.actionshowTodayAll->setChecked(false);
-    event->accept();
-}
+    value["Data"].clear();
+    Json::Value temp;
+    temp["Type"] = (int)m_textType;
+    temp["Font"] = wtu8(m_font.family().toStdWString());
+    temp["TextSize"] = m_font.pointSize();
+    temp["TextColor"][0] = m_color.red();
+    temp["TextColor"][1] = m_color.green();
+    temp["TextColor"][2] = m_color.blue();
+    temp["TextColor"][3] = m_color.alpha();
+    temp["Data"] = m_Data;
+    value["Data"].append(temp);
+#ifdef DEBUG
+    OutputDebugStringW(L"Saved value:");
+    OutputDebugStringW(u8tw(value.toStyledString()).c_str());
+#endif // DEBUG
+    return value;
 
-void TodayAllLessons::mousePressEvent(QMouseEvent* event)
-{
-    if (event->button() == Qt::LeftButton)
-    {
-        m_bDrag = true;
-        mouseStartPoint = event->globalPos();
-        windowTopLeftPoint = this->frameGeometry().topLeft();
-        setCursor(QCursor(Qt::SizeAllCursor));
-    }
-}
-
-void TodayAllLessons::mouseMoveEvent(QMouseEvent* event)
-{
-    if (m_bDrag)
-    {
-        QPoint distance = event->globalPos() - mouseStartPoint;
-        this->move(windowTopLeftPoint + distance);
-    }
-}
-
-void TodayAllLessons::mouseReleaseEvent(QMouseEvent* event)
-{
-    if (event->button() == Qt::LeftButton)
-    {
-        m_bDrag = false;
-    }
-    setCursor(QCursor(Qt::ArrowCursor));
 }

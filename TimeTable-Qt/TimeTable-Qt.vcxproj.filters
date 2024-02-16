@@ -82,6 +82,9 @@
     <ClCompile Include="importfromfile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TodayAllLessons.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="config.json" />
@@ -123,6 +126,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EmptyUIElement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TodayAllLessons.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

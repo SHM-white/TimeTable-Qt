@@ -1,13 +1,7 @@
 ﻿#pragma once
 
 #include "include.h"
-#include<string>
-#include<string_view>
-#include<format>
-#include<vector>
-#include "resource.h"
-#include<Windows.h>
-#include"Lesson.h"
+#include "Lesson.h"
 
 class CSVEditor
 {

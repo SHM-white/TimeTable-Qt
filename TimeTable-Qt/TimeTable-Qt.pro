@@ -24,6 +24,7 @@ SOURCES += \
     SingleTextItem.cpp \
     SubWindow.cpp \
     Timetable.cpp \
+    TodayAllLessons.cpp \
     UIElementBase.cpp \
     importfromfile.cpp \
     include.cpp \
@@ -45,6 +46,7 @@ HEADERS += \
     SubWindow.h \
     TimeTable-Qt.aps \
     Timetable.h \
+    TodayAllLessons.h \
     UIElementBase.h \
     importfromfile.h \
     include.h \

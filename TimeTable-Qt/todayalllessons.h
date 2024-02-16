@@ -1,34 +1,14 @@
-﻿#ifndef TODAYALLLESSONS_H
-#define TODAYALLLESSONS_H
-
-#include <QWidget>
-#include <qtimer.h>
-#include "TimeTableQt.h"
-
-namespace Ui {
-class TodayAllLessons;
-}
-
-class TodayAllLessons : public QWidget
+﻿#pragma once
+#include "SingleItemUIElementBase.h"
+class TodayAllLessons :
+    public SingleItemUIElementBase
 {
-    Q_OBJECT
-
 public:
-    explicit TodayAllLessons(QWidget *parent = nullptr);
-    ~TodayAllLessons();
-
-private:
-    QTimer* time_calendar;
-    Ui::TodayAllLessons *ui;
-    void paintEvent(QPaintEvent*) override;
-    TimeTableQt* pParent;
-    QPoint mouseStartPoint;
-    QPoint windowTopLeftPoint;
-    bool m_bDrag{ false };
-    void mousePressEvent(QMouseEvent* event) override;
-    void mouseMoveEvent(QMouseEvent* event) override;
-    void mouseReleaseEvent(QMouseEvent* event) override;
-    void closeEvent(QCloseEvent* event) override;
+    TodayAllLessons(Json::Value& value, std::shared_ptr<TimeTable> timetable);
+    // 通过 SingleItemUIElementBase 继承
+    bool paint(QPainter& painter) const override;
+    QSize getNeededSize() const override;
+    Json::Value SaveAsJson(Json::Value& value) const override;
+    
 };
 
-#endif // TODAYALLLESSONS_H

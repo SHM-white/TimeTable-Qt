@@ -129,6 +129,7 @@
     <ClCompile Include="SingleItemUIElementBase.cpp" />
     <ClCompile Include="SubWindow.cpp" />
     <ClCompile Include="SingleTextItem.cpp" />
+    <ClCompile Include="TodayAllLessons.cpp" />
     <ClCompile Include="UIElementBase.cpp" />
     <QtRcc Include="TimeTableQt.qrc" />
     <QtUic Include="EditUIElements.ui" />
@@ -164,6 +165,7 @@
     <ClInclude Include="SingleItemUIElementBase.h" />
     <ClInclude Include="SingleTextItem.h" />
     <ClInclude Include="Timetable.h" />
+    <ClInclude Include="TodayAllLessons.h" />
     <ClInclude Include="UIElementBase.h" />
   </ItemGroup>
   <ItemGroup>
