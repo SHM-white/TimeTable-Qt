@@ -5,6 +5,7 @@
 #include "MultiItemAllDisplayUIElementBase.h"
 #include "MultiTextItem.h"
 #include "SingleTextItem.h"
+#include "TodayAllLessons.h"
 
 UIElementBase::UIElementBase(Json::Value& setting, std::shared_ptr<TimeTable> timetable)
 	:m_timetable{ timetable }, m_selfJson{ setting }
@@ -51,15 +52,30 @@ std::shared_ptr<SingleItemUIElementBase> CreateSingleItemUIElement(Json::Value& 
 	OutputDebugStringW(L"CreateSingleItemUIElement() value:");
 	OutputDebugStringW(u8tw(value.toStyledString()).c_str());
 #endif // DEBUG
-	for (auto& i : value["Data"]) {
-		textOnly &= (i["Type"].asInt() <= (int)ElementType::Weather);
+	if (value["Data"].size() != 1) {
+		throw std::exception("?");
 	}
+		textOnly = value["Data"][0]["Type"].asInt() <= (int)ElementType::Weather;
 	if (textOnly) {
 		return std::dynamic_pointer_cast<SingleItemUIElementBase, SingleTextItem>(std::make_shared<SingleTextItem>(value, timetable));
 	}
 	else
 	{
-		throw std::exception("Hasn't support!");
+		switch (ElementType(value["Data"][0]["Type"].asInt()))
+		{
+		case AllLessons:
+			return std::make_shared<TodayAllLessons>(value, timetable);
+			break;
+		case CurrentLessonProgress:
+			//break;
+		case WeatherBlock:
+			//break;
+		case Clock:
+			//break;
+		default:
+			throw std::exception("Hasn't support!");
+			break;
+		}
 	}
 }
 

@@ -40,7 +40,7 @@ public:
 	virtual QRect getNeededRect() const;
 	Json::Value save() const;
 	UIElementType m_type;
-	QRect m_rect;
+	mutable QRect m_rect;
 	Json::Value m_selfJson;
 protected:
 	std::shared_ptr<TimeTable> m_timetable;
@@ -50,6 +50,7 @@ protected:
 };
 
 class SingleItemUIElementBase;
+class TodayAllLessons;
 class SingleTextItem;
 class MultiItemInOrderUIElementBase;
 class MultiTextItem;

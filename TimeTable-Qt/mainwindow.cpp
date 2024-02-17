@@ -140,9 +140,9 @@ void MainWindow::OpenSubWindows()
         {
             m_windows.push_back(CreateSubWindows(i, m_TimeTable));
         }
-        catch (const std::exception&)
+        catch (const std::exception& e)
         {
-            QMessageBox::warning(this, QString::fromStdWString(L"error"), QString::fromStdWString(L"请检查配置文件"), QMessageBox::Ok);
+            QMessageBox::warning(this, QString::fromStdWString(L"error"), QString::fromStdWString(std::format(L"error:{},请检查配置文件", u8tw(std::string(e.what())))), QMessageBox::Ok);
         }
     }
 
