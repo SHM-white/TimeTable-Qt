@@ -44,7 +44,7 @@ public:
 	Json::Value m_selfJson;
 protected:
 	std::shared_ptr<TimeTable> m_timetable;
-	mutable std::chrono::steady_clock::time_point m_lastUpdateTime;
+	mutable std::chrono::system_clock::time_point m_lastUpdateTime;
 	mutable std::chrono::seconds m_updateAfterTime;
 	virtual Json::Value SaveAsJson(Json::Value& value) const = 0;
 };

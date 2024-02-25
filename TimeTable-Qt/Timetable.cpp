@@ -120,7 +120,7 @@ Lesson TimeTable::GetNextLesson()
 			return i;
 		}
 	}
-	return Lesson(L"Null", L"Null", 2359, 2400);
+	return Lesson(L"Null", L"", 2359, 2400);
 }
 Lesson TimeTable::GetCurrentLesson()
 {
@@ -517,6 +517,7 @@ int TimeTable::GetCurrentTimeMin()
 {
 	return mHHMMToMin(_wtoi(GetCurrentTime(L"%H%M").c_str()));
 }
+// This function retrieves weather information from a specified city using an API and returns the weather as a formatted string. It also updates a boolean pointer to indicate whether the operation was successful or not.
 std::wstring TimeTable::GetWeather(const std::wstring& code, const std::wstring& APIKey, bool* isSuccess)
 {
 	static std::wstring weather{L"getting...."};
@@ -561,6 +562,7 @@ std::wstring TimeTable::GetWeather(const std::wstring& code, const std::wstring&
 	catch (std::exception &e)
 	{
 		weather = L"error:" + u8tw(e.what());
+		status = std::future_status::deferred;
 	}
 	catch (...)
 	{
@@ -621,11 +623,24 @@ std::wstring TimeTable::GetCountDown(tm tmIn, const std::wstring &TimeFormat, in
 	gmtime_s(&tmIn, &timeIn);
 	wchar_t tmp[1024];
 	int times[10]{0};
-	times[0] = tmIn.tm_yday;
-	times[1] = tmIn.tm_hour;
-	times[2] = tmIn.tm_min;
-	times[3] = tmIn.tm_sec;
-	_snwprintf_s(tmp, sizeof(tmp) / sizeof(wchar_t), TimeFormat.c_str(), times[begin], times[begin + 1], times[begin + 2], times[begin + 3]);
+	times[0] = tmIn.tm_year - 70;
+	times[1] = tmIn.tm_yday;
+	times[2] = tmIn.tm_hour;
+	times[3] = tmIn.tm_min;
+	times[4] = tmIn.tm_sec;
+	if (begin > 0) {
+		times[1] += times[0] * 265;
+	}
+	if (begin > 1) {
+		times[2] += times[1] * 24;
+	}
+	if (begin > 2) {
+		times[3] += times[2] * 60;
+	}
+	if (begin > 3) {
+		times[4] += times[3] * 60;
+	}
+	_snwprintf_s(tmp, sizeof(tmp) / sizeof(wchar_t), TimeFormat.c_str(), times[begin], times[begin + 1], times[begin + 2], times[begin + 3], times[begin + 4]);
 	return tmp;
 }
 

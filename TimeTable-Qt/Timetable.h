@@ -41,7 +41,7 @@ public:
 	static std::wstring GetWeather(const std::wstring& first, const std::wstring& second);
 	static std::wstring GetAdcodeSync(const std::wstring& address,const std::wstring& city, const std::wstring& APIKey);
 	static requests::Response GetResponseFromUrlSync(const std::wstring& url);
-	static std::wstring GetCountDown(tm tmIn, const std::wstring& TimeFormat, int begin = 0);
+	static std::wstring GetCountDown(tm tmIn, const std::wstring& TimeFormat, int begin = 1);
 	std::wstring GetInfo(bool next = false);
 	std::wstring GetInfo(const std::wstring& week, bool next = false);
 	std::wstring GetCurrentLesson(const std::wstring& LessonNull);

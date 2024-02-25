@@ -133,7 +133,7 @@ bool SingleTextItem::paint(QPainter& painter) const
 
     QRect newRect = m_rect;
     if (getNeededSize().width() > m_rect.size().width()) {
-        auto timeAfterChange = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - m_lastChangedTime).count();
+        auto timeAfterChange = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - m_lastChangedTime).count();
         newRect.setTopLeft(m_rect.topRight() - QPoint((timeAfterChange / ITEM_SCROLL_SPEED) % (m_rect.width() + getNeededSize().width()), 0));
         newRect.setSize(getNeededSize());
         if (newRect.right() <= m_rect.left()) {
@@ -141,7 +141,7 @@ bool SingleTextItem::paint(QPainter& painter) const
         }
     }
     else {
-        auto seconds = (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - this->m_lastChangedTime)).count();
+        auto seconds = (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - this->m_lastChangedTime)).count();
 //#ifdef DEBUG
 //        OutputDebugStringW(std::format(L"Item:{} paint() called\n", (int)m_ItemType).c_str());
 //        OutputDebugStringW(std::format(L"m_lastChangedTime:{}s\n", std::chrono::duration_cast<std::chrono::seconds>(m_lastChangedTime.time_since_epoch()).count()).c_str());
@@ -154,7 +154,7 @@ bool SingleTextItem::paint(QPainter& painter) const
     }
     painter.drawText(newRect, Qt::AlignCenter, QString::fromStdWString(m_formatedText));
     painter.restore();
-    auto seconds = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - m_lastUpdateTime).count();
+    auto seconds = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - m_lastUpdateTime).count();
     if ( seconds >= m_updateAfterTime.count()) {
 //#ifdef DEBUG
 //        OutputDebugStringW(std::format(L"Item:{} paint() called\n", (int)m_ItemType).c_str());

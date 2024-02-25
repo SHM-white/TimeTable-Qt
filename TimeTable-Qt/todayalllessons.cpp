@@ -40,7 +40,7 @@ bool TodayAllLessons::update() const
 
 bool TodayAllLessons::paint(QPainter& painter) const
 {
-    if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - m_lastUpdateTime).count() > 10) {
+    if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - m_lastUpdateTime).count() > 10) {
         update();
     }
     painter.save();
@@ -71,7 +71,7 @@ bool TodayAllLessons::paint(QPainter& painter) const
         m_rect = QRect(m_rect.topLeft(), size);
         for (int i = 0; i < lessons.size(); i++) {
             QRect rect(m_rect.left(), m_rect.top() + fontMetrics.height() * i, maxLength * fontMetrics.maxWidth(), fontMetrics.height());
-            painter.drawText(rect, Qt::TextWordWrap | Qt::AlignVCenter, lessons[i]);
+            painter.drawText(rect, Qt::TextWordWrap | Qt::AlignCenter, lessons[i]);
         }
         painter.setPen(QPen(QBrush(QColor(67, 255, 9, 255)), 2));
         painter.drawRect(m_rect.left(), m_rect.top() + m_CurrentLessonIndex * fontMetrics.height(), fontMetrics.maxWidth() * maxLength, fontMetrics.height());

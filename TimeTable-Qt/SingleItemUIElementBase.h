@@ -13,7 +13,7 @@ public:
     mutable Json::Value m_Data;
 protected:
     mutable std::chrono::seconds m_CanChangeAfterTime;
-    mutable std::chrono::steady_clock::time_point m_lastChangedTime;
+    mutable std::chrono::system_clock::time_point m_lastChangedTime;
     ElementType m_ItemType;
 };
 

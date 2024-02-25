@@ -11,7 +11,7 @@ SingleItemUIElementBase::SingleItemUIElementBase(Json::Value& value, std::shared
 
 bool SingleItemUIElementBase::SetChanged()
 {
-	m_lastChangedTime = std::chrono::steady_clock::now();
+	m_lastChangedTime = std::chrono::system_clock::now();
 	m_CanChange = false;
 #ifdef DEBUG
 	OutputDebugStringW(std::format(L"Item:{} SetChanged() called\n", int(m_ItemType)).c_str());
