@@ -89,22 +89,25 @@ void Settings_New::on_pushButton_FreshLessonList_clicked()
 	for (int i = 0; i < lessons.size();++i) {
 		auto currentLesson = lessons[i];
 		auto* comboBox = new QComboBox();
-		comboBox->addItem("语文");
-		comboBox->addItem("数学");
-		comboBox->addItem("英语");
-		comboBox->addItem("物理");
-		comboBox->addItem("化学");
-		comboBox->addItem("生物");
-		comboBox->addItem("历史");
-		comboBox->addItem("政治");
-		comboBox->addItem("地理");
-		comboBox->addItem("班会");
-		comboBox->addItem("自习");
+		comboBox->addItem(QStringW(L"语文"));
+		comboBox->addItem(QStringW(L"数学"));
+		comboBox->addItem(QStringW(L"英语"));
+		comboBox->addItem(QStringW(L"物理"));
+		comboBox->addItem(QStringW(L"化学"));
+		comboBox->addItem(QStringW(L"生物"));
+		comboBox->addItem(QStringW(L"历史"));
+		comboBox->addItem(QStringW(L"政治"));
+		comboBox->addItem(QStringW(L"地理"));
+		comboBox->addItem(QStringW(L"班会"));
+		comboBox->addItem(QStringW(L"体育"));
+		comboBox->addItem(QStringW(L"自习"));
 		comboBox->setEditable(true);
 		comboBox->view()->parentWidget()->setWindowFlags(Qt::Popup | Qt::FramelessWindowHint);
 		comboBox->view()->parentWidget()->setAttribute(Qt::WA_TranslucentBackground);
 		comboBox->setCurrentText(QString::fromStdWString(currentLesson.mGetName()));
 		connect(comboBox, SIGNAL(currentTextChanged(QString)), this, SLOT(on_LessonComboBox_TextChanged(QString)));
+		
+		
 		auto* item2 = new QTableWidgetItem(QString::fromStdWString(currentLesson.GetBeginTimeAsString()));
 		auto* item3 = new QTableWidgetItem(QString::fromStdWString(currentLesson.GetEndTimeAsString()));
 		ui.tableWidget_Lessons->setCellWidget(i, 0, comboBox);

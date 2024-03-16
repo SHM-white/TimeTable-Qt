@@ -91,6 +91,8 @@ extern int ITEM_SCROLL_SPEED;
 #define DEFAULT_CONFIG_PATH L"config.json"
 #define DEFAULT_LESSONINFO_PATH L"Lessons.json"
 
+#define QStringW QString::fromStdWString
+
 #if QT_VERSION > 0x060000
 #define QT6
 #else
@@ -170,3 +172,8 @@ QColor ColorRefToQColor(COLORREF color);
 COLORREF QColorToColorRef(QColor color);
 QColor HexStringToQColor(const std::wstring& input);
 std::wstring QColorToHexString(QColor color);
+
+//operators:
+Json::Value operator|(Json::Value& value, const std::wstring& str);
+std::wstring operator|(std::wstring& str, const std::string& str2);
+std::string operator|(std::string& str, const std::wstring& str2);

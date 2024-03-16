@@ -184,3 +184,21 @@ std::wstring QColorToHexString(QColor color)
 	return ColorRefToHexString(QColorToColorRef(color));
 }
 
+Json::Value operator|(Json::Value& value, const std::wstring& str)
+{
+	value = wtu8(str);
+	return value;
+}
+
+std::wstring operator|(std::wstring& str, const std::string& str2)
+{
+	str = u8tw(str2);
+	return str;
+}
+
+std::string operator|(std::string& str, const std::wstring& str2)
+{
+	str = wtu8(str2);
+	return str;
+}
+
