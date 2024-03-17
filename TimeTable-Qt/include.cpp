@@ -147,6 +147,25 @@ std::wstring GetWStrDay(Days day)
     return strDay;
 }
 
+QTime timeIntToQTime(int hhmm)
+{
+	return QTime(getHourFromHHmm(hhmm), getMinFromHHmm(hhmm));
+}
+int getHourFromHHmm(int input)
+{
+	return (input - input % 100) / 100;
+}
+
+int getMinFromHHmm(int input)
+{
+	return input % 100;
+}
+
+int QTimeToHHmm(const QTime& time)
+{
+	return time.hour() * 100 + time.minute();
+}
+
 COLORREF HexStringToColorRef(const std::wstring& input)
 {
 	int red;

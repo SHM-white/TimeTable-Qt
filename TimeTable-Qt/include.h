@@ -56,6 +56,7 @@
 #include <qtimer.h>
 #include <QtWidgets/QWidget>
 #include <qtablewidget.h>
+#include <qdatetimeedit.h>
 
 /*
 #include "UIElementBase.h"
@@ -165,7 +166,10 @@ std::wstring GetWStrDay(Days day);
 const std::wstring DaysCollectionW[8]{ L"Null",L"Mon", L"Tue", L"Wed", L"Thu", L"Fri", L"Sat", L"Sun" };
 
 //const std::string DaysCollection[8]{ "Null","Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
-
+int getHourFromHHmm(int input);
+int getMinFromHHmm(int input);
+int QTimeToHHmm(const QTime& time);
+QTime timeIntToQTime(int hhmm);
 COLORREF HexStringToColorRef(const std::wstring& input);
 std::wstring ColorRefToHexString(COLORREF color);
 QColor ColorRefToQColor(COLORREF color);

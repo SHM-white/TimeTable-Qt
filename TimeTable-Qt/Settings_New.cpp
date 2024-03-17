@@ -106,13 +106,15 @@ void Settings_New::on_pushButton_FreshLessonList_clicked()
 		comboBox->view()->parentWidget()->setAttribute(Qt::WA_TranslucentBackground);
 		comboBox->setCurrentText(QString::fromStdWString(currentLesson.mGetName()));
 		connect(comboBox, SIGNAL(currentTextChanged(QString)), this, SLOT(on_LessonComboBox_TextChanged(QString)));
-		
-		
-		auto* item2 = new QTableWidgetItem(QString::fromStdWString(currentLesson.GetBeginTimeAsString()));
-		auto* item3 = new QTableWidgetItem(QString::fromStdWString(currentLesson.GetEndTimeAsString()));
+		auto* timeEdit1 = new QTimeEdit();
+		timeEdit1->setTime(timeIntToQTime(currentLesson.GetBeginTime()));
+		connect(timeEdit1, SIGNAL(timeChanged(QTime)), this, SLOT(on_currentTimeChanged()));
+		auto* timeEdit2 = new QTimeEdit();
+		timeEdit2->setTime(timeIntToQTime(currentLesson.GetEndTime()));
+		connect(timeEdit2, SIGNAL(timeChanged(QTime)), this, SLOT(on_currentTimeChanged()));
 		ui.tableWidget_Lessons->setCellWidget(i, 0, comboBox);
-		ui.tableWidget_Lessons->setItem(i, 1, item2);
-		ui.tableWidget_Lessons->setItem(i, 2, item3);
+		ui.tableWidget_Lessons->setCellWidget(i, 1, timeEdit1);
+		ui.tableWidget_Lessons->setCellWidget(i, 2, timeEdit2);
 	}
 	_ASSERTE(_CrtCheckMemory());
 
@@ -456,9 +458,11 @@ void Settings_New::LessonChangeRow(int row)
 	}
 	auto lessonDay = ui.comboBox_LessonDay->currentText().toStdWString();
 	auto comboBox = dynamic_cast<QComboBox*>(ui.tableWidget_Lessons->cellWidget(row, 0));
+	auto timeEditBegin = dynamic_cast<QTimeEdit*>(ui.tableWidget_Lessons->cellWidget(row, 1));
+	auto timeEditEnd = dynamic_cast<QTimeEdit*>(ui.tableWidget_Lessons->cellWidget(row, 2));
 	auto lesson = Lesson(lessonDay, comboBox->currentText().toStdWString(), 
-		ui.tableWidget_Lessons->item(row, 1)->text().toStdString(), 
-		ui.tableWidget_Lessons->item(row, 2)->text().toStdString()
+		timeEditBegin->time().toString("hhmm").toStdString(),
+		timeEditEnd->time().toString("hhmm").toStdString()
 	);
 	m_TimeTable->changeLesson(row, lessonDay, lesson);
 	_ASSERTE(_CrtCheckMemory());
@@ -561,5 +565,23 @@ void Settings_New::on_checkBox_showFPS_stateChanged(int arg1)
 void Settings_New::on_comboBox_InfoDay_currentTextChanged(const QString &arg1)
 {
 	on_pushButton_FreshInfo_clicked();
+}
+
+void Settings_New::on_currentTimeChanged()
+{
+	if (ListsInitialized == false) {
+		return;
+	}
+
+	QTimeEdit* edit_ = dynamic_cast<QTimeEdit*>(this->sender());
+	if (NULL == edit_)
+	{
+		return;
+	}
+	int x = edit_->frameGeometry().x();
+	int y = edit_->frameGeometry().y();
+	QModelIndex index = ui.tableWidget_Lessons->indexAt(QPoint(x, y));
+	int row = index.row();
+	LessonChangeRow(row);
 }
 

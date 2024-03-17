@@ -31,7 +31,11 @@
 }
 QComboBox{
 	background:transparent;
-	background-color: rgba(255, 255, 255, 100);
+	background-color: rgba(255, 255, 255, 50);
+}
+QTimeEdit{
+	background:transparent;
+	background-color: rgba(255, 255, 255, 50);
 }
 QComboBox QAbstractItemView{
 	
@@ -494,8 +498,8 @@ QTabBar::tab {
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>288</width>
-            <height>551</height>
+            <width>266</width>
+            <height>666</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">

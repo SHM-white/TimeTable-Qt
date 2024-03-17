@@ -115,6 +115,7 @@ private slots:
 
     void on_comboBox_InfoDay_currentTextChanged(const QString &arg1);
 
+    void on_currentTimeChanged();
 private:
     void LessonChangeRow(int row);
 	QWidget* m_pParent;
