@@ -48,9 +48,9 @@ Json::Value Settings_New::SaveAsJson(Json::Value value) const
 
 void Settings_New::on_pushButton_close_clicked()
 {
-	for (auto i : comboBoxes) {
-		delete i;
-	}
+	//for (auto i : widgets) {
+	//	delete i;
+	//}
 	ListsInitialized = false;
     this->close();
 }
@@ -71,17 +71,31 @@ void Settings_New::on_horizontalSlider_BackGroundAlpha_valueChanged(int value)
 
 void Settings_New::on_pushButton_FreshLessonList_clicked()
 {
-	
+
 	ListsInitialized = false;
+	QStringList list;
+	list.append(QStringW(L"语文"));
+	list.append(QStringW(L"数学"));
+	list.append(QStringW(L"英语"));
+	list.append(QStringW(L"物理"));
+	list.append(QStringW(L"化学"));
+	list.append(QStringW(L"生物"));
+	list.append(QStringW(L"历史"));
+	list.append(QStringW(L"地理"));
+	list.append(QStringW(L"政治"));
+	list.append(QStringW(L"信息"));
+	list.append(QStringW(L"班会"));
+	list.append(QStringW(L"自习"));
+	list.append(QStringW(L"艺术"));
 	ui.tableWidget_Lessons->clear();
-	while (ui.tableWidget_Lessons->rowCount()!=0)
-	{
-		ui.tableWidget_Lessons->removeRow(0);
-	}
-	for (auto i : comboBoxes) {
-		delete i;
-	}
-	comboBoxes.clear();
+	//while (ui.tableWidget_Lessons->rowCount()!=0)
+	//{
+	//	ui.tableWidget_Lessons->removeRow(0);
+	//}
+	//for (auto i : widgets) {
+	//	delete i;
+	//}
+	//widgets.clear();
 	ui.tableWidget_Lessons->setColumnCount(3);
 	ui.tableWidget_Lessons->setHorizontalHeaderLabels(QStringList() << QString::fromStdWString(L"名称") << QString::fromStdWString(L"开始时间") << QString::fromStdWString(L"结束时间"));
 	auto lessons = m_TimeTable->GetTodayLessons(ui.comboBox_LessonDay->currentText().toStdWString());
@@ -89,18 +103,7 @@ void Settings_New::on_pushButton_FreshLessonList_clicked()
 	for (int i = 0; i < lessons.size();++i) {
 		auto currentLesson = lessons[i];
 		auto* comboBox = new QComboBox();
-		comboBox->addItem(QStringW(L"语文"));
-		comboBox->addItem(QStringW(L"数学"));
-		comboBox->addItem(QStringW(L"英语"));
-		comboBox->addItem(QStringW(L"物理"));
-		comboBox->addItem(QStringW(L"化学"));
-		comboBox->addItem(QStringW(L"生物"));
-		comboBox->addItem(QStringW(L"历史"));
-		comboBox->addItem(QStringW(L"政治"));
-		comboBox->addItem(QStringW(L"地理"));
-		comboBox->addItem(QStringW(L"班会"));
-		comboBox->addItem(QStringW(L"体育"));
-		comboBox->addItem(QStringW(L"自习"));
+		comboBox->addItems(list);
 		comboBox->setEditable(true);
 		comboBox->view()->parentWidget()->setWindowFlags(Qt::Popup | Qt::FramelessWindowHint);
 		comboBox->view()->parentWidget()->setAttribute(Qt::WA_TranslucentBackground);
@@ -322,6 +325,7 @@ void Settings_New::on_pushButton_newWindow_clicked()
 {
 	Json::Value value;
 	value["Moveable"] = true;
+	value["Name"] = "Window";
 	m_Windows->push_back(std::make_shared<SubWindow>(value, m_TimeTable));
 	on_pushButton_FreshWindowList_clicked();
 	_ASSERTE(_CrtCheckMemory());

@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
 #ifdef QT5
     //QApplication::setAttribute(Qt::AA_Use96Dpi);
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    //QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::RoundPreferFloor);
+    QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
     //QApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
     QApplication::setFont(QFont("Microsoft YaHei", 9));
 

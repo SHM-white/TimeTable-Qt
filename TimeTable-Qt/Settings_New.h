@@ -125,5 +125,5 @@ private:
 	// 通过 BasicWindow 继承
 	Json::Value SaveAsJson(Json::Value value) const override;
     bool ListsInitialized{ false };
-    std::vector<QComboBox*> comboBoxes;
+    //std::vector<QWidget*> widgets;
 };

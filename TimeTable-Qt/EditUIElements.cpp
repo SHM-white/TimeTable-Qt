@@ -8,9 +8,7 @@ EditUIElements::EditUIElements(std::shared_ptr<BasicWindow> window, Json::Value 
 	m_moveable = true;
 
 	this->setAttribute(Qt::WA_DeleteOnClose);
-	connect(this, SIGNAL(QWidget::destroyed), this, SLOT(QDialog::deleteLater));
 	this->setWindowModality(Qt::ApplicationModal);
-
 }
 
 EditUIElements::~EditUIElements()
