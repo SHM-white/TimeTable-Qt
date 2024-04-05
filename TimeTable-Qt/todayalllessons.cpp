@@ -5,7 +5,7 @@ TodayAllLessons::TodayAllLessons(Json::Value& value, std::shared_ptr<TimeTable> 
 {
     Json::Value& temp = value["Data"][0];
     m_textType = ElementType(temp["Type"].asInt());
-    m_direction_Vertical = temp["Direction"].asInt();
+    m_direction_Vertical = temp["Data"]["Direction"].asInt();
     m_color = QColor(
         temp["TextColor"][0].asInt(),
         temp["TextColor"][1].asInt(),
@@ -14,7 +14,7 @@ TodayAllLessons::TodayAllLessons(Json::Value& value, std::shared_ptr<TimeTable> 
     );
     m_font = QFont(QString::fromStdWString(u8tw(temp["Font"].asString())), temp["TextSize"].asInt());
     m_Data = temp["Data"];
-    m_fullName = temp["FullName"].asBool();
+    m_fullName = temp["Data"]["FullName"].asBool();
     update();
 }
 
@@ -98,8 +98,8 @@ Json::Value TodayAllLessons::SaveAsJson(Json::Value& value) const
     temp["TextColor"][2] = m_color.blue();
     temp["TextColor"][3] = m_color.alpha();
     temp["Data"] = m_Data;
-    temp["Direction"] = (int)m_direction_Vertical;
-    temp["FullName"] = m_fullName;
+    temp["Data"]["Direction"] = (int)m_direction_Vertical;
+    temp["Data"]["FullName"] = m_fullName;
     value["Data"].append(temp);
 #ifdef DEBUG
     OutputDebugStringW(L"Saved value:");
