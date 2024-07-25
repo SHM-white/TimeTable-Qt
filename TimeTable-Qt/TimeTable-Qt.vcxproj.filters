@@ -21,6 +21,12 @@
       <UniqueIdentifier>{639EADAA-A684-42e4-A9AD-28FC9BCB8F7C}</UniqueIdentifier>
       <Extensions>ts</Extensions>
     </Filter>
+    <Filter Include="UIElements">
+      <UniqueIdentifier>{6ee4cdfd-548f-47cd-ba29-c50742b7243c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{45657730-499d-4e26-a5df-c15ee0d4e85b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="TimeTableQt.qrc">
@@ -28,27 +34,6 @@
     </QtRcc>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CSVEditor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Timetable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Lesson.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BasicWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UIElementBase.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MainWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -58,32 +43,53 @@
     <ClCompile Include="Settings_New.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SingleItemUIElementBase.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MultiItemInOrderUIElementBase.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MultiItemAllDisplayUIElementBase.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SingleTextItem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MultiTextItem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="EmptyUIElement.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="EditUIElements.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="importfromfile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CSVEditor.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="include.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Timetable.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Lesson.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="BasicWindow.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="EmptyUIElement.cpp">
+      <Filter>UIElements</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiItemAllDisplayUIElementBase.cpp">
+      <Filter>UIElements</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiItemInOrderUIElementBase.cpp">
+      <Filter>UIElements</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiTextItem.cpp">
+      <Filter>UIElements</Filter>
+    </ClCompile>
+    <ClCompile Include="SingleItemUIElementBase.cpp">
+      <Filter>UIElements</Filter>
+    </ClCompile>
+    <ClCompile Include="SingleTextItem.cpp">
+      <Filter>UIElements</Filter>
+    </ClCompile>
     <ClCompile Include="TodayAllLessons.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>UIElements</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElementBase.cpp">
+      <Filter>UIElements</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -96,40 +102,40 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CSVEditor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Lesson.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Timetable.h">
-      <Filter>Header Files</Filter>
+      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="include.h">
-      <Filter>Header Files</Filter>
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Lesson.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Timetable.h">
+      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="UIElementBase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SingleItemUIElementBase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MultiItemInOrderUIElementBase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MultiItemAllDisplayUIElementBase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SingleTextItem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MultiTextItem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EmptyUIElement.h">
-      <Filter>Header Files</Filter>
+      <Filter>UIElements</Filter>
     </ClInclude>
     <ClInclude Include="TodayAllLessons.h">
-      <Filter>Header Files</Filter>
+      <Filter>UIElements</Filter>
+    </ClInclude>
+    <ClInclude Include="SingleTextItem.h">
+      <Filter>UIElements</Filter>
+    </ClInclude>
+    <ClInclude Include="SingleItemUIElementBase.h">
+      <Filter>UIElements</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiTextItem.h">
+      <Filter>UIElements</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiItemInOrderUIElementBase.h">
+      <Filter>UIElements</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiItemAllDisplayUIElementBase.h">
+      <Filter>UIElements</Filter>
+    </ClInclude>
+    <ClInclude Include="EmptyUIElement.h">
+      <Filter>UIElements</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -147,9 +153,6 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="BasicWindow.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="MainWindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
@@ -164,6 +167,9 @@
     </QtMoc>
     <QtMoc Include="importfromfile.h">
       <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="BasicWindow.h">
+      <Filter>Core</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>

@@ -10,7 +10,7 @@ enum UIElementType
 	MultiItemAllDisplay
 };
 
-enum ElementType
+enum ContentType
 {
 	Default,
 	CurrentTime,

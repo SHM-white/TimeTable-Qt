@@ -4,7 +4,7 @@ TodayAllLessons::TodayAllLessons(Json::Value& value, std::shared_ptr<TimeTable> 
     :SingleItemUIElementBase(value, timetable)
 {
     Json::Value& temp = value["Data"][0];
-    m_textType = ElementType(temp["Type"].asInt());
+    m_textType = ContentType(temp["Type"].asInt());
     //m_direction_Vertical = temp["Data"]["Direction"].asInt();
     m_color = QColor(
         temp["TextColor"][0].asInt(),
@@ -102,10 +102,10 @@ Json::Value TodayAllLessons::SaveAsJson(Json::Value& value) const
     //temp["Data"]["Direction"] = (int)m_direction_Vertical;
     //temp["Data"]["FullName"] = m_fullName;
     value["Data"].append(temp);
-#ifdef DEBUG
-    OutputDebugStringW(L"Saved value:");
-    OutputDebugStringW(u8tw(value.toStyledString()).c_str());
-#endif // DEBUG
+//#ifdef DEBUG
+//    OutputDebugStringW(L"Saved value:");
+//    OutputDebugStringW(u8tw(value.toStyledString()).c_str());
+//#endif // DEBUG
     return value;
 
 }

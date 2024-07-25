@@ -94,6 +94,7 @@ extern int ITEM_SCROLL_SPEED;
 
 #define DEFAULT_CONFIG_PATH L"config.json"
 #define DEFAULT_LESSONINFO_PATH L"Lessons.json"
+#define DEFAULT_PIC_PATH L"D:/Creative Cloud Files/AlphaTest.png"
 
 #define QStringW QString::fromStdWString
 

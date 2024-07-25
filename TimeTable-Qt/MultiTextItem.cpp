@@ -10,12 +10,12 @@ MultiTextItem::MultiTextItem(Json::Value& value, std::shared_ptr<TimeTable> time
 		Json::Value removed;
 		m_Texts.push_back(std::make_shared<SingleTextItem>(temp, timetable));
 		temp["Data"].removeIndex(0, &removed);
-#ifdef DEBUG
-		OutputDebugStringW(L"removed:");
-		OutputDebugStringW(u8tw(removed.toStyledString()).c_str());
-		OutputDebugStringW(L"after remove:");
-		OutputDebugStringW(u8tw(value.toStyledString()).c_str());
-#endif // DEBUG
+//#ifdef DEBUG
+//		OutputDebugStringW(L"removed:");
+//		OutputDebugStringW(u8tw(removed.toStyledString()).c_str());
+//		OutputDebugStringW(L"after remove:");
+//		OutputDebugStringW(u8tw(value.toStyledString()).c_str());
+//#endif // DEBUG
 	}
 }
 

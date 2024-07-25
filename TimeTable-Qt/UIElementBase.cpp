@@ -48,20 +48,20 @@ Json::Value UIElementBase::save() const
 std::shared_ptr<SingleItemUIElementBase> CreateSingleItemUIElement(Json::Value& value, std::shared_ptr<TimeTable> timetable)
 {
 	bool textOnly{ true };
-#ifdef DEBUG
-	OutputDebugStringW(L"CreateSingleItemUIElement() value:");
-	OutputDebugStringW(u8tw(value.toStyledString()).c_str());
-#endif // DEBUG
+//#ifdef DEBUG
+//	OutputDebugStringW(L"CreateSingleItemUIElement() value:");
+//	OutputDebugStringW(u8tw(value.toStyledString()).c_str());
+//#endif // DEBUG
 	if (value["Data"].size() != 1) {
 		throw std::exception("?");
 	}
-		textOnly = value["Data"][0]["Type"].asInt() <= (int)ElementType::Weather;
+		textOnly = value["Data"][0]["Type"].asInt() <= (int)ContentType::Weather;
 	if (textOnly) {
 		return std::dynamic_pointer_cast<SingleItemUIElementBase, SingleTextItem>(std::make_shared<SingleTextItem>(value, timetable));
 	}
 	else
 	{
-		switch (ElementType(value["Data"][0]["Type"].asInt()))
+		switch (ContentType(value["Data"][0]["Type"].asInt()))
 		{
 		case AllLessons:
 			return std::make_shared<TodayAllLessons>(value, timetable);
@@ -83,7 +83,7 @@ std::shared_ptr<MultiItemInOrderUIElementBase> CreateMultiItemInOrderUIElement(J
 {
 	bool textOnly{ true };
 	for (auto& i : value["Data"]) {
-		textOnly &= (i["Type"].asInt() <= (int)ElementType::Weather);
+		textOnly &= (i["Type"].asInt() <= (int)ContentType::Weather);
 	}
 	if (textOnly) {
 		return std::make_shared<MultiTextItem>(value, timetable);

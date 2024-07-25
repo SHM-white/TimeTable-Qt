@@ -107,12 +107,18 @@ bool BasicWindow::InitializeWindow(Json::Value& value)
 
 	QString picpath = QString::fromStdWString(msBackGroundImg);
 	//QString picpath = QString::fromUtf8(wtu8(msBackGroundImg));
+#ifdef DEBUG
+	if (picpath.isEmpty()) {
+		picpath = QString::fromStdWString(DEFAULT_PIC_PATH);
+		OutputDebugStringW(L"pic is null:1\n");
+	}
+#endif
 	pic.load(picpath);
-	pic = pic.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+	//pic = pic.scaled(this->width(), this->height(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
 
 #ifdef DEBUG
 	if (pic.isNull()) {
-		OutputDebugStringW(L"pic is null");
+		OutputDebugStringW(L"pic is null:2\n");
 	}
 #endif // DEBUG
 
@@ -178,7 +184,7 @@ void BasicWindow::paintEvent(QPaintEvent* event)
 	}
 	else {
 		painter.fillRect(rect(), QColor(255, 255, 255, 1));
-		painter.drawPixmap(0, 0, pic);
+		painter.drawPixmap(0, 0,this->width(), this->height(), pic);
 	}
 
 	for (auto& i : m_UIElements) {
@@ -231,63 +237,21 @@ void BasicWindow::mouseReleaseEvent(QMouseEvent* event)
 
 }
 
-bool BasicWindow::nativeEvent(const QByteArray& eventType, void* message, qintptr* result)
-{
-	MSG* msg = static_cast<MSG*>(message);
-	if (msg->message == WM_NCHITTEST) {
-		*result = 0;
-		const int BORDER_WIDTH = 8; // 拉伸边框的宽度
-		RECT winrect;
-		GetWindowRect(reinterpret_cast<HWND>(winId()), &winrect);
-		long x = GET_X_LPARAM(msg->lParam);
-		long y = GET_Y_LPARAM(msg->lParam);
-		// 判断鼠标位置是否在拉伸区域内
-		if (y < winrect.top + BORDER_WIDTH) {
-			*result = HTTOP;
-		}
-		if (y > winrect.bottom - BORDER_WIDTH) {
-			*result = HTBOTTOM;
-		}
-		if (x < winrect.left + BORDER_WIDTH) {
-			*result = HTLEFT;
-		}
-		if (x > winrect.right - BORDER_WIDTH) {
-			*result = HTRIGHT;
-		}
-		if (y < winrect.top + BORDER_WIDTH && x < winrect.left + BORDER_WIDTH) {
-			*result = HTTOPLEFT;
-		}
-		if (y < winrect.top + BORDER_WIDTH && x > winrect.right - BORDER_WIDTH) {
-			*result = HTTOPRIGHT;
-		}
-		if (y > winrect.bottom - BORDER_WIDTH && x < winrect.left + BORDER_WIDTH) {
-			*result = HTBOTTOMLEFT;
-		}
-		if (y > winrect.bottom - BORDER_WIDTH && x > winrect.right - BORDER_WIDTH) {
-			*result = HTBOTTOMRIGHT;
-		}
-		if (*result != 0) {
-			return QWidget::nativeEvent(eventType, message, result);
-		}
-	}
-	return QWidget::nativeEvent(eventType, message, result);
-}
-
 std::shared_ptr<UIElementBase> BasicWindow::CreateUIElement(Json::Value& value, std::shared_ptr<TimeTable> timetable)
 {
 	switch (UIElementType(value["ElementType"].asInt()))
 	{
 	case SingleItem:
-		return std::dynamic_pointer_cast<UIElementBase, SingleItemUIElementBase>(CreateSingleItemUIElement(value, timetable));
+		return CreateSingleItemUIElement(value, timetable);
 		break;
 	case MultiItemInOrder:
-		return std::dynamic_pointer_cast<UIElementBase, MultiItemInOrderUIElementBase>(CreateMultiItemInOrderUIElement(value, timetable));
+		return CreateMultiItemInOrderUIElement(value, timetable);
 		break;
 	case MultiItemAllDisplay:
 		//return std::dynamic_pointer_cast<UIElementBase, MultiItemAllDisplayUIElementBase>(CreateMultiItemAllDisplayUIElement(value, timetable));
 		//break;
 	default:
-		return std::dynamic_pointer_cast<UIElementBase, EmptyUIElement>(std::make_shared<EmptyUIElement>(value, timetable));
+		return std::make_shared<EmptyUIElement>(value, timetable);
 		break;
 	}
 }

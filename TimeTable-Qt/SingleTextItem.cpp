@@ -4,12 +4,12 @@
 SingleTextItem::SingleTextItem(Json::Value& value, std::shared_ptr<TimeTable> timetable)
     :SingleItemUIElementBase(value, timetable)
 {
-#ifdef DEBUG
-    OutputDebugStringW(L"SingleTextItem() value:");
-    OutputDebugStringW(u8tw(value.toStyledString()).c_str());
-#endif // DEBUG
+//#ifdef DEBUG
+//    OutputDebugStringW(L"SingleTextItem() value:");
+//    OutputDebugStringW(u8tw(value.toStyledString()).c_str());
+//#endif // DEBUG
     Json::Value& temp = value["Data"][0];
-    m_textType = ElementType(temp["Type"].asInt());
+    m_textType = ContentType(temp["Type"].asInt());
     m_textFormat = u8tw(temp["TextFormat"].asString());
     m_color = QColor(
         temp["TextColor"][0].asInt(),
@@ -43,10 +43,10 @@ Json::Value SingleTextItem::SaveAsJson(Json::Value& value) const
     temp["TextColor"][3] = m_color.alpha();
     temp["Data"] = m_Data;
     value["Data"].append(temp);
-#ifdef DEBUG
-    OutputDebugStringW(L"Saved value:");
-    OutputDebugStringW(u8tw(value.toStyledString()).c_str());
-#endif // DEBUG
+//#ifdef DEBUG
+//    OutputDebugStringW(L"Saved value:");
+//    OutputDebugStringW(u8tw(value.toStyledString()).c_str());
+//#endif // DEBUG
     return value;
 }
 
