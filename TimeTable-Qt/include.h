@@ -4,6 +4,9 @@
 #define AUTO_RUN_KEY	"HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
 
 #include <Windows.h>
+#include <WinUser.h>
+#include <winnt.h>
+#include <windowsx.h>
 
 #include <algorithm>
 #include <chrono>

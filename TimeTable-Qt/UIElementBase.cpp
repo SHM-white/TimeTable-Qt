@@ -86,7 +86,7 @@ std::shared_ptr<MultiItemInOrderUIElementBase> CreateMultiItemInOrderUIElement(J
 		textOnly &= (i["Type"].asInt() <= (int)ElementType::Weather);
 	}
 	if (textOnly) {
-		return std::dynamic_pointer_cast<MultiItemInOrderUIElementBase, MultiTextItem>(std::make_shared<MultiTextItem>(value, timetable));
+		return std::make_shared<MultiTextItem>(value, timetable);
 	}
 	else
 	{

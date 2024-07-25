@@ -65,6 +65,7 @@ private:
 	virtual Json::Value SaveAsJson(Json::Value value) const = 0;
 
 	std::shared_ptr<UIElementBase> CreateUIElement(Json::Value& value, std::shared_ptr<TimeTable> timetable);
+	bool nativeEvent(const QByteArray& eventType, void* message, qintptr* result) override;
 
 	Json::Value m_settings;
 protected:

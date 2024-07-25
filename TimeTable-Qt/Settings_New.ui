@@ -24,6 +24,10 @@
   <property name="windowTitle">
    <string>Settings_New</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="TimeTableQt.qrc">
+    <normaloff>:/TimeTableQt/123.ico</normaloff>:/TimeTableQt/123.ico</iconset>
+  </property>
   <property name="styleSheet">
    <string notr="true">QWidget#scrollAreaWidgetContents{
 	border-top:0px solid #e8f3f9;
@@ -498,8 +502,8 @@ QTabBar::tab {
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>266</width>
-            <height>666</height>
+            <width>288</width>
+            <height>551</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">

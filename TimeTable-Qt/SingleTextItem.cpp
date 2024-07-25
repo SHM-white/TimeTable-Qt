@@ -141,21 +141,19 @@ bool SingleTextItem::paint(QPainter& painter) const
         }
     }
     else {
-        auto seconds = (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - this->m_lastChangedTime)).count();
 //#ifdef DEBUG
 //        OutputDebugStringW(std::format(L"Item:{} paint() called\n", (int)m_ItemType).c_str());
 //        OutputDebugStringW(std::format(L"m_lastChangedTime:{}s\n", std::chrono::duration_cast<std::chrono::seconds>(m_lastChangedTime.time_since_epoch()).count()).c_str());
 //        OutputDebugStringW(std::format(L"seconds:{}\n", seconds).c_str());
 //#endif // DEBUG
 
-        if (seconds >= m_CanChangeAfterTime.count()) {
+        if (std::chrono::system_clock::now() - this->m_lastChangedTime >= m_CanChangeAfterTime) {
             m_CanChange = true;
         }
     }
     painter.drawText(newRect, Qt::AlignCenter, QString::fromStdWString(m_formatedText));
     painter.restore();
-    auto seconds = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - m_lastUpdateTime).count();
-    if ( seconds >= m_updateAfterTime.count()) {
+    if (std::chrono::system_clock::now() - m_lastUpdateTime >= m_updateAfterTime) {
 //#ifdef DEBUG
 //        OutputDebugStringW(std::format(L"Item:{} paint() called\n", (int)m_ItemType).c_str());
 //        OutputDebugStringW(std::format(L"m_lastUpdateTime:{}s\n", std::chrono::duration_cast<std::chrono::seconds>(m_lastUpdateTime.time_since_epoch()).count()).c_str());

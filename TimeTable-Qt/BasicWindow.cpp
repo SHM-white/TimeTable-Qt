@@ -75,9 +75,9 @@ Json::Value BasicWindow::save() const
 bool BasicWindow::InitializeWindow(Json::Value& value)
 {
 	m_settings = value;
-	if (value.isNull()&&m_rewriteEmptyJsonValue) {
-		value = this->save();
-	}
+	//if (value.isNull()&&m_rewriteEmptyJsonValue) {
+	//	value = this->save();
+	//}
 	Json::Value Settings = value;
 	miWindowHeight = Settings["WindowSize"][1].asInt();
 	miWindowWeight = Settings["WindowSize"][0].asInt();
@@ -102,7 +102,7 @@ bool BasicWindow::InitializeWindow(Json::Value& value)
 	m_name = u8tw(Settings["Name"].asString());
 	if (!(miWindowX == 0 && miWindowY == 0 && miWindowWeight == 0 && miWindowHeight == 0)) {
 		this->setGeometry(miWindowX, miWindowY, miWindowWeight, miWindowHeight);
-		this->setFixedSize(miWindowWeight, miWindowHeight);
+		this->resize(miWindowWeight, miWindowHeight);
 	}
 
 	QString picpath = QString::fromStdWString(msBackGroundImg);
@@ -229,6 +229,48 @@ void BasicWindow::mouseReleaseEvent(QMouseEvent* event)
 	}
 	setCursor(QCursor(Qt::ArrowCursor));
 
+}
+
+bool BasicWindow::nativeEvent(const QByteArray& eventType, void* message, qintptr* result)
+{
+	MSG* msg = static_cast<MSG*>(message);
+	if (msg->message == WM_NCHITTEST) {
+		*result = 0;
+		const int BORDER_WIDTH = 8; // 拉伸边框的宽度
+		RECT winrect;
+		GetWindowRect(reinterpret_cast<HWND>(winId()), &winrect);
+		long x = GET_X_LPARAM(msg->lParam);
+		long y = GET_Y_LPARAM(msg->lParam);
+		// 判断鼠标位置是否在拉伸区域内
+		if (y < winrect.top + BORDER_WIDTH) {
+			*result = HTTOP;
+		}
+		if (y > winrect.bottom - BORDER_WIDTH) {
+			*result = HTBOTTOM;
+		}
+		if (x < winrect.left + BORDER_WIDTH) {
+			*result = HTLEFT;
+		}
+		if (x > winrect.right - BORDER_WIDTH) {
+			*result = HTRIGHT;
+		}
+		if (y < winrect.top + BORDER_WIDTH && x < winrect.left + BORDER_WIDTH) {
+			*result = HTTOPLEFT;
+		}
+		if (y < winrect.top + BORDER_WIDTH && x > winrect.right - BORDER_WIDTH) {
+			*result = HTTOPRIGHT;
+		}
+		if (y > winrect.bottom - BORDER_WIDTH && x < winrect.left + BORDER_WIDTH) {
+			*result = HTBOTTOMLEFT;
+		}
+		if (y > winrect.bottom - BORDER_WIDTH && x > winrect.right - BORDER_WIDTH) {
+			*result = HTBOTTOMRIGHT;
+		}
+		if (*result != 0) {
+			return QWidget::nativeEvent(eventType, message, result);
+		}
+	}
+	return QWidget::nativeEvent(eventType, message, result);
 }
 
 std::shared_ptr<UIElementBase> BasicWindow::CreateUIElement(Json::Value& value, std::shared_ptr<TimeTable> timetable)

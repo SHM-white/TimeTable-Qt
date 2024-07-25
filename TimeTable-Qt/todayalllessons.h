@@ -10,10 +10,10 @@ public:
     bool paint(QPainter& painter) const override;
     QSize getNeededSize() const override;
     Json::Value SaveAsJson(Json::Value& value) const override;
-    bool m_direction_Vertical{ 0 };
+    //bool m_direction_Vertical{ 0 };
     mutable std::vector<Lesson> m_lessons;
     mutable int m_CurrentLessonIndex{ 0 };
-    bool m_fullName{ false };
+    //bool m_fullName{ false };
     mutable std::vector<QString> lessons;
 };
 

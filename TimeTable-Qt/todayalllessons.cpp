@@ -5,7 +5,7 @@ TodayAllLessons::TodayAllLessons(Json::Value& value, std::shared_ptr<TimeTable> 
 {
     Json::Value& temp = value["Data"][0];
     m_textType = ElementType(temp["Type"].asInt());
-    m_direction_Vertical = temp["Data"]["Direction"].asInt();
+    //m_direction_Vertical = temp["Data"]["Direction"].asInt();
     m_color = QColor(
         temp["TextColor"][0].asInt(),
         temp["TextColor"][1].asInt(),
@@ -14,7 +14,7 @@ TodayAllLessons::TodayAllLessons(Json::Value& value, std::shared_ptr<TimeTable> 
     );
     m_font = QFont(QString::fromStdWString(u8tw(temp["Font"].asString())), temp["TextSize"].asInt());
     m_Data = temp["Data"];
-    m_fullName = temp["Data"]["FullName"].asBool();
+    //m_fullName = temp["Data"]["FullName"].asBool();
     update();
 }
 
@@ -24,7 +24,7 @@ bool TodayAllLessons::update() const
     m_lessons.clear();
     lessons.clear();
     m_lessons = m_timetable->GetTodayLessons(TimeTable::GetCurrentTime(L"%a"));
-    if (m_fullName) {
+    if (m_Data["FullName"].asBool()) {
         for (const auto& i : m_lessons) {
             lessons.push_back(QString::fromStdWString(i.mGetName()));
         }
@@ -40,14 +40,15 @@ bool TodayAllLessons::update() const
 
 bool TodayAllLessons::paint(QPainter& painter) const
 {
-    if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - m_lastUpdateTime).count() > 10) {
+    using namespace std::chrono;
+    if (std::chrono::system_clock::now() - m_lastUpdateTime > 10s) {
         update();
     }
     painter.save();
     painter.setClipRect(m_rect);
     painter.setFont(m_font);
     QFontMetrics fontMetrics = painter.fontMetrics();
-    if (m_direction_Vertical) {
+    if (m_Data["Direction"].asInt()) {
         int maxLength{ 0 };
         for (const auto& i : lessons) {
             maxLength = std::max(maxLength, (int)i.size());
@@ -98,8 +99,8 @@ Json::Value TodayAllLessons::SaveAsJson(Json::Value& value) const
     temp["TextColor"][2] = m_color.blue();
     temp["TextColor"][3] = m_color.alpha();
     temp["Data"] = m_Data;
-    temp["Data"]["Direction"] = (int)m_direction_Vertical;
-    temp["Data"]["FullName"] = m_fullName;
+    //temp["Data"]["Direction"] = (int)m_direction_Vertical;
+    //temp["Data"]["FullName"] = m_fullName;
     value["Data"].append(temp);
 #ifdef DEBUG
     OutputDebugStringW(L"Saved value:");
