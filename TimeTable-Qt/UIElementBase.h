@@ -40,6 +40,9 @@ public:
 	virtual QRect getNeededRect() const;
 	Json::Value save() const;
 	UIElementType m_type;
+	QFont m_font;
+	QColor m_color;
+	ContentType m_textType;
 	mutable QRect m_rect;
 	Json::Value m_selfJson;
 protected:

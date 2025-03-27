@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>686</width>
-    <height>463</height>
+    <width>734</width>
+    <height>499</height>
    </rect>
   </property>
   <property name="sizeIncrement">
@@ -931,6 +931,18 @@ QTabBar::tab {
              </item>
              <item>
               <widget class="QSlider" name="horizontalSlider_BackGroundAlpha">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                 <horstretch>19</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>140</width>
+                 <height>16777215</height>
+                </size>
+               </property>
                <property name="maximum">
                 <number>255</number>
                </property>
@@ -941,6 +953,12 @@ QTabBar::tab {
              </item>
              <item>
               <widget class="QSpinBox" name="spinBox_BackGroundAlpha">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="maximum">
                 <number>255</number>
                </property>

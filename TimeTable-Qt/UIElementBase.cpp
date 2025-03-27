@@ -42,6 +42,7 @@ Json::Value UIElementBase::save() const
 	value["Location"].append(m_rect.top());
 	value["Size"].append(m_rect.width());
 	value["Size"].append(m_rect.height());
+	value["Data"].clear();
 	return SaveAsJson(value);
 }
 
