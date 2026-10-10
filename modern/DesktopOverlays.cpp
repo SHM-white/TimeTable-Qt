@@ -1087,7 +1087,23 @@ void DesktopOverlays::importLegacyWindows() {
             }
         }
         if(tokens.isEmpty()) {++skipped;continue;}
-        OverlayConfig c=defaultConfig(tokens.size()==1?tokens.first():"combined");
+        const auto restored=ElementLayout::fromLegacy(elements,&skipped);
+        if(restored.isEmpty()) {++skipped;continue;}
+        OverlayConfig c=defaultConfig("elements");
+        c.elements=restored;
+        c.collapsed=false;
+        c.autoSize=legacy.value("AutoResize").toBool(false);
+        const auto rgba=legacy.value("BackGroundColor").toArray();
+        if(rgba.size()>=3) c.backgroundColor=QColor(
+            std::clamp(rgba[0].toInt(),0,255),std::clamp(rgba[1].toInt(),0,255),
+            std::clamp(rgba[2].toInt(),0,255),
+            rgba.size()>3?std::clamp(rgba[3].toInt(),0,255):255);
+        const QString picture=legacy.value("BackGroundImg").toString();
+        if(!picture.isEmpty()) {
+            QFileInfo info(picture);
+            c.backgroundImage=info.isAbsolute()?picture:QFileInfo(path).dir().absoluteFilePath(picture);
+            c.imageBackground=legacy.value("ImgAsBackGround").toBool(false)&&QFile::exists(c.backgroundImage);
+        }
         c.title=legacy.value("Name").toString(legacy.value("name").toString()).trimmed();
         if(c.title.isEmpty()) c.title=QStringLiteral("旧版窗口 %1").arg(imported.size()+1);
         c.combinedItems=tokens.join(",");
@@ -1103,8 +1119,13 @@ void DesktopOverlays::importLegacyWindows() {
             c.expandedGeometry.setSize(QSize(std::clamp(dims[0].toInt(),190,900),
                                               std::clamp(dims[1].toInt(),102,600)));
         }
-        c.collapsed=true;
-        c.geometry=c.compactGeometry;
+        if(c.autoSize || dims.size()<2 || dims[0].toInt()<=0 || dims[1].toInt()<=0) {
+            const QRect bounds=ElementLayout::contentBounds(c.elements);
+            c.expandedGeometry.setSize(QSize(std::clamp(bounds.right()+20,190,1200),
+                                             std::clamp(bounds.bottom()+18,102,750)));
+        }
+        c.collapsed=false;
+        c.geometry=c.expandedGeometry;
         c.visible=legacy.value("AutoOpen").toBool(true);
         c.topmost=legacy.value("TopMost").toBool(true);
         c.locked=!legacy.value("Moveable").toBool(true);
@@ -1115,8 +1136,8 @@ void DesktopOverlays::importLegacyWindows() {
             QStringLiteral("旧配置中的窗口没有可识别的信息元素，原有设置没有变化。"));
         return;
     }
-    const QString message=QStringLiteral("识别出 %1 个桌面窗口，跳过 %2 个不兼容信息项。\n"
-        "导入会添加到现有窗口列表中，不会覆盖课程文件。是否继续？")
+    const QString message=QStringLiteral("已恢复 %1 个独立窗口的元素坐标、字体、颜色与文本格式。\n"
+        "%2 个无效或尚不支持的元素被跳过。导入只追加窗口，不会覆盖课表。继续吗？")
         .arg(imported.size()).arg(skipped);
     if(QMessageBox::question(configurationDialog_.data(),QStringLiteral("确认导入窗口"),message)
        !=QMessageBox::Yes) return;
