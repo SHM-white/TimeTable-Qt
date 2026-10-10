@@ -228,8 +228,15 @@ QJsonObject ScheduleStore::toJson() const {
     for(auto i=periods.cbegin();i!=periods.cend();++i)
         periodItems.append(QJsonObject{{"section",i.key()},{"start",timeText(i.value().first)},
                 {"end",timeText(i.value().second)}});
+    QJsonArray infoDays;
+    for(auto it=dayInfos.cbegin();it!=dayInfos.cend();++it) {
+        QJsonArray messages;
+        for(const auto& message:it.value()) messages.append(message);
+        infoDays.append(QJsonObject{{"weekday",it.key()},{"messages",messages}});
+    }
     return QJsonObject{{"schema","timetable-next/v1"},{"semesterStart",semesterMonday.toString(Qt::ISODate)},
-        {"totalWeeks",totalWeeks},{"courses",classes},{"dayChanges",exceptions},{"periods",periodItems}};
+        {"totalWeeks",totalWeeks},{"courses",classes},{"dayChanges",exceptions},
+        {"periods",periodItems},{"dayInfos",infoDays}};
 }
 
 bool ScheduleStore::fromJson(const QJsonObject& root, QString* error) {
@@ -246,7 +253,22 @@ bool ScheduleStore::fromJson(const QJsonObject& root, QString* error) {
     }
     copy.semesterMonday=mondayOf(start);
     copy.totalWeeks=weeks;
-    copy.courses.clear(); copy.changes.clear();
+    copy.courses.clear(); copy.changes.clear(); copy.dayInfos.clear();
+    for(const auto& info:root.value("dayInfos").toArray()) {
+        const auto o=info.toObject();
+        const int day=o.value("weekday").toInt(0);
+        if(day<1||day>7) {
+            if(error) *error=QStringLiteral("每日附加信息中的星期无效");
+            return false;
+        }
+        QStringList messages;
+        for(const auto& item:o.value("messages").toArray()) {
+            if(!item.isString()) continue;
+            const QString message=item.toString().trimmed();
+            if(!message.isEmpty()) messages<<message;
+        }
+        copy.dayInfos[day]=messages;
+    }
     for(const auto& item:root.value("courses").toArray()) {
         const QJsonObject o=item.toObject();
         Course c;
@@ -312,8 +334,18 @@ bool ScheduleStore::save(const QString& path, QString* error) const {
 bool ScheduleStore::importLegacy(const QJsonObject& root, QString* error) {
     const QStringList days={"Mon","Tue","Wed","Thu","Fri","Sat","Sun"};
     QList<Course> imported;
+    QMap<int,QStringList> oldInfo;
+    bool hasValidDay=false;
     for(int day=0;day<days.size();++day) {
-        const auto lessons=root.value(days.at(day)).toObject().value("Lessons").toArray();
+        const QJsonObject dayObject=root.value(days.at(day)).toObject();
+        if(dayObject.isEmpty()) continue;
+        hasValidDay=true;
+        const QJsonArray messages=dayObject.value("Infos").toArray();
+        for(const auto& item:messages) if(item.isString()) {
+            const QString value=item.toString().trimmed();
+            if(!value.isEmpty()&&value!=QStringLiteral("请录入")) oldInfo[day+1]<<value;
+        }
+        const auto lessons=dayObject.value("Lessons").toArray();
         for(const auto& item:lessons) {
             const QJsonArray data=item.toArray();
             if(data.size()<3) continue;
@@ -329,8 +361,12 @@ bool ScheduleStore::importLegacy(const QJsonObject& root, QString* error) {
             imported<<c;
         }
     }
-    if(imported.isEmpty()) { if(error) *error=QStringLiteral("没有找到有效的旧版课程；「未录入」占位项会被忽略"); return false; }
+    if(!hasValidDay || (imported.isEmpty()&&oldInfo.isEmpty())) {
+        if(error) *error=QStringLiteral("未找到有效旧版课程或每日附加信息；占位项已忽略");
+        return false;
+    }
     courses=imported;
+    dayInfos=oldInfo;
     changes.clear();
     return true;
 }
@@ -365,7 +401,7 @@ bool ScheduleStore::importXiaoAi(const QJsonObject& root, QString* error) {
         }
         imported<<c;
     }
-    courses=imported; changes.clear();
+    courses=imported; changes.clear(); dayInfos.clear();
     return true;
 }
 bool ScheduleStore::importCsv(const QByteArray& bytes, QString* error) {
@@ -401,7 +437,7 @@ bool ScheduleStore::importCsv(const QByteArray& bytes, QString* error) {
         imported<<c;
     }
     if(imported.isEmpty()) { if(error) *error=QStringLiteral("CSV 中没有有效课程"); return false; }
-    courses=imported; changes.clear(); return true;
+    courses=imported; changes.clear(); dayInfos.clear(); return true;
 }
 bool ScheduleStore::importFile(const QString& path, QString* error) {
     QFile file(path);
