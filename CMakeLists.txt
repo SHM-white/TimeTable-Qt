@@ -24,7 +24,7 @@ qt_add_executable(TimeTableNext WIN32
 target_link_libraries(TimeTableNext PRIVATE timetable_core Qt6::Widgets)
 set_target_properties(TimeTableNext PROPERTIES
     OUTPUT_NAME "TimeTableNext"
-    RUNTIME_OUTPUT_DIRECTORY "\${CMAKE_BINARY_DIR}/bin"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
 )
 if(WIN32)
     set_target_properties(TimeTableNext PROPERTIES WIN32_EXECUTABLE TRUE)
