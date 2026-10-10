@@ -225,7 +225,7 @@ public:
                 QStringLiteral("请右键设置目标日期");
             foot=QStringLiteral("倒计日");
         } else if(config_.type=="duty") {
-            const QString duty=QSettings().value("desktop/duty/"+QString::number(now.date().dayOfWeek())).toString();
+            const QString duty=store.dayInfos.value(now.date().dayOfWeek()).join(QStringLiteral(" · "));
             big=duty.isEmpty()?QStringLiteral("今日无提醒"):duty;
             smallText=now.toString("dddd");
             foot=QStringLiteral("右键可配置每周值日/提示");
@@ -1031,7 +1031,8 @@ void DesktopOverlays::editDutyNotes() {
     QVector<QLineEdit*> fields;
     QSettings settings;
     for(int day=1;day<=7;++day) {
-        auto* field=new QLineEdit(settings.value("desktop/duty/"+QString::number(day)).toString());
+        auto* field=new QLineEdit(planner_->schedule().dayInfos.value(day).join(QStringLiteral(" ; ")));
+        if(field->text().isEmpty()) field->setText(settings.value("desktop/duty/"+QString::number(day)).toString());
         field->setPlaceholderText(QStringLiteral("例如：值日 A 组 / 晚自习"));
         form->addRow(days[day-1],field);fields<<field;
     }
@@ -1041,8 +1042,14 @@ void DesktopOverlays::editDutyNotes() {
     connect(buttons,&QDialogButtonBox::rejected,&dlg,&QDialog::reject);
     connect(buttons,&QDialogButtonBox::accepted,&dlg,[this,&dlg,fields] {
         QSettings settings;
-        for(int day=1;day<=7;++day)
-            settings.setValue("desktop/duty/"+QString::number(day),fields[day-1]->text().trimmed());
+        for(int day=1;day<=7;++day) {
+            const QString raw=fields[day-1]->text().trimmed();
+            const auto messages=raw.split(';',Qt::SkipEmptyParts);
+            QStringList clean;
+            for(const auto& message:messages) if(!message.trimmed().isEmpty()) clean<<message.trimmed();
+            planner_->setDayInfos(day,clean);
+            settings.setValue("desktop/duty/"+QString::number(day),raw);
+        }
         refresh();
         dlg.accept();
     });
