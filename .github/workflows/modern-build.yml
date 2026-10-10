@@ -1,7 +1,5 @@
 name: TimeTable Next - Build and Package
 on:
-  push:
-    branches: [refactor/modern-campus-desktop]
   pull_request:
   workflow_dispatch:
 permissions:
@@ -22,6 +20,12 @@ jobs:
         run: cmake --build build --parallel 2
       - name: Test
         run: ctest --test-dir build --output-on-failure
+      - name: Offscreen UI smoke - light and dark
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          ./build/bin/TimeTableNext --smoke-test-light
+          ./build/bin/TimeTableNext --smoke-test-dark
   windows-portable:
     name: Windows x64 / portable ZIP
     runs-on: windows-2022
