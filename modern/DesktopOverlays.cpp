@@ -122,16 +122,16 @@ public:
         : QWidget(nullptr), config_(c), manager_(manager) {
         setObjectName("desktopOverlay");
         setAttribute(Qt::WA_TranslucentBackground);
-        setAttribute(Qt::WA_Hover);
         setMouseTracking(true);
         setWindowTitle(nameOrFallback(c));
+        setToolTip(QStringLiteral("拖动移动 · 拖右下角缩放 · 右键折叠/配置 · 单击详情"));
         auto flags=Qt::Tool|Qt::FramelessWindowHint;
         if(c.topmost) flags|=Qt::WindowStaysOnTopHint;
         setWindowFlags(flags);
-        setMinimumSize(190,100);
+        setMinimumSize(c.collapsed?QSize(125,44):QSize(190,102));
         auto* content=new QVBoxLayout(this);
-        content->setContentsMargins(18,14,18,15);
-        content->setSpacing(7);
+        content->setContentsMargins(17,13,17,12);
+        content->setSpacing(6);
         heading_=overlayLabel(this);
         heading_->setFont(QFont(font().family(),10,QFont::DemiBold));
         main_=overlayLabel(this);
@@ -141,9 +141,10 @@ public:
         content->addWidget(main_,1);
         content->addWidget(secondary_);
         content->addWidget(footer_);
-        updateModel();
+        for(auto* child:{heading_,main_,secondary_,footer_})
+            child->setVisible(!c.collapsed);
         setGeometry(c.geometry);
-        setWindowOpacity(1.0);
+        updateModel();
     }
 
     void updateModel() {
@@ -156,130 +157,202 @@ public:
         heading_->setStyleSheet("color:"+muted+";background:transparent;");
         main_->setStyleSheet("color:"+ink+";background:transparent;");
         secondary_->setStyleSheet("color:"+muted+";background:transparent;");
-        footer_->setStyleSheet("color:#766AE6;background:transparent;");
-        auto font=main_->font();font.setPointSize(config_.fontSize+3);font.setBold(true);
-        main_->setFont(font);
-        auto f=secondary_->font();f.setPointSize(std::max(9,config_.fontSize-3));secondary_->setFont(f);
-        auto current=store.currentCourse(now);
+        footer_->setStyleSheet("color:"+(dark?QString("#BCB5FF"):QString("#6153D2"))+";background:transparent;");
+        QFont large=main_->font();
+        large.setPointSize(config_.fontSize+3);
+        large.setBold(true); main_->setFont(large);
+        QFont small=secondary_->font();
+        small.setPointSize(std::max(9,config_.fontSize-3)); secondary_->setFont(small);
+        const Course* current=store.currentCourse(now);
         Course next;QDateTime when;
-        bool hasNext=store.nextCourse(now,&next,&when);
-        QString big,small,foot;
+        const bool hasNext=store.nextCourse(now,&next,&when);
+        QString big,smallText,foot;
         if(config_.type=="clock") {
             big=now.toString("HH:mm:ss");
-            small=now.toString("yyyy-MM-dd  dddd");
-            foot=QStringLiteral("双击打开课表 · 右键配置");
+            smallText=now.toString("yyyy-MM-dd dddd");
+            foot=QStringLiteral("双击打开课表 · 右键设置");
         } else if(config_.type=="current") {
             big=current?current->name:QStringLiteral("当前无课程");
-            small=current ? QString("%1–%2  %3").arg(current->start.toString("HH:mm"),
-                current->end.toString("HH:mm"),current->room) :
+            smallText=current ? current->start.toString("HH:mm")+"–"+
+                current->end.toString("HH:mm")+"  "+current->room :
                 QStringLiteral("点击查看今日完整课程");
             foot=current?QStringLiteral("距离下课 %1").arg(timeLeft(now.secsTo(QDateTime(now.date(),current->end))))
                 :QStringLiteral("第 %1 周").arg(store.weekNumber(now.date()));
         } else if(config_.type=="next") {
             big=hasNext?next.name:QStringLiteral("暂无下一节课");
-            small=hasNext?when.toString("MM-dd dddd HH:mm")+"  "+next.room:
-                QStringLiteral("未来 15 天没有安排课程");
+            smallText=hasNext?when.toString("MM-dd dddd HH:mm")+"  "+next.room:
+                QStringLiteral("本学期没有后续课程");
             foot=hasNext?QStringLiteral("距离开始 %1").arg(timeLeft(now.secsTo(when))):QString();
         } else if(config_.type=="today") {
-            const auto list=store.coursesForDate(now.date());
-            big=list.isEmpty()?QStringLiteral("今天没有课程"):QStringLiteral("今天 %1 节课程").arg(list.size());
-            QStringList details;
-            for(int i=0;i<std::min(2,int(list.size()));++i)
-                details << list[i].start.toString("HH:mm")+" "+list[i].name;
-            small=details.join("  /  ");
-            foot=QStringLiteral("点击展开今天的安排");
+            const auto today=store.coursesForDate(now.date());
+            big=today.isEmpty()?QStringLiteral("今天没有课程"):QStringLiteral("今日 %1 节课").arg(today.size());
+            QStringList summaries;
+            for(int i=0;i<std::min(3,int(today.size()));++i)
+                summaries << today[i].start.toString("HH:mm")+" "+today[i].name;
+            smallText=summaries.join("\n");
+            foot=QStringLiteral("点击展开完整课程");
         } else if(config_.type=="week") {
             const int week=store.weekNumber(now.date());
-            big=week?QStringLiteral("第 %1 / %2 周").arg(week).arg(store.totalWeeks):
+            big=week?QStringLiteral("第 %1/%2 周").arg(week).arg(store.totalWeeks):
                 QStringLiteral("当前不在学期内");
-            small=QStringLiteral("本学期从 %1 开始").arg(store.semesterMonday.toString("yyyy-MM-dd"));
-            foot=QStringLiteral("点击查看本周课程");
+            smallText=QStringLiteral("开学 %1").arg(store.semesterMonday.toString("yyyy-MM-dd"));
+            foot=QStringLiteral("点击查看周课表");
         } else if(config_.type=="countdown") {
-            big=timeLeft(now.secsTo(config_.target));
-            small=config_.target.isValid()?config_.target.toString("yyyy-MM-dd HH:mm"):
-                QStringLiteral("请在窗口设置中选择目标日期");
-            foot=QStringLiteral("目标倒计时");
+            big=config_.target.isValid()?timeLeft(now.secsTo(config_.target)):QStringLiteral("未设置目标");
+            smallText=config_.target.isValid()?config_.target.toString("yyyy-MM-dd HH:mm"):
+                QStringLiteral("请右键设置目标日期");
+            foot=QStringLiteral("倒计日");
+        } else if(config_.type=="duty") {
+            const QString duty=QSettings().value("desktop/duty/"+QString::number(now.date().dayOfWeek())).toString();
+            big=duty.isEmpty()?QStringLiteral("今日无提醒"):duty;
+            smallText=now.toString("dddd");
+            foot=QStringLiteral("右键可配置每周值日/提示");
+        } else if(config_.type=="combined") {
+            QStringList parts;
+            for(const QString& token:config_.combinedItems.split(',',Qt::SkipEmptyParts)) {
+                const QString key=token.trimmed().toLower();
+                if(key=="clock") parts<<now.toString("HH:mm");
+                else if(key=="date") parts<<now.toString("MM/dd");
+                else if(key=="current") parts<<(current?current->name:QStringLiteral("无课"));
+                else if(key=="next") parts<<(hasNext?QStringLiteral("下一节 ")+next.name:QStringLiteral("无后续课"));
+                else if(key=="week") parts<<QStringLiteral("第%1周").arg(store.weekNumber(now.date()));
+                else if(key=="duty") {
+                    const QString duty=QSettings().value("desktop/duty/"+QString::number(now.date().dayOfWeek())).toString();
+                    if(!duty.isEmpty()) parts<<duty;
+                } else if(key=="countdown"&&config_.target.isValid()) parts<<timeLeft(now.secsTo(config_.target));
+                else if(key=="note"&&!config_.note.isEmpty()) parts<<config_.note;
+            }
+            big=parts.isEmpty()?QStringLiteral("请配置组合信息"):parts.join("  ·  ");
+            smallText=parts.join("\n");
+            foot=QStringLiteral("右键编辑组合信息");
         } else {
-            big=config_.note.isEmpty()?QStringLiteral("点击右键编辑便签"):config_.note;
-            small=QString();
-            foot=QStringLiteral("自定义桌面信息");
+            big=config_.note.isEmpty()?QStringLiteral("右键编辑便签"):config_.note;
+            foot=QStringLiteral("自定义便签");
+        }
+        if(value_!=big) {
+            value_=big;
+            if(config_.collapsed) update();
         }
         if(main_->text()!=big) main_->setText(big);
-        if(secondary_->text()!=small) secondary_->setText(small);
+        if(secondary_->text()!=smallText) secondary_->setText(smallText);
         if(footer_->text()!=foot) footer_->setText(foot);
-        footer_->setVisible(!foot.isEmpty());
-        secondary_->setVisible(!small.isEmpty());
+        if(!config_.collapsed) {
+            secondary_->setVisible(!smallText.isEmpty());
+            footer_->setVisible(!foot.isEmpty());
+        }
     }
 
 protected:
     void paintEvent(QPaintEvent*) override {
-        QPainter p(this);p.setRenderHint(QPainter::Antialiasing);
+        QPainter p(this);
+        p.setRenderHint(QPainter::Antialiasing);
         const bool dark=config_.theme=="dark";
-        QColor base=dark?QColor("#202535"):QColor("#FDFEFF");
-        base.setAlphaF(config_.opacity/100.0);
-        p.setBrush(base);p.setPen(QPen(dark?QColor("#485069"):QColor("#DCE1ED"),1));
-        p.drawRoundedRect(rect().adjusted(1,1,-2,-2),17,17);
-        p.setPen(Qt::NoPen);
-        p.setBrush(QColor("#8170F8"));
-        p.drawRoundedRect(QRect(15,18,3,15),1.5,1.5);
-    }
-    void mousePressEvent(QMouseEvent* ev) override {
-        if(ev->button()==Qt::LeftButton) {
-            down_=ev->globalPosition().toPoint();
-            startPos_=pos();
-            pressed_=true;moved_=false;
-            ev->accept();return;
+        QColor background=dark?QColor("#202535"):QColor("#FDFEFF");
+        background.setAlphaF(config_.opacity/100.0);
+        p.setBrush(background);
+        p.setPen(QPen(dark?QColor("#485069"):QColor("#DCE1ED"),1));
+        p.drawRoundedRect(rect().adjusted(1,1,-2,-2),config_.collapsed?11:17,config_.collapsed?11:17);
+        if(config_.collapsed) {
+            const int inset=10;
+            QRect textRect=rect().adjusted(inset,4,-19,-4);
+            const QColor ink=dark?QColor("#F5F6FC"):QColor("#22283A");
+            if(config_.compactShowTitle) {
+                QFont titleFont=font();titleFont.setPointSize(9);
+                p.setFont(titleFont);p.setPen(dark?QColor("#ACB5CE"):QColor("#70798A"));
+                const QString prefix=nameOrFallback(config_);
+                const int titleWidth=std::min(QFontMetrics(titleFont).horizontalAdvance(prefix)+11,textRect.width()/2);
+                QRect titleRect=textRect;titleRect.setWidth(titleWidth);
+                p.drawText(titleRect,Qt::AlignLeft|Qt::AlignVCenter,
+                           QFontMetrics(titleFont).elidedText(prefix,Qt::ElideRight,titleWidth-6));
+                textRect.setLeft(textRect.left()+titleWidth);
+            }
+            QFont boldFont=font();
+            boldFont.setPointSize(config_.fontSize);
+            boldFont.setBold(true);
+            p.setFont(boldFont);p.setPen(ink);
+            const QString oneLine=value_.simplified();
+            p.drawText(textRect,Qt::AlignLeft|Qt::AlignVCenter,
+                QFontMetrics(boldFont).elidedText(oneLine,Qt::ElideRight,std::max(1,textRect.width())));
+        } else {
+            p.setPen(Qt::NoPen);p.setBrush(QColor("#8170F8"));
+            p.drawRoundedRect(QRect(12,16,3,14),1.5,1.5);
         }
-        QWidget::mousePressEvent(ev);
-    }
-    void mouseMoveEvent(QMouseEvent* ev) override {
-        if(pressed_ && !config_.locked && (ev->buttons()&Qt::LeftButton)) {
-            const QPoint delta=ev->globalPosition().toPoint()-down_;
-            if(delta.manhattanLength()>5) moved_=true;
-            if(moved_) move(startPos_+delta);
-            ev->accept();return;
+        // Compact resize affordance only while hovered. Bottom-right drag changes size.
+        if(!config_.locked && underMouse()) {
+            p.setPen(QPen(dark?QColor("#8890A3"):QColor("#9AA3B5"),1));
+            for(int n=0;n<3;++n) {
+                p.drawLine(width()-6-n*4,height()-5,width()-5,height()-6-n*4);
+            }
         }
-        QWidget::mouseMoveEvent(ev);
     }
-    void mouseReleaseEvent(QMouseEvent* ev) override {
-        if(ev->button()==Qt::LeftButton && pressed_) {
+    void mousePressEvent(QMouseEvent* event) override {
+        if(event->button()==Qt::LeftButton) {
+            down_=event->globalPosition().toPoint();
+            originalGeometry_=geometry();
+            pressed_=true; moved_=false;
+            resizing_=!config_.locked && event->position().x()>width()-18 &&
+                      event->position().y()>height()-18;
+            event->accept();return;
+        }
+        QWidget::mousePressEvent(event);
+    }
+    void mouseMoveEvent(QMouseEvent* event) override {
+        if(pressed_ && (event->buttons()&Qt::LeftButton)) {
+            const QPoint delta=event->globalPosition().toPoint()-down_;
+            if(delta.manhattanLength()>4) moved_=true;
+            if(moved_ && !config_.locked) {
+                if(resizing_) resize(QSize(originalGeometry_.width()+delta.x(),
+                                           originalGeometry_.height()+delta.y())
+                                    .expandedTo(minimumSize()));
+                else move(originalGeometry_.topLeft()+delta);
+            }
+            event->accept();return;
+        }
+        const bool overCorner=event->position().x()>width()-18 &&
+                              event->position().y()>height()-18;
+        setCursor(!config_.locked && overCorner?Qt::SizeFDiagCursor:Qt::ArrowCursor);
+        update();
+        QWidget::mouseMoveEvent(event);
+    }
+    void mouseReleaseEvent(QMouseEvent* event) override {
+        if(event->button()==Qt::LeftButton && pressed_) {
             pressed_=false;
-            if(moved_) { ++clickSerial_; manager_->moved(config_.id,geometry()); }
-            else if(config_.showDetailsOnClick) {
-                // Do not open a popup on the first click of a double-click sequence.
+            if(moved_) {
+                ++clickSerial_;
+                if(!config_.locked) manager_->moved(config_.id,geometry());
+            } else if(config_.showDetailsOnClick && !resizing_) {
                 const int serial=++clickSerial_;
-                const QPoint anchor=ev->globalPosition().toPoint();
+                const QPoint anchor=event->globalPosition().toPoint();
                 QTimer::singleShot(QApplication::doubleClickInterval(),this,[this,serial,anchor] {
                     if(serial==clickSerial_) manager_->showDetail(config_.id,anchor);
                 });
             }
-            ev->accept();return;
+            resizing_=false;
+            event->accept();return;
         }
-        QWidget::mouseReleaseEvent(ev);
+        QWidget::mouseReleaseEvent(event);
     }
-    void mouseDoubleClickEvent(QMouseEvent* ev) override {
-        if(ev->button()==Qt::LeftButton) {
+    void mouseDoubleClickEvent(QMouseEvent* event) override {
+        if(event->button()==Qt::LeftButton) {
             ++clickSerial_;
             manager_->openPlanner(config_.type=="week"?1:0);
-            ev->accept();return;
+            event->accept();return;
         }
-        QWidget::mouseDoubleClickEvent(ev);
+        QWidget::mouseDoubleClickEvent(event);
     }
-    void contextMenuEvent(QContextMenuEvent* ev) override {
-        manager_->contextMenu(config_.id,ev->globalPos());
-        ev->accept();
+    void contextMenuEvent(QContextMenuEvent* event) override {
+        manager_->contextMenu(config_.id,event->globalPos());
+        event->accept();
     }
-
 private:
     OverlayConfig config_;
     DesktopOverlays* manager_;
-    QLabel* heading_;
-    QLabel* main_;
-    QLabel* secondary_;
-    QLabel* footer_;
-    bool pressed_=false,moved_=false;
+    QLabel *heading_,*main_,*secondary_,*footer_;
+    QString value_;
+    bool pressed_=false,moved_=false,resizing_=false;
     int clickSerial_=0;
-    QPoint down_,startPos_;
+    QPoint down_;
+    QRect originalGeometry_;
 };
 
 DesktopOverlays::DesktopOverlays(MainWindow* planner):QObject(planner),planner_(planner) {}
