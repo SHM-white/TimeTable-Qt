@@ -85,6 +85,35 @@ QString remain(int seconds) {
     if(hours) return QStringLiteral("%1 小时 %2 分").arg(hours).arg(minutes);
     return QStringLiteral("%1 分 %2 秒").arg(minutes).arg(seconds%60);
 }
+// Lightweight Fluent-style settings layout based on stock Qt Widgets.
+// This stays usable on Windows 7/Qt5: no Windows App SDK dependency.
+QWidget* fluentSettingRow(const QString& heading, const QString& description, QWidget* control) {
+    auto* row=new QWidget;
+    row->setObjectName("settingRow");
+    auto* layout=new QHBoxLayout(row);
+    layout->setContentsMargins(18,13,18,13);
+    layout->setSpacing(18);
+    auto* text=new QVBoxLayout;
+    text->setSpacing(5);
+    auto* h=label(heading,"settingLabel",11);
+    auto* d=label(description,"settingDescription",9);
+    text->addWidget(h);
+    text->addWidget(d);
+    layout->addLayout(text,1);
+    control->setMinimumWidth(130);
+    layout->addWidget(control,0,Qt::AlignRight|Qt::AlignVCenter);
+    return row;
+}
+QFrame* fluentSection() {
+    auto* frame=new QFrame;
+    frame->setObjectName("fluentSection");
+    frame->setFrameShape(QFrame::NoFrame);
+    return frame;
+}
+QLabel* sectionTitle(const QString& text) {
+    auto* heading=label(text,"settingsGroupTitle",13);
+    return heading;
+}
 QWidget* scrollWidget(QWidget* content) {
     auto* view=new QScrollArea;
     view->setWidgetResizable(true);
@@ -102,8 +131,8 @@ QString description(const Course& c) {
 
 MainWindow::MainWindow(QWidget* parent):QMainWindow(parent) {
     setWindowTitle(QStringLiteral("TimeTable Next · 课表与日程"));
-    resize(1250,800);
-    setMinimumSize(920,620);
+    resize(1080,750);
+    setMinimumSize(835,580);
     dataPath_=ScheduleStore::defaultPath();
     if(QFile::exists(dataPath_)) {
         QString error;
@@ -146,32 +175,33 @@ void MainWindow::buildUi() {
     horizontal->setSpacing(0);
 
     auto* sidebar=card("sidebar");
-    sidebar->setFixedWidth(220);
+    sidebar->setFixedWidth(222);
     auto* side=new QVBoxLayout(sidebar);
-    side->setContentsMargins(20,26,20,22);
-    side->setSpacing(10);
-    side->addWidget(label(QStringLiteral("◈  TIME"),"brand",20));
-    side->addWidget(label(QStringLiteral("TABLE NEXT  /  4.0"),"muted"));
-    side->addSpacing(35);
-    const QStringList tabs={QStringLiteral("◉   今日概览"),QStringLiteral("▦   周课表"),
-        QStringLiteral("✎   课程管理"),QStringLiteral("⇄   调休与补课"),
-        QStringLiteral("⚙   偏好与节次")};
+    side->setContentsMargins(16,30,16,18);
+    side->setSpacing(6);
+    side->addWidget(label(QStringLiteral("TimeTable"),"brand",19));
+    side->addWidget(label(QStringLiteral("桌面课程与日程"),"sidebarSubtitle",9));
+    side->addSpacing(30);
+    side->addWidget(label(QStringLiteral("工作区"),"sidebarGroup",9));
+    const QStringList tabs={QStringLiteral("  今日"),QStringLiteral("  周课表"),
+        QStringLiteral("  课程"),QStringLiteral("  特殊日期"),
+        QStringLiteral("  设置")};
     for(int i=0;i<tabs.size();++i) {
         auto* nav=button(tabs.at(i));
         nav->setProperty("navigation",true);
         nav->setCheckable(true);
-        nav->setMinimumHeight(46);
+        nav->setMinimumHeight(43);
         side->addWidget(nav);
         navigation_ << nav;
         connect(nav,&QPushButton::clicked,this,[this,i]{switchPage(i);});
     }
     side->addStretch();
-    side->addWidget(label(QStringLiteral("小窗常驻桌面，管理器按需打开\n数据只存本机，无需账号"),"muted"));
-    auto* overlaysBtn=button(QStringLiteral("▤   管理桌面信息窗"),true);
+    side->addWidget(label(QStringLiteral("桌面窗口"),"sidebarGroup",9));
+    auto* overlaysBtn=button(QStringLiteral("管理浮动组件"));
     side->addWidget(overlaysBtn);
     connect(overlaysBtn,&QPushButton::clicked,this,[this] { if(onOpenOverlaySettings_) onOpenOverlaySettings_(); });
-    auto* importBtn=button(QStringLiteral("⇣   导入课表"));
-    auto* exportBtn=button(QStringLiteral("⇡   导出 / 备份"));
+    auto* importBtn=button(QStringLiteral("导入数据"));
+    auto* exportBtn=button(QStringLiteral("导出与备份"));
     side->addWidget(importBtn);
     side->addWidget(exportBtn);
     connect(importBtn,&QPushButton::clicked,this,[this]{importSchedule();});
@@ -181,11 +211,11 @@ void MainWindow::buildUi() {
     auto* right=new QWidget;
     auto* rightLayout=new QVBoxLayout(right);
     rightLayout->setContentsMargins(30,22,30,18);
-    rightLayout->setSpacing(18);
+    rightLayout->setSpacing(16);
     auto* header=new QHBoxLayout;
     auto* titles=new QVBoxLayout;
-    titles->addWidget(label(QStringLiteral("让每一天更有条理"),"pageTitle",21));
-    titles->addWidget(label(QStringLiteral("校园 · 工作 · 个人日程，一张课表轻松安排"),"muted"));
+    titles->addWidget(label(QStringLiteral("今日"),"pageTitle",22));
+    titles->addWidget(label(QStringLiteral("当前课程与近期安排"),"pageSubtitle",10));
     header->addLayout(titles,1);
     clockLabel_=label("", "clock",13);
     header->addWidget(clockLabel_,0,Qt::AlignRight|Qt::AlignVCenter);
@@ -367,35 +397,89 @@ QWidget* MainWindow::createChangesPage() {
 
 QWidget* MainWindow::createSettingsPage() {
     auto* page=new QWidget;
-    auto* v=new QVBoxLayout(page);v->setContentsMargins(0,0,0,0);v->setSpacing(14);
-    v->addWidget(label(QStringLiteral("偏好与学期配置"),"sectionHeading",19));
-    auto* top=card();
-    auto* form=new QFormLayout(top);
-    form->setContentsMargins(22,18,22,18);
+    auto* outer=new QVBoxLayout(page);
+    outer->setContentsMargins(0,0,0,0);
+    outer->setSpacing(12);
+
+    auto* scroller=new QScrollArea;
+    scroller->setObjectName("settingsScroll");
+    scroller->setWidgetResizable(true);
+    scroller->setFrameShape(QFrame::NoFrame);
+    auto* host=new QWidget;
+    host->setObjectName("settingsBody");
+    auto* column=new QVBoxLayout(host);
+    column->setContentsMargins(1,5,12,14);
+    column->setSpacing(13);
+
+    auto* intro=label(QStringLiteral("管理课表周期、显示偏好和每日作息。"),"settingDescription",10);
+    column->addWidget(intro);
+    column->addWidget(sectionTitle(QStringLiteral("学期")));
+
+    auto* semester=fluentSection();
+    auto* semesterRows=new QVBoxLayout(semester);
+    semesterRows->setContentsMargins(0,0,0,0);
+    semesterRows->setSpacing(0);
     semesterDate_=new QDateEdit;
     semesterDate_->setCalendarPopup(true);
     semesterDate_->setDisplayFormat("yyyy-MM-dd");
+    semesterDate_->setMinimumWidth(170);
+    semesterRows->addWidget(fluentSettingRow(QStringLiteral("学期开始日期"),
+        QStringLiteral("以该日期所在的星期一作为第一周"),semesterDate_));
+    auto* line1=new QFrame;line1->setObjectName("settingDivider");
+    line1->setFixedHeight(1);
+    semesterRows->addWidget(line1);
     weeksSpin_=new QSpinBox;
     weeksSpin_->setRange(1,60);
-    alwaysOnTop_=new QCheckBox(QStringLiteral("窗口置顶"));
-    darkMode_=new QCheckBox(QStringLiteral("深色外观"));
-    form->addRow(QStringLiteral("学期第一周的日期"),semesterDate_);
-    form->addRow(QStringLiteral("总教学周数"),weeksSpin_);
-    form->addRow(QStringLiteral("窗口"),alwaysOnTop_);
-    form->addRow(QStringLiteral("主题"),darkMode_);
-    v->addWidget(top);
-    v->addWidget(label(QStringLiteral("节次时间映射 · 小爱 JSON 导入/导出用"),"sectionHeading",16));
+    weeksSpin_->setSuffix(QStringLiteral(" 周"));
+    semesterRows->addWidget(fluentSettingRow(QStringLiteral("教学周数"),
+        QStringLiteral("课程的单双周与指定周以此为范围"),weeksSpin_));
+    column->addWidget(semester);
+
+    column->addWidget(sectionTitle(QStringLiteral("个性化")));
+    auto* appearance=fluentSection();
+    auto* appearanceRows=new QVBoxLayout(appearance);
+    appearanceRows->setContentsMargins(0,0,0,0);
+    appearanceRows->setSpacing(0);
+    darkMode_=new QCheckBox;
+    darkMode_->setText(QStringLiteral("使用深色主题"));
+    appearanceRows->addWidget(fluentSettingRow(QStringLiteral("应用主题"),
+        QStringLiteral("明确指定浅色或深色，不受 Windows 主题影响"),darkMode_));
+    auto* line2=new QFrame;line2->setObjectName("settingDivider");line2->setFixedHeight(1);
+    appearanceRows->addWidget(line2);
+    alwaysOnTop_=new QCheckBox;
+    alwaysOnTop_->setText(QStringLiteral("管理器置顶"));
+    appearanceRows->addWidget(fluentSettingRow(QStringLiteral("窗口层级"),
+        QStringLiteral("常驻信息卡片的置顶策略请在浮动组件中设置"),alwaysOnTop_));
+    column->addWidget(appearance);
+
+    column->addWidget(sectionTitle(QStringLiteral("节次时间")));
+    auto* periods=fluentSection();
+    auto* periodsLayout=new QVBoxLayout(periods);
+    periodsLayout->setContentsMargins(18,16,18,18);
+    periodsLayout->setSpacing(10);
+    periodsLayout->addWidget(label(QStringLiteral("设置每一节课的起止时间，用于将第三方课程表节次转换为实际时刻。"),
+        "settingDescription",9));
     periodsTable_=new QTableWidget;
+    periodsTable_->setObjectName("periodsTable");
     periodsTable_->setColumnCount(3);
-    periodsTable_->setHorizontalHeaderLabels({QStringLiteral("节次"),QStringLiteral("开始时间"),QStringLiteral("结束时间")});
+    periodsTable_->setHorizontalHeaderLabels({QStringLiteral("节次"),QStringLiteral("开始"),QStringLiteral("结束")});
     periodsTable_->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     periodsTable_->verticalHeader()->hide();
-    v->addWidget(periodsTable_,1);
-    auto* line=new QHBoxLayout;
-    line->addWidget(label(QStringLiteral("格式 HH:mm；请与所在学校的作息时间保持一致。"),"muted"));
-    line->addStretch();
-    auto* save=button(QStringLiteral("保存全部设置"),true);
-    line->addWidget(save);v->addLayout(line);
+    periodsTable_->setAlternatingRowColors(false);
+    periodsTable_->setMinimumHeight(305);
+    periodsTable_->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
+    periodsLayout->addWidget(periodsTable_);
+    column->addWidget(periods);
+    column->addStretch();
+
+    scroller->setWidget(host);
+    outer->addWidget(scroller,1);
+    auto* actions=new QHBoxLayout;
+    actions->addWidget(label(QStringLiteral("修改后需要点击保存才会写入本地配置"),"settingDescription",9),1);
+    auto* save=button(QStringLiteral("保存更改"),true);
+    save->setMinimumWidth(125);
+    actions->addWidget(save);
+    outer->addLayout(actions);
     connect(save,&QPushButton::clicked,this,[this]{saveSettings();});
     return page;
 }
@@ -453,6 +537,13 @@ void MainWindow::switchPage(int index) {
         navigation_[i]->style()->unpolish(navigation_[i]);
         navigation_[i]->style()->polish(navigation_[i]);
     }
+    const QStringList heading={QStringLiteral("今日"),QStringLiteral("周课表"),
+        QStringLiteral("课程管理"),QStringLiteral("特殊日期"),QStringLiteral("设置")};
+    const QStringList subheading={QStringLiteral("当前课程与近期安排"),
+        QStringLiteral("按教学周查看课程时间"),QStringLiteral("添加和编辑课程"),
+        QStringLiteral("调休、补课和节假日"),QStringLiteral("外观、学期和节次")};
+    if(auto* h=findChild<QLabel*>("pageTitle")) h->setText(heading.value(index));
+    if(auto* h=findChild<QLabel*>("pageSubtitle")) h->setText(subheading.value(index));
     stack_->update();
 }
 
