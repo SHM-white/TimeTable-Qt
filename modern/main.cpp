@@ -3,6 +3,8 @@
 #include <QStyleFactory>
 #include <QSettings>
 #include <QTimer>
+#include <QStackedWidget>
+#include <QGraphicsEffect>
 #include <QApplication>
 #include <QCoreApplication>
 #include <QFont>
@@ -27,7 +29,23 @@ int main(int argc, char *argv[]) {
     tt::DesktopOverlays overlays(&window);
     window.setOpenOverlaySettings([&overlays]{overlays.openConfiguration();});
     overlays.start();
-    if(arguments.contains("--smoke-test-dark") || arguments.contains("--smoke-test-light"))
+    if(arguments.contains("--smoke-navigation")) {
+        QTimer::singleShot(0,&app,[&window] {
+            auto* stack=window.findChild<QStackedWidget*>();
+            if(!stack || stack->count()!=5) {
+                QCoreApplication::exit(11);return;
+            }
+            for(int page=0;page<stack->count();++page) {
+                window.openPage(page);
+                QCoreApplication::processEvents();
+                if(stack->currentIndex()!=page ||
+                   stack->currentWidget()->graphicsEffect()!=nullptr) {
+                    QCoreApplication::exit(12);return;
+                }
+            }
+            QCoreApplication::quit();
+        });
+    } else if(arguments.contains("--smoke-test-dark") || arguments.contains("--smoke-test-light"))
         QTimer::singleShot(500,&app,&QCoreApplication::quit);
     return app.exec();
 }
