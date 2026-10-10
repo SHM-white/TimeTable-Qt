@@ -50,6 +50,44 @@ jobs:
           ./build-qt5/bin/TimeTableNext --smoke-test-dark
           ./build-qt5/bin/TimeTableNext --smoke-navigation
 
+  windows-qt5-legacy:
+    name: Windows Qt 5.15 portable / Win7 candidate
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - name: MSVC compiler environment
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+      - name: Install Qt 5.15.2
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '5.15.2'
+          host: windows
+          target: desktop
+          arch: win64_msvc2019_64
+          cache: true
+      - name: Configure Qt5
+        run: cmake -S . -B build-win7 -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON -DTIMETABLE_FORCE_QT5=ON
+      - name: Build
+        run: cmake --build build-win7 --parallel 2
+      - name: Test
+        run: ctest --test-dir build-win7 --output-on-failure
+      - name: Package Qt 5 runtime
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist/TimeTableNext-Qt5 | Out-Null
+          Copy-Item build-win7/bin/TimeTableNext.exe dist/TimeTableNext-Qt5/
+          windeployqt --release --no-translations --dir dist/TimeTableNext-Qt5 dist/TimeTableNext-Qt5/TimeTableNext.exe
+          Copy-Item README-NEXT.md dist/TimeTableNext-Qt5/README.txt
+          Compress-Archive -Path dist/TimeTableNext-Qt5 -DestinationPath TimeTableNext-Qt5-Win7-Candidate.zip -Force
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TimeTableNext-Qt5-Win7-Candidate
+          path: TimeTableNext-Qt5-Win7-Candidate.zip
+          if-no-files-found: error
+          retention-days: 30
+
   windows-portable:
     name: Windows x64 / portable ZIP
     runs-on: windows-2022
