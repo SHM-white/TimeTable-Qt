@@ -411,7 +411,10 @@ void DesktopOverlays::start() {
     timer->start(1000);
 }
 void DesktopOverlays::rebuild() {
-    qDeleteAll(windows_);windows_.clear();
+    // Context-menu actions may rebuild a window while its event handler is active.
+    // Defer deletion to the event loop to avoid destroying the event receiver.
+    for(auto* w:windows_) { w->hide(); w->deleteLater(); }
+    windows_.clear();
     for(const auto& c:configs_) {
         auto* w=new OverlayCard(c,this);
         windows_.insert(c.id,w);
@@ -440,6 +443,23 @@ void DesktopOverlays::moved(const QString& id,const QRect& geometry) {
     if(configs_[index].collapsed) configs_[index].compactGeometry=geometry;
     else configs_[index].expandedGeometry=geometry;
     save();
+}
+void DesktopOverlays::toggleCollapsed(const QString& id) {
+    const int index=indexOf(id);
+    if(index<0) return;
+    OverlayConfig& c=configs_[index];
+    if(auto* window=windows_.value(id,nullptr)) {
+        c.geometry=window->geometry();
+    }
+    if(c.collapsed) c.compactGeometry=c.geometry;
+    else c.expandedGeometry=c.geometry;
+    c.collapsed=!c.collapsed;
+    const QRect other=c.collapsed?c.compactGeometry:c.expandedGeometry;
+    // Preserve the desktop position when switching modes, but remember each size.
+    c.geometry=QRect(c.geometry.topLeft(),other.size());
+    if(c.collapsed) c.compactGeometry=c.geometry;
+    else c.expandedGeometry=c.geometry;
+    save();rebuild();
 }
 void DesktopOverlays::openPlanner(int page) {
     planner_->openPage(page);
@@ -529,9 +549,11 @@ void DesktopOverlays::contextMenu(const QString& id,const QPoint& anchor) {
     QAction* details=menu.addAction(QStringLiteral("展开此窗口详情"));
     QAction* planner=menu.addAction(QStringLiteral("打开完整课程管理器"));
     menu.addSeparator();
+    QAction* collapse=menu.addAction(c.collapsed?QStringLiteral("展开卡片（显示完整信息）"):QStringLiteral("折叠成小卡片"));
     QAction* editWindow=menu.addAction(QStringLiteral("设置此窗口"));
     QAction* manage=menu.addAction(QStringLiteral("管理全部桌面窗口"));
     QAction* add=menu.addAction(QStringLiteral("新建桌面窗口"));
+    QAction* duty=menu.addAction(QStringLiteral("编辑每周值日 / 提示"));
     menu.addSeparator();
     QAction* top=menu.addAction(c.topmost?QStringLiteral("取消置顶"):QStringLiteral("始终置顶"));
     QAction* lock=menu.addAction(c.locked?QStringLiteral("解锁拖动"):QStringLiteral("锁定位置"));
@@ -543,9 +565,11 @@ void DesktopOverlays::contextMenu(const QString& id,const QPoint& anchor) {
     if(!selected) return;
     if(selected==details) showDetail(id,anchor);
     else if(selected==planner) openPlanner();
+    else if(selected==collapse) toggleCollapsed(id);
     else if(selected==editWindow) edit(id);
     else if(selected==manage) openConfiguration();
     else if(selected==add) edit();
+    else if(selected==duty) editDutyNotes();
     else if(selected==top) { configs_[index].topmost=!c.topmost;save();rebuild(); }
     else if(selected==lock) { configs_[index].locked=!c.locked;save();rebuild(); }
     else if(selected==hide) { configs_[index].visible=false;save();rebuild();openConfiguration(); }
@@ -558,7 +582,7 @@ void DesktopOverlays::refreshConfigurationList() {
     for(const auto& c:configs_)
         configurationList_->addItem(QString("%1  ·  %2  ·  %3")
             .arg(c.visible?QStringLiteral("●"):QStringLiteral("○"),
-                 nameOrFallback(c),typeName(c.type)));
+                 nameOrFallback(c)+(c.collapsed?QStringLiteral(" [折叠]"):QStringLiteral(" [展开]")),typeName(c.type)));
 }
 void DesktopOverlays::openConfiguration() {
     if(configurationDialog_) {
@@ -570,14 +594,14 @@ void DesktopOverlays::openConfiguration() {
     configurationDialog_=dlg;
     dlg->setAttribute(Qt::WA_DeleteOnClose);
     dlg->setWindowTitle(QStringLiteral("桌面窗口管理 · TimeTable Next"));
-    dlg->setMinimumSize(620,460);
+    dlg->setMinimumSize(650,480);
     dlg->setStyleSheet(paletteCss(QSettings().value("dark",false).toBool()));
     auto* layout=new QVBoxLayout(dlg);
     layout->setContentsMargins(22,20,22,20);layout->setSpacing(12);
     auto* title=new QLabel(QStringLiteral("独立桌面窗口"));
     auto font=title->font();font.setPointSize(17);font.setBold(true);title->setFont(font);
     layout->addWidget(title);
-    auto* hint=new QLabel(QStringLiteral("每个窗口可独立置顶、拖动、锁定、隐藏和配置。\n左键展开信息，双击进入完整课表，右键访问快捷菜单。"));
+    auto* hint=new QLabel(QStringLiteral("默认小卡片仅占一行；拖动右下角缩放，右键可折叠或展开。\n左键弹出详情，双击打开课表管理器，位置与两种尺寸分别保存。"));
     hint->setWordWrap(true);layout->addWidget(hint);
     auto* list=new QListWidget;configurationList_=list;
     layout->addWidget(list,1);
@@ -586,12 +610,25 @@ void DesktopOverlays::openConfiguration() {
     auto* editButton=new QPushButton(QStringLiteral("编辑选中"));
     auto* toggle=new QPushButton(QStringLiteral("显示 / 隐藏"));
     auto* removeButton=new QPushButton(QStringLiteral("删除"));
-    buttons->addWidget(add);buttons->addWidget(editButton);buttons->addWidget(toggle);buttons->addWidget(removeButton);
+    auto* collapseButton=new QPushButton(QStringLiteral("折叠 / 展开"));
+    buttons->addWidget(add);buttons->addWidget(editButton);buttons->addWidget(collapseButton);
+    buttons->addWidget(toggle);buttons->addWidget(removeButton);
     layout->addLayout(buttons);
     auto* footer=new QHBoxLayout;
+    auto* notes=new QPushButton(QStringLiteral("每周值日 / 提示"));
+    auto* autostart=new QCheckBox(QStringLiteral("开机自启动"));
+#ifdef Q_OS_WIN
+    const QString startupPath=QStringLiteral("HKEY_CURRENT_USER\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run");
+    QSettings startup(startupPath,QSettings::NativeFormat);
+    autostart->setChecked(startup.contains("TimeTableNext"));
+#else
+    autostart->setEnabled(false);
+    autostart->setToolTip(QStringLiteral("仅在 Windows 上可用"));
+#endif
     auto* full=new QPushButton(QStringLiteral("进入完整课程管理器"));
     auto* close=new QPushButton(QStringLiteral("关闭"));
-    footer->addWidget(full);footer->addStretch();footer->addWidget(close);
+    footer->addWidget(notes);footer->addWidget(autostart);footer->addStretch();
+    footer->addWidget(full);footer->addWidget(close);
     layout->addLayout(footer);
     const auto selectedIndex=[list] { return list->currentRow(); };
     connect(add,&QPushButton::clicked,dlg,[this]{edit();});
@@ -600,6 +637,10 @@ void DesktopOverlays::openConfiguration() {
     });
     connect(list,&QListWidget::itemDoubleClicked,dlg,[this,list](QListWidgetItem*){
         int index=list->currentRow();if(index>=0&&index<configs_.size()) edit(configs_[index].id);
+    });
+    connect(collapseButton,&QPushButton::clicked,dlg,[this,selectedIndex]{
+        const int index=selectedIndex();
+        if(index>=0&&index<configs_.size()) toggleCollapsed(configs_[index].id);
     });
     connect(toggle,&QPushButton::clicked,dlg,[this,selectedIndex]{
         int index=selectedIndex();
@@ -610,6 +651,15 @@ void DesktopOverlays::openConfiguration() {
     connect(removeButton,&QPushButton::clicked,dlg,[this,selectedIndex]{
         int index=selectedIndex();if(index>=0&&index<configs_.size()) remove(configs_[index].id);
     });
+    connect(notes,&QPushButton::clicked,dlg,[this]{editDutyNotes();});
+#ifdef Q_OS_WIN
+    connect(autostart,&QCheckBox::toggled,dlg,[](bool enabled){
+        const QString key=QStringLiteral("HKEY_CURRENT_USER\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run");
+        QSettings reg(key,QSettings::NativeFormat);
+        if(enabled) reg.setValue("TimeTableNext","\\\""+QCoreApplication::applicationFilePath().replace('/','\\\\')+"\\\"");
+        else reg.remove("TimeTableNext");
+    });
+#endif
     connect(full,&QPushButton::clicked,dlg,[this]{openPlanner();});
     connect(close,&QPushButton::clicked,dlg,&QDialog::close);
     refreshConfigurationList();
@@ -676,6 +726,39 @@ void DesktopOverlays::edit(const QString& id) {
         if(index>=0) configs_[index]=c;
         else configs_.append(c);
         save();rebuild();dlg.accept();
+    });
+    dlg.exec();
+}
+void DesktopOverlays::editDutyNotes() {
+    QDialog dlg(configurationDialog_?configurationDialog_.data():nullptr);
+    dlg.setWindowTitle(QStringLiteral("每周值日 / 每日提醒"));
+    dlg.setMinimumWidth(430);
+    dlg.setStyleSheet(paletteCss(QSettings().value("dark",false).toBool()));
+    auto* content=new QVBoxLayout(&dlg);
+    auto* intro=new QLabel(QStringLiteral("为每个星期设置一条值日、值班或日常提醒；留空则不显示。"
+        "\n可以使用“每日信息”卡片，也可插入到“组合信息”卡片。"));
+    intro->setWordWrap(true);
+    content->addWidget(intro);
+    auto* form=new QFormLayout;
+    const QStringList days={QStringLiteral("周一"),QStringLiteral("周二"),QStringLiteral("周三"),
+        QStringLiteral("周四"),QStringLiteral("周五"),QStringLiteral("周六"),QStringLiteral("周日")};
+    QVector<QLineEdit*> fields;
+    QSettings settings;
+    for(int day=1;day<=7;++day) {
+        auto* field=new QLineEdit(settings.value("desktop/duty/"+QString::number(day)).toString());
+        field->setPlaceholderText(QStringLiteral("例如：值日 A 组 / 晚自习"));
+        form->addRow(days[day-1],field);fields<<field;
+    }
+    content->addLayout(form);
+    auto* buttons=new QDialogButtonBox(QDialogButtonBox::Save|QDialogButtonBox::Cancel);
+    content->addWidget(buttons);
+    connect(buttons,&QDialogButtonBox::rejected,&dlg,&QDialog::reject);
+    connect(buttons,&QDialogButtonBox::accepted,&dlg,[this,&dlg,fields] {
+        QSettings settings;
+        for(int day=1;day<=7;++day)
+            settings.setValue("desktop/duty/"+QString::number(day),fields[day-1]->text().trimmed());
+        refresh();
+        dlg.accept();
     });
     dlg.exec();
 }
