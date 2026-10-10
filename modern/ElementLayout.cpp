@@ -1,4 +1,5 @@
 #include "ElementLayout.h"
+#include "WeatherClient.h"
 #include <QFontMetrics>
 #include <QJsonValue>
 #include <QRegularExpression>
@@ -24,7 +25,7 @@ QString readType(int number) {
     switch(number) {
     case 0:return "note"; case 1:return "clock"; case 2:return "current";
     case 3:return "next"; case 4:return "nextTime"; case 5:return "countdown";
-    case 6:return "duty"; case 10:return "today"; case 11:return "progress";
+    case 6:return "duty"; case 9:return "weather"; case 10:return "today"; case 11:return "progress";
     default:return {};
     }
 }
@@ -40,7 +41,8 @@ QString clampString(QString value,int limit=2000) { if(value.size()>limit)value.
 QJsonObject TextElement::toJson() const {
     return {{"type",type},{"format",format},{"font",font},{"color",color.name(QColor::HexArgb)},
         {"pointSize",pointSize},{"bold",bold},{"vertical",vertical},{"abbreviate",abbreviate},
-        {"target",target.toString(Qt::ISODate)}};
+        {"target",target.toString(Qt::ISODate)},
+        {"weatherApiKey",weatherApiKey},{"weatherAdcode",weatherAdcode},{"weatherCity",weatherCity}};
 }
 TextElement TextElement::fromJson(const QJsonObject& o) {
     TextElement item;
@@ -54,6 +56,9 @@ TextElement TextElement::fromJson(const QJsonObject& o) {
     item.vertical=o.value("vertical").toBool(false);
     item.abbreviate=o.value("abbreviate").toBool(false);
     item.target=QDateTime::fromString(o.value("target").toString(),Qt::ISODate);
+    item.weatherApiKey=o.value("weatherApiKey").toString();
+    item.weatherAdcode=o.value("weatherAdcode").toString();
+    item.weatherCity=o.value("weatherCity").toString();
     return item;
 }
 QJsonObject ElementDefinition::toJson() const {
@@ -117,6 +122,12 @@ QList<ElementDefinition> ElementLayout::fromLegacy(const QJsonArray& array,int* 
                 std::clamp(colors[0].toInt(),0,255),std::clamp(colors[1].toInt(),0,255),
                 std::clamp(colors[2].toInt(),0,255),colors.size()>3?std::clamp(colors[3].toInt(),0,255):255);
             text.target=readTarget(value.value("Data"));
+            if(type=="weather") {
+                const auto extra=value.value("Data").toObject();
+                text.weatherApiKey=extra.value("APIKey").toString();
+                text.weatherAdcode=extra.value("Adcode").toVariant().toString();
+                text.weatherCity=extra.value("City").toString();
+            }
             if(type=="today") {
                 const auto extra=value.value("Data").toObject();
                 text.vertical=extra.value("Direction").toInt()!=0;
@@ -155,6 +166,11 @@ QString ElementLayout::evaluate(const TextElement& item,const ScheduleStore& sto
     const bool hasNext=store.nextCourse(now,&next,&start);
     QString result;
     if(item.type=="clock")return dateFormat(now,item.format);
+    if(item.type=="weather") {
+        const QString value=WeatherClient::instance().text(item.weatherApiKey,
+            item.weatherAdcode,item.weatherCity);
+        return item.format.contains("{value}")?QString(item.format).replace("{value}",value):item.format+value;
+    }
     if(item.type=="note")return clampString(item.format);
     if(item.type=="countdown")return countdown(item.target,now,item.format);
     if(item.type=="current")result=current?current->name:QStringLiteral("无课程");
