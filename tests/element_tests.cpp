@@ -57,10 +57,22 @@ int main(int argc,char** argv) {
     painter.end();
     check(!canvas.isNull(),"offscreen painter");
     QJsonArray broken{QJsonObject{{"ElementType",0},
-         {"Data",QJsonArray{QJsonObject{{"Type",9}}}}}};
+         {"Data",QJsonArray{QJsonObject{{"Type",7}}}}}};
     skipped=0;
     check(ElementLayout::fromLegacy(broken,&skipped).isEmpty()&&skipped==1,
-          "unsupported weather item transparently skipped");
+          "unimplemented news item transparently skipped");
+    const QJsonArray weatherLegacy{QJsonObject{{"ElementType",0},{"Data",QJsonArray{
+        QJsonObject{{"Type",9},{"Data",QJsonObject{{"APIKey","local-test-key"},
+            {"Adcode",110000},{"City","北京"}}}}
+    }}}};
+    const auto weather=ElementLayout::fromLegacy(weatherLegacy);
+    check(weather.size()==1&&weather.first().items.first().type=="weather",
+          "old AMap weather item recognized");
+    check(weather.first().items.first().weatherAdcode=="110000",
+          "numeric AMap adcode migrated to text");
+    const auto weatherSaved=ElementLayout::fromJson(ElementLayout::toJson(weather));
+    check(weatherSaved.size()==1 && weatherSaved.first().items.first().weatherCity==QStringLiteral("北京"),
+          "weather settings survive roundtrip");
     if(!failures)qInfo()<<"Element migration tests passed";
     return failures?1:0;
 }
