@@ -17,7 +17,7 @@ if(TIMETABLE_FORCE_QT5)
 else()
     find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets)
     set(TT_QT_MAJOR ${QT_VERSION_MAJOR})
-    find_package(Qt${TT_QT_MAJOR} REQUIRED COMPONENTS Core Widgets)
+    find_package(Qt${TT_QT_MAJOR} REQUIRED COMPONENTS Core Widgets Network)
 endif()
 
 if(TT_QT_MAJOR EQUAL 6)
