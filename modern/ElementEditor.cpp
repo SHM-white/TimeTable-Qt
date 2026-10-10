@@ -265,7 +265,7 @@ bool ElementEditor::edit(QWidget* parent,QList<ElementDefinition>& output,
         }
         preview->update();
     };
-    for(auto* control:{x,y,w,h,interval,fontSize})connect(control,QOverload<int>::of(&QSpinBox::valueChanged),&dialog,[&](int){persist();});
+    for(auto* control:{x,y,w,h,interval,fontSize})QObject::connect(control,QOverload<int>::of(&QSpinBox::valueChanged),&dialog,[&](int){persist();});
     QObject::connect(kind,QOverload<int>::of(&QComboBox::currentIndexChanged),&dialog,[&](int){persist();});
     QObject::connect(mode,QOverload<int>::of(&QComboBox::currentIndexChanged),&dialog,[&](int){persist();});
     QObject::connect(format,&QLineEdit::textChanged,&dialog,[&](const QString&){persist();});
