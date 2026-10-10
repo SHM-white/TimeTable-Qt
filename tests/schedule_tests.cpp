@@ -23,7 +23,7 @@ int main(int argc,char** argv) {
     course.start=QTime(8,0);course.end=QTime(9,40);
     course.weeks={1,3,5,7};
     s.courses<<course;
-    s.dayInfos[1]={QStringLiteral("早班值日"),QStringLiteral("值班 A 组")};
+    s.dayInfos[1]=QStringList{QStringLiteral("早班值日"),QStringLiteral("值班 A 组")};
     check(s.weekNumber(QDate(2026,9,7))==1,"week 1 start");
     check(s.weekNumber(QDate(2026,9,14))==2,"week 2 start");
     check(s.coursesForDate(QDate(2026,9,7)).size()==1,"odd week active");
