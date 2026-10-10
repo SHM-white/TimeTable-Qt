@@ -36,10 +36,10 @@
 
 namespace tt {
 namespace {
-const QStringList types={"clock","current","next","today","week","countdown","note"};
+const QStringList types={"clock","current","next","today","week","countdown","note","duty","combined"};
 const QStringList names={QStringLiteral("时钟与日期"),QStringLiteral("当前课程"),QStringLiteral("下一节课程"),
                          QStringLiteral("今日课程"),QStringLiteral("教学周信息"),
-                         QStringLiteral("目标日倒计时"),QStringLiteral("自定义便签")};
+                         QStringLiteral("目标日倒计时"),QStringLiteral("自定义便签"),QStringLiteral("每日信息 / 值日"),QStringLiteral("组合信息栏")};
 QString typeName(const QString& type) {
     const int i=types.indexOf(type);
     return names.value(i,QStringLiteral("信息组件"));
@@ -67,6 +67,12 @@ QJsonObject toJson(const OverlayConfig& c) {
         {"x",c.geometry.x()},{"y",c.geometry.y()},{"width",c.geometry.width()},
         {"height",c.geometry.height()},{"visible",c.visible},{"topmost",c.topmost},
         {"locked",c.locked},{"showDetailsOnClick",c.showDetailsOnClick},
+        {"collapsed",c.collapsed},{"compactShowTitle",c.compactShowTitle},
+        {"combinedItems",c.combinedItems},
+        {"compactX",c.compactGeometry.x()},{"compactY",c.compactGeometry.y()},
+        {"compactWidth",c.compactGeometry.width()},{"compactHeight",c.compactGeometry.height()},
+        {"expandedX",c.expandedGeometry.x()},{"expandedY",c.expandedGeometry.y()},
+        {"expandedWidth",c.expandedGeometry.width()},{"expandedHeight",c.expandedGeometry.height()},
         {"fontSize",c.fontSize},{"opacity",c.opacity},{"target",c.target.toString(Qt::ISODate)}
     };
 }
@@ -79,6 +85,15 @@ OverlayConfig fromJson(const QJsonObject& j) {
     c.note=j.value("note").toString();
     c.geometry=QRect(j.value("x").toInt(20),j.value("y").toInt(20),
                      j.value("width").toInt(300),j.value("height").toInt(160));
+    c.collapsed=j.value("collapsed").toBool(true);
+    c.compactShowTitle=j.value("compactShowTitle").toBool(false);
+    c.combinedItems=j.value("combinedItems").toString("clock,current,next");
+    c.compactGeometry=QRect(j.value("compactX").toInt(c.geometry.x()),j.value("compactY").toInt(c.geometry.y()),
+        j.value("compactWidth").toInt(195),j.value("compactHeight").toInt(54));
+    c.expandedGeometry=QRect(j.value("expandedX").toInt(c.geometry.x()),j.value("expandedY").toInt(c.geometry.y()),
+        j.value("expandedWidth").toInt(std::max(230,c.geometry.width())),
+        j.value("expandedHeight").toInt(std::max(130,c.geometry.height())));
+    c.geometry=c.collapsed?c.compactGeometry:c.expandedGeometry;
     c.visible=j.value("visible").toBool(true);
     c.topmost=j.value("topmost").toBool(true);
     c.locked=j.value("locked").toBool(false);
@@ -277,7 +292,10 @@ OverlayConfig DesktopOverlays::defaultConfig(const QString& type) const {
     c.type=type;
     c.theme=QSettings().value("desktop/defaultTheme","light").toString();
     const QRect screen=QGuiApplication::primaryScreen()->availableGeometry();
-    c.geometry=QRect(screen.x()+25,screen.y()+25,310,150);
+    c.compactGeometry=QRect(screen.x()+25,screen.y()+25,195,54);
+    c.expandedGeometry=QRect(screen.x()+25,screen.y()+25,310,150);
+    c.geometry=c.compactGeometry;
+    c.collapsed=true;
     c.target=QDateTime(QDate::currentDate().addDays(30),QTime(0,0));
     return c;
 }
@@ -290,16 +308,18 @@ void DesktopOverlays::load() {
         if(doc.isArray()) for(const auto& item:doc.array()) {
             auto config=fromJson(item.toObject());
             if(config.id.isEmpty()||!types.contains(config.type)||
-                config.geometry.width()<160||config.geometry.height()<85 ||
                 config.opacity<30||config.opacity>100 || config.fontSize<8||config.fontSize>35)
                 continue;
             if(config.theme!="dark"&&config.theme!="light") config.theme="light";
+            config.compactGeometry.setSize(config.compactGeometry.size().expandedTo(QSize(125,44)));
+            config.expandedGeometry.setSize(config.expandedGeometry.size().expandedTo(QSize(190,102)));
+            config.geometry=config.collapsed?config.compactGeometry:config.expandedGeometry;
             configs_.append(config);
         }
     } else {
-        auto clock=defaultConfig("clock");clock.geometry.setSize(QSize(260,140));
-        auto current=defaultConfig("current");current.geometry.translate(275,0);
-        auto next=defaultConfig("next");next.geometry.translate(600,0);
+        auto clock=defaultConfig("clock");clock.compactGeometry.setSize(QSize(158,48));clock.geometry=clock.compactGeometry;
+        auto current=defaultConfig("current");current.compactGeometry.moveTopLeft(clock.compactGeometry.topRight()+QPoint(12,0));current.geometry=current.compactGeometry;
+        auto next=defaultConfig("next");next.compactGeometry.moveTopLeft(current.compactGeometry.topRight()+QPoint(12,0));next.geometry=next.compactGeometry;
         configs_={clock,current,next};
         save();
     }
@@ -344,6 +364,8 @@ void DesktopOverlays::moved(const QString& id,const QRect& geometry) {
     const int index=indexOf(id);
     if(index<0) return;
     configs_[index].geometry=geometry;
+    if(configs_[index].collapsed) configs_[index].compactGeometry=geometry;
+    else configs_[index].expandedGeometry=geometry;
     save();
 }
 void DesktopOverlays::openPlanner(int page) {
