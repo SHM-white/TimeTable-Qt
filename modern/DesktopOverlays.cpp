@@ -621,7 +621,7 @@ void DesktopOverlays::openConfiguration() {
     auto* notes=new QPushButton(QStringLiteral("每周值日 / 提示"));
     auto* autostart=new QCheckBox(QStringLiteral("开机自启动"));
 #ifdef Q_OS_WIN
-    const QString startupPath=QStringLiteral("HKEY_CURRENT_USER\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run");
+    const QString startupPath=QStringLiteral("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run");
     QSettings startup(startupPath,QSettings::NativeFormat);
     autostart->setChecked(startup.contains("TimeTableNext"));
 #else
@@ -657,9 +657,9 @@ void DesktopOverlays::openConfiguration() {
     connect(notes,&QPushButton::clicked,dlg,[this]{editDutyNotes();});
 #ifdef Q_OS_WIN
     connect(autostart,&QCheckBox::toggled,dlg,[](bool enabled){
-        const QString key=QStringLiteral("HKEY_CURRENT_USER\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run");
+        const QString key=QStringLiteral("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run");
         QSettings reg(key,QSettings::NativeFormat);
-        if(enabled) reg.setValue("TimeTableNext","\\\""+QCoreApplication::applicationFilePath().replace('/','\\\\')+"\\\"");
+        if(enabled) reg.setValue("TimeTableNext",QStringLiteral("\"")+QCoreApplication::applicationFilePath().replace('/','\\')+QStringLiteral("\""));
         else reg.remove("TimeTableNext");
     });
 #endif
