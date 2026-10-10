@@ -20,6 +20,8 @@ qt_add_executable(TimeTableNext WIN32
     modern/main.cpp
     modern/MainWindow.h
     modern/MainWindow.cpp
+    modern/DesktopOverlays.h
+    modern/DesktopOverlays.cpp
 )
 target_link_libraries(TimeTableNext PRIVATE timetable_core Qt6::Widgets)
 set_target_properties(TimeTableNext PROPERTIES
