@@ -22,6 +22,11 @@ class MainWindow final : public QMainWindow {
 public:
     explicit MainWindow(QWidget* parent = nullptr);
     const ScheduleStore& schedule() const { return store_; }
+    void setDayInfos(int weekday, const QStringList& messages) {
+        if(weekday<1 || weekday>7) return;
+        store_.dayInfos[weekday]=messages;
+        saveAndRefresh();
+    }
     void openPage(int index);
     void setOnScheduleChanged(std::function<void()> callback) { onScheduleChanged_ = std::move(callback); }
     void setOpenOverlaySettings(std::function<void()> callback) { onOpenOverlaySettings_ = std::move(callback); }
