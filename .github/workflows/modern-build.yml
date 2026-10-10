@@ -77,6 +77,12 @@ jobs:
         run: cmake --build build-win7 --parallel 2
       - name: Deploy Qt5 test runtime
         run: windeployqt --release --no-translations --dir build-win7 build-win7/schedule_tests.exe
+      - name: Diagnose legacy startup
+        shell: pwsh
+        run: |
+          Write-Host "Qt5Core present: $(Test-Path build-win7/Qt5Core.dll)"
+          $process = Start-Process -FilePath (Resolve-Path build-win7/schedule_tests.exe).Path -PassThru -Wait -NoNewWindow
+          Write-Host "Qt5 test process exit code: $($process.ExitCode)"
       - name: Test
         run: ctest --test-dir build-win7 --output-on-failure -V
       - name: Package Qt 5 runtime
