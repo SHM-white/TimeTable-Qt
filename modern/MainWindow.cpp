@@ -13,6 +13,7 @@
 #include <QUuid>
 #include <QColor>
 #include <QVariant>
+#include <QPalette>
 #include <QFormLayout>
 #include <QFrame>
 #include <QGraphicsOpacityEffect>
@@ -167,7 +168,10 @@ void MainWindow::buildUi() {
         connect(nav,&QPushButton::clicked,this,[this,i]{switchPage(i);});
     }
     side->addStretch();
-    side->addWidget(label(QStringLiteral("数据存储在本机\n可离线使用，无需账号"),"muted"));
+    side->addWidget(label(QStringLiteral("小窗常驻桌面，管理器按需打开\n数据只存本机，无需账号"),"muted"));
+    auto* overlaysBtn=button(QStringLiteral("▤   管理桌面信息窗"),true);
+    side->addWidget(overlaysBtn);
+    connect(overlaysBtn,&QPushButton::clicked,this,[this] { if(onOpenOverlaySettings_) onOpenOverlaySettings_(); });
     auto* importBtn=button(QStringLiteral("⇣   导入课表"));
     auto* exportBtn=button(QStringLiteral("⇡   导出 / 备份"));
     side->addWidget(importBtn);
@@ -402,10 +406,14 @@ void MainWindow::buildTray() {
     if(!QSystemTrayIcon::isSystemTrayAvailable()) return;
     tray_=new QSystemTrayIcon(style()->standardIcon(QStyle::SP_DesktopIcon),this);
     auto* menu=new QMenu(this);
-    auto* show=menu->addAction(QStringLiteral("显示 TimeTable Next"));
+    auto* manageWindows=menu->addAction(QStringLiteral("管理桌面信息窗口"));
+    auto* show=menu->addAction(QStringLiteral("打开课程管理器"));
     auto* holiday=menu->addAction(QStringLiteral("今天临时休息"));
     menu->addSeparator();
     auto* quit=menu->addAction(QStringLiteral("退出程序"));
+    connect(manageWindows,&QAction::triggered,this,[this]{
+        if(onOpenOverlaySettings_) onOpenOverlaySettings_();
+    });
     connect(show,&QAction::triggered,this,[this]{showNormal();raise();activateWindow();});
     connect(holiday,&QAction::triggered,this,[this]{
         changeDate_->setDate(QDate::currentDate());holiday_->setChecked(true);addDayChange();
@@ -433,6 +441,9 @@ void MainWindow::closeEvent(QCloseEvent* event) {
         event->accept();
     }
 }
+void MainWindow::openPage(int index) {
+    switchPage(std::clamp(index,0,stack_->count()-1));
+}
 void MainWindow::switchPage(int index) {
     stack_->setCurrentIndex(index);
     for(int i=0;i<navigation_.size();++i) {
@@ -451,6 +462,31 @@ void MainWindow::switchPage(int index) {
 }
 
 void MainWindow::applyTheme() {
+    // Qt adopts the host OS dark palette by default. Force a complete, explicit
+    // application palette so light windows remain readable on dark-mode Windows.
+    QPalette palette;
+    const QColor background(dark_?"#10121E":"#F3F5FB");
+    const QColor surface(dark_?"#1C2030":"#FFFFFF");
+    const QColor foreground(dark_?"#F1F2FA":"#1E2334");
+    const QColor muted(dark_?"#AFB6CF":"#59677F");
+    palette.setColor(QPalette::Window,background);
+    palette.setColor(QPalette::WindowText,foreground);
+    palette.setColor(QPalette::Base,surface);
+    palette.setColor(QPalette::AlternateBase,background);
+    palette.setColor(QPalette::Text,foreground);
+    palette.setColor(QPalette::Button,surface);
+    palette.setColor(QPalette::ButtonText,foreground);
+    palette.setColor(QPalette::BrightText,QColor("#FFFFFF"));
+    palette.setColor(QPalette::ToolTipBase,surface);
+    palette.setColor(QPalette::ToolTipText,foreground);
+    palette.setColor(QPalette::Highlight,QColor("#6763DE"));
+    palette.setColor(QPalette::HighlightedText,QColor("#FFFFFF"));
+    palette.setColor(QPalette::Link,QColor("#7774F0"));
+    palette.setColor(QPalette::PlaceholderText,muted);
+    palette.setColor(QPalette::Disabled,QPalette::Text,muted);
+    palette.setColor(QPalette::Disabled,QPalette::WindowText,muted);
+    palette.setColor(QPalette::Disabled,QPalette::ButtonText,muted);
+    qApp->setPalette(palette);
     const QString bg=dark_?"#10121E":"#F3F5FB";
     const QString surface=dark_?"#1C2030":"#FFFFFF";
     const QString text=dark_?"#F1F2FA":"#1E2334";
@@ -631,6 +667,7 @@ void MainWindow::saveAndRefresh() {
     updateWeek();
     updateCourseTable();
     updateChanges();
+    if(onScheduleChanged_) onScheduleChanged_();
 }
 void MainWindow::showMessage(const QString& text) {statusBar()->showMessage(text,7000);}
 
