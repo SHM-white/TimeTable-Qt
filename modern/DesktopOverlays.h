@@ -50,6 +50,7 @@ public:
     void moved(const QString& id, const QRect& geometry);
     void toggleCollapsed(const QString& id);
     void editDutyNotes();
+    void importLegacyWindows();
 
 private:
     friend class OverlayCard;
