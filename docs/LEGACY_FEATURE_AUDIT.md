@@ -1,3 +1,25 @@
+## 最新迁移进展（2026-10-11，持续更新）
+
+本文件中早期标为“缺失”的部分已经通过以下代码补齐，下面的历史功能矩阵仍作为原始审计快照保留：
+
+| 原版能力 | 本轮实现位置 | 当前边界 |
+|---|---|---|
+| UIElements 精确 Location / Size | `ElementDefinition::rect` 和 `ElementEditor` 拖拽画布 | 尚未实现多选、磁吸和元素分组 |
+| 每项文字独立字体、颜色、字号、格式 | `TextElement` + Qt Painter | 已保留透明度和旧 JSON 导入字段 |
+| SingleItem / MultiItemInOrder / MultiItemAllDisplay | `ElementLayout::paint` 三种模式 | 轮播使用固定秒间隔，不完全模拟旧代码“滚完才切换” |
+| 超长文字滚动 | Painter 定时位置计算与裁剪 | Qt5/Qt6 同一实现 |
+| 原版窗口背景色/图片 | `OverlayConfig` + Painter 背景图 | 图片引用本地绝对路径；文件移动后需重选 |
+| TodayAllLessons 旧版横/竖布局与当前课高亮 | ElementLayout today 元素 | 目前通过高亮轮廓表现，无旧版全部像素效果 |
+| 日期格式与倒计日格式 | `strftime` 与受限数字格式替换 | 旧格式含扩展 printf 类型时原样保留以避免不安全格式串 |
+| 高德天气 | `WeatherClient` / QtNetwork 异步缓存，用户自行填 Key/Adcode | Win7 的 HTTPS/TLS 兼容需要实机验证 |
+| 自动适应布局大小 | 卡片布局设置中的“根据内容适配展开尺寸” | 可视化编辑器依然可手动设宽高 |
+| 旧配置 MainWindow + Windows | 旧 JSON 迁移器保留几何、样式、内容 | News/DailyWord/WeatherBlock 暂不支持，统计跳过个数 |
+| Qt 5.15 / Qt 6 共用组件 | `timetable_elements` + `QtCompat` | Windows 7 需真机/虚拟机认证 |
+
+**数据提示：** 高德 API Key 暂时在本地 QSettings 中以明文储存，不会主动上传到云端；如果手动转储本地配置文件，请主动移除 Key。不会使用非公开 API 或第三方账号 token。
+
+---
+
 # 旧版功能完整盘点与下一阶段迁移方案
 
 审计基线：原始 `master` 分支（2026-10-11），对照 `refactor/modern-campus-desktop`。本文件基于 **源码行为**，不是只看 README 或仅仅统计枚举值。
