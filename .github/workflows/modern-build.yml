@@ -27,6 +27,29 @@ jobs:
           ./build/bin/TimeTableNext --smoke-test-light
           ./build/bin/TimeTableNext --smoke-test-dark
           ./build/bin/TimeTableNext --smoke-navigation
+  qt5-compatibility:
+    name: Qt 5.15 legacy compatibility
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install legacy Qt
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qtbase5-dev qtbase5-dev-tools ninja-build
+      - name: Configure Qt 5
+        run: cmake -S . -B build-qt5 -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON -DTIMETABLE_FORCE_QT5=ON
+      - name: Compile with Qt 5
+        run: cmake --build build-qt5 --parallel 2
+      - name: Test Qt 5 model
+        run: ctest --test-dir build-qt5 --output-on-failure
+      - name: Qt 5 UI smoke
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          ./build-qt5/bin/TimeTableNext --smoke-test-light
+          ./build-qt5/bin/TimeTableNext --smoke-test-dark
+          ./build-qt5/bin/TimeTableNext --smoke-navigation
+
   windows-portable:
     name: Windows x64 / portable ZIP
     runs-on: windows-2022
