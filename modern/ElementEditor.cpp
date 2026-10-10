@@ -26,10 +26,10 @@
 #include "QtCompat.h"
 namespace tt {
 namespace {
-const QStringList kinds={"clock","current","next","nextTime","countdown","duty","note","today","progress","week"};
+const QStringList kinds={"clock","current","next","nextTime","countdown","duty","note","today","progress","week","weather"};
 const QStringList displayNames={QStringLiteral("时间"),QStringLiteral("当前课程"),QStringLiteral("下一节课"),
     QStringLiteral("距离下一节"),QStringLiteral("倒计日"),QStringLiteral("每日信息"),
-    QStringLiteral("固定文本"),QStringLiteral("今日课表"),QStringLiteral("上课进度"),QStringLiteral("教学周")};
+    QStringLiteral("固定文本"),QStringLiteral("今日课表"),QStringLiteral("上课进度"),QStringLiteral("教学周"),QStringLiteral("高德天气")};
 class Preview final:public QWidget {
 public:
     Preview(QList<ElementDefinition>& elements,const ScheduleStore& store,QWidget* parent=nullptr)
@@ -162,6 +162,13 @@ bool ElementEditor::edit(QWidget* parent,QList<ElementDefinition>& output,
     auto* marquee=new QCheckBox(QStringLiteral("超宽文字滚动"));
     auto* vertical=new QCheckBox(QStringLiteral("今日课表按竖列显示"));
     auto* abbreviate=new QCheckBox(QStringLiteral("今日课表只显示课程首字"));
+    auto* weatherKey=new QLineEdit;
+    weatherKey->setEchoMode(QLineEdit::Password);
+    weatherKey->setPlaceholderText(QStringLiteral("高德 Web 服务 API Key（仅保存在本机）"));
+    auto* weatherCode=new QLineEdit;
+    weatherCode->setPlaceholderText(QStringLiteral("行政区划代码，如 110000"));
+    auto* weatherCity=new QLineEdit;
+    weatherCity->setPlaceholderText(QStringLiteral("城市备注，可选"));
     auto* target=new QDateTimeEdit(QDateTime::currentDateTime().addDays(30));
     target->setDisplayFormat("yyyy-MM-dd HH:mm:ss");target->setCalendarPopup(true);
     form->addRow(QStringLiteral("内容类型"),kind);
@@ -179,6 +186,9 @@ bool ElementEditor::edit(QWidget* parent,QList<ElementDefinition>& output,
     form->addRow(vertical);
     form->addRow(abbreviate);
     form->addRow(QStringLiteral("倒计目标"),target);
+    form->addRow(QStringLiteral("天气 Key"),weatherKey);
+    form->addRow(QStringLiteral("高德 Adcode"),weatherCode);
+    form->addRow(QStringLiteral("城市名称"),weatherCity);
     split->addWidget(right);
     split->setStretchFactor(0,0);split->setStretchFactor(1,2);split->setStretchFactor(2,1);
     root->addWidget(split,1);
@@ -223,8 +233,15 @@ bool ElementEditor::edit(QWidget* parent,QList<ElementDefinition>& output,
                 font->setCurrentFont(QFont(t->font));
                 fontSize->setValue(t->pointSize);bold->setChecked(t->bold);
                 vertical->setChecked(t->vertical);abbreviate->setChecked(t->abbreviate);
+                weatherKey->setText(t->weatherApiKey);
+                weatherCode->setText(t->weatherAdcode);
+                weatherCity->setText(t->weatherCity);
                 const bool isToday=t->type=="today";
                 vertical->setEnabled(isToday);abbreviate->setEnabled(isToday);
+                const bool isWeather=t->type=="weather";
+                weatherKey->setEnabled(isWeather);
+                weatherCode->setEnabled(isWeather);
+                weatherCity->setEnabled(isWeather);
                 color->setStyleSheet("background-color:"+t->color.name()+";color:"+(
                     t->color.lightness()<128?"white":"black")+";");
                 target->setDateTime(t->target.isValid()?t->target:QDateTime::currentDateTime().addDays(30));
@@ -270,6 +287,9 @@ bool ElementEditor::edit(QWidget* parent,QList<ElementDefinition>& output,
             t->format=format->text();t->font=font->currentFont().family();
             t->pointSize=fontSize->value();t->bold=bold->isChecked();t->target=target->dateTime();
             t->vertical=vertical->isChecked();t->abbreviate=abbreviate->isChecked();
+            t->weatherApiKey=weatherKey->text();
+            t->weatherAdcode=weatherCode->text();
+            t->weatherCity=weatherCity->text();
         }
         preview->update();
     };
@@ -283,6 +303,8 @@ bool ElementEditor::edit(QWidget* parent,QList<ElementDefinition>& output,
     QObject::connect(vertical,&QCheckBox::toggled,&dialog,[&](bool){persist();});
     QObject::connect(abbreviate,&QCheckBox::toggled,&dialog,[&](bool){persist();});
     QObject::connect(target,&QDateTimeEdit::dateTimeChanged,&dialog,[&](const QDateTime&){persist();});
+    for(auto* field:{weatherKey,weatherCode,weatherCity})
+        QObject::connect(field,&QLineEdit::textChanged,&dialog,[&](const QString&){persist();});
     QObject::connect(color,&QPushButton::clicked,&dialog,[&]{
         if(auto* text=selectedText()) {
             const QColor picked=QColorDialog::getColor(text->color,&dialog,
