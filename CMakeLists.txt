@@ -12,7 +12,7 @@ set(CMAKE_AUTOMOC ON)
 
 option(TIMETABLE_FORCE_QT5 "Build with Qt 5.15, for Windows 7 legacy compatibility" OFF)
 if(TIMETABLE_FORCE_QT5)
-    find_package(Qt5 5.15 REQUIRED COMPONENTS Core Widgets)
+    find_package(Qt5 5.15 REQUIRED COMPONENTS Core Widgets Network)
     set(TT_QT_MAJOR 5)
 else()
     find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets)
@@ -28,8 +28,10 @@ add_library(timetable_core STATIC modern/ScheduleStore.h modern/ScheduleStore.cp
 target_include_directories(timetable_core PUBLIC modern)
 target_link_libraries(timetable_core PUBLIC Qt${TT_QT_MAJOR}::Core)
 
-add_library(timetable_elements STATIC modern/ElementLayout.h modern/ElementLayout.cpp)
-target_link_libraries(timetable_elements PUBLIC timetable_core Qt${TT_QT_MAJOR}::Gui)
+add_library(timetable_elements STATIC
+    modern/ElementLayout.h modern/ElementLayout.cpp
+    modern/WeatherClient.h modern/WeatherClient.cpp)
+target_link_libraries(timetable_elements PUBLIC timetable_core Qt${TT_QT_MAJOR}::Gui Qt${TT_QT_MAJOR}::Network)
 target_include_directories(timetable_elements PUBLIC modern)
 
 set(TT_DESKTOP_SOURCES
