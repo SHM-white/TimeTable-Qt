@@ -3,6 +3,11 @@ project(TimeTableNext VERSION 4.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# The legacy Qt5 toolchain does not add /utf-8 automatically. Our Chinese
+# JSON fixtures and UI source files must compile as UTF-8 on MSVC.
+if(MSVC)
+    add_compile_options(/utf-8)
+endif()
 set(CMAKE_AUTOMOC ON)
 
 option(TIMETABLE_FORCE_QT5 "Build with Qt 5.15, for Windows 7 legacy compatibility" OFF)
