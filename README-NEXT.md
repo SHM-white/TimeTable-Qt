@@ -1,3 +1,27 @@
+## M2/M3 更新：真正恢复旧版 UIElements（2026-10-11）
+
+本分支重新引入独立、可序列化的 **ElementDefinition/TextElement** 信息元素：它们不再被压成卡片字符串。`现代桌面卡片 → 右键 → 编辑自由元素布局`，可以通过画布拖拽设置元素位置，并编辑以下参数：
+
+- 元素坐标与宽高；每个文字条目的内容类型、模板、字体、字号、文字颜色（含 RGBA）、粗体。
+- 一个元素中可选 **单项、逐项轮播、多项同时显示**；轮播间隔可配置。
+- 超出元素边界的长文字可开启平滑横向滚动；关闭时会安全省略。
+- 支持 `clock/current/next/nextTime/countdown/duty/note/today/progress/week/weather` 类型。旧版时间字符串支持 C `strftime` 格式；倒计日支持 `%03d` 等数字占位符；其他数据模板支持 `{value}`。
+- “今日课表”可横向或竖向排列、简称或全称，并标注当前课程。
+- 每张卡片可独立设置背景色和背景图片；展开卡片可按元素占用范围自动调整尺寸。
+- 导入旧版 `config.json` 时，保留 UIElements 的 **Location、Size、Data、TextFormat、TextColor、Font、TextSize、ElementType**，以及背景色/图片（如果图片文件仍然存在），而非简单转为字符串字段。未支持的原版 News / DailyWord / WeatherBlock 等元素会跳过并计数。旧项目从未完整实现它们，不能把跳过当作完整迁移。
+
+### 天气配置
+
+天气采用可选的高德 Web API，元素编辑器提供 API Key、Adcode（如 110000）与城市备注，天气请求通过 QtNetwork 异步发送并缓存约一小时。没有 Key 时不会联网。**API Key 当前与布局一起保存在本机 QSettings 中（非加密），请勿把含密钥的配置导出到公开仓库**。Win7 下 HTTPS/系统加密服务的兼容性需要实机测试，故不会承诺 Win7 一定能获取天气。
+
+### 构建与测试
+
+`timetable_elements` 是 Qt5/Qt6 共享的元素渲染模块；`tests/element_tests.cpp` 回归测试旧版元素几何、样式、轮播、倒计时格式和背景独立存储。两套版本保留独立 Windows 便携包，Win7 版本仅作为兼容候选。
+
+限制：目前已实现组件级精确坐标的可视化拖拽、属性编辑，**尚未实现**画布吸附对齐、分组多选、完整旧版所有实验性元素。WinUI 风格设置窗口继续使用 Qt Widgets，不引入 Windows App SDK，从而不破坏 Qt5/Win7 兼容性。
+
+---
+
 ## Qt 5 / Windows 7 兼容候选与设置页更新
 
 当前分支的 CMake 支持 Qt6 主构建与 Qt5.15 兼容构建。Windows 系统的设置管理页改为更接近 WinUI Settings 的导航与分组卡片设计，实际基于 Qt Widgets（不是原生 Windows App SDK，也尚未绑定第三方 Fluent 库）。
