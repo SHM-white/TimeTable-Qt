@@ -3,11 +3,17 @@
 #include <QFile>
 #include <QTemporaryDir>
 #include <QDebug>
+#include <cstdio>
 
 using namespace tt;
 static int failed=0;
 static void check(bool condition,const char* message) {
-    if(!condition) { qCritical()<<"FAIL:"<<message; ++failed; }
+    if(!condition) {
+        std::fprintf(stderr,"FAIL: %s\n",message);
+        std::fflush(stderr);
+        qCritical()<<"FAIL:"<<message;
+        ++failed;
+    }
 }
 int main(int argc,char** argv) {
     QCoreApplication app(argc,argv);
