@@ -934,8 +934,9 @@ void DesktopOverlays::importLegacyWindows() {
     }
     const auto root=parsed.object();
     auto legacyWindows=root.value("Windows").toArray();
-    if(legacyWindows.isEmpty() && root.value("MainWindow").isObject())
-        legacyWindows.append(root.value("MainWindow"));
+    // The original main widget is separate from "Windows"; both must be imported.
+    if(root.value("MainWindow").isObject())
+        legacyWindows.prepend(root.value("MainWindow"));
     if(legacyWindows.isEmpty()) {
         QMessageBox::warning(configurationDialog_.data(),QStringLiteral("配置无法识别"),
             QStringLiteral("找不到旧版 Windows 或 MainWindow 数组。"));
@@ -978,7 +979,7 @@ void DesktopOverlays::importLegacyWindows() {
         }
         if(tokens.isEmpty()) {++skipped;continue;}
         OverlayConfig c=defaultConfig(tokens.size()==1?tokens.first():"combined");
-        c.title=legacy.value("Name").toString().trimmed();
+        c.title=legacy.value("Name").toString(legacy.value("name").toString()).trimmed();
         if(c.title.isEmpty()) c.title=QStringLiteral("旧版窗口 %1").arg(imported.size()+1);
         c.combinedItems=tokens.join(",");
         c.note=note;
