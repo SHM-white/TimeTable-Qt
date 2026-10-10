@@ -29,6 +29,9 @@
 #include <QScrollArea>
 #include <QSettings>
 #include <QSpinBox>
+#include <QTabWidget>
+#include <QFontMetrics>
+#include <QCoreApplication>
 #include <QTimer>
 #include <QVBoxLayout>
 #include <QUuid>
@@ -669,12 +672,18 @@ void DesktopOverlays::openConfiguration() {
 void DesktopOverlays::edit(const QString& id) {
     const int index=indexOf(id);
     OverlayConfig c=index>=0?configs_[index]:defaultConfig("current");
-    QDialog dlg;
-    dlg.setWindowTitle(index<0?QStringLiteral("添加桌面信息窗口"):QStringLiteral("编辑桌面信息窗口"));
-    dlg.setMinimumWidth(420);
+    QDialog dlg(configurationDialog_?configurationDialog_.data():nullptr);
+    dlg.setWindowTitle(index<0?QStringLiteral("创建桌面卡片"):QStringLiteral("桌面卡片设置"));
+    dlg.resize(470,550);
+    dlg.setMinimumWidth(450);
     dlg.setStyleSheet(paletteCss(QSettings().value("dark",false).toBool()));
-    auto* content=new QVBoxLayout(&dlg);
-    auto* form=new QFormLayout;
+    auto* root=new QVBoxLayout(&dlg);
+    auto* tabs=new QTabWidget(&dlg);
+    root->addWidget(tabs,1);
+
+    auto* basics=new QWidget;
+    auto* form=new QFormLayout(basics);
+    form->setSpacing(12);
     auto* title=new QLineEdit(c.title);
     auto* type=new QComboBox;
     for(int i=0;i<types.size();++i) type->addItem(names[i],types[i]);
@@ -683,52 +692,133 @@ void DesktopOverlays::edit(const QString& id) {
     theme->addItem(QStringLiteral("柔和浅色"),"light");
     theme->addItem(QStringLiteral("夜间深色"),"dark");
     theme->setCurrentIndex(c.theme=="dark"?1:0);
-    auto* size=new QSpinBox;size->setRange(8,35);size->setValue(c.fontSize);
-    auto* width=new QSpinBox;width->setRange(190,850);width->setValue(c.geometry.width());
-    auto* height=new QSpinBox;height->setRange(100,480);height->setValue(c.geometry.height());
-    auto* alpha=new QSpinBox;alpha->setRange(30,100);alpha->setSuffix("%");alpha->setValue(c.opacity);
+    auto* fontSize=new QSpinBox;
+    fontSize->setRange(8,35);fontSize->setValue(c.fontSize);
+    auto* alpha=new QSpinBox;
+    alpha->setRange(30,100);alpha->setSuffix("%");alpha->setValue(c.opacity);
+    auto* visible=new QCheckBox(QStringLiteral("启动时显示"));
+    visible->setChecked(c.visible);
+    auto* top=new QCheckBox(QStringLiteral("始终置顶"));
+    top->setChecked(c.topmost);
+    auto* lock=new QCheckBox(QStringLiteral("锁定位置与大小"));
+    lock->setChecked(c.locked);
+    auto* details=new QCheckBox(QStringLiteral("单击弹出详情"));
+    details->setChecked(c.showDetailsOnClick);
+    form->addRow(QStringLiteral("窗口标题"),title);
+    form->addRow(QStringLiteral("信息类型"),type);
+    form->addRow(QStringLiteral("窗口主题"),theme);
+    form->addRow(QStringLiteral("字体大小"),fontSize);
+    form->addRow(QStringLiteral("背景不透明度"),alpha);
+    form->addRow(visible);
+    form->addRow(top);
+    form->addRow(lock);
+    form->addRow(details);
+    auto* explanation=new QLabel(QStringLiteral("折叠后的卡片可以小到 125 × 44。"
+        "\n桌面直接拖动移动，拖右下角改变尺寸。"));
+    explanation->setWordWrap(true);
+    form->addRow(explanation);
+    tabs->addTab(basics,QStringLiteral("外观与行为"));
+
+    auto* layoutTab=new QWidget;
+    auto* layoutForm=new QFormLayout(layoutTab);
+    layoutForm->setSpacing(12);
+    auto* collapsed=new QCheckBox(QStringLiteral("使用紧凑折叠样式"));
+    collapsed->setChecked(c.collapsed);
+    auto* showTitle=new QCheckBox(QStringLiteral("紧凑模式显示窗口标题"));
+    showTitle->setChecked(c.compactShowTitle);
+    auto* compactWidth=new QSpinBox;compactWidth->setRange(125,900);
+    compactWidth->setValue(std::max(125,c.compactGeometry.width()));
+    auto* compactHeight=new QSpinBox;compactHeight->setRange(44,360);
+    compactHeight->setValue(std::max(44,c.compactGeometry.height()));
+    auto* expandedWidth=new QSpinBox;expandedWidth->setRange(190,900);
+    expandedWidth->setValue(std::max(190,c.expandedGeometry.width()));
+    auto* expandedHeight=new QSpinBox;expandedHeight->setRange(102,600);
+    expandedHeight->setValue(std::max(102,c.expandedGeometry.height()));
+    layoutForm->addRow(collapsed);
+    layoutForm->addRow(showTitle);
+    layoutForm->addRow(QStringLiteral("折叠宽度"),compactWidth);
+    layoutForm->addRow(QStringLiteral("折叠高度"),compactHeight);
+    layoutForm->addRow(QStringLiteral("展开宽度"),expandedWidth);
+    layoutForm->addRow(QStringLiteral("展开高度"),expandedHeight);
+    auto* hint=new QLabel(QStringLiteral("折叠只显示关键文字，展开时显示标题、时间、地点及提示。"
+        "\n两种尺寸分别记忆，右键即可随时切换。"));
+    hint->setWordWrap(true);
+    layoutForm->addRow(hint);
+    tabs->addTab(layoutTab,QStringLiteral("折叠与尺寸"));
+
+    auto* dataTab=new QWidget;
+    auto* dataForm=new QFormLayout(dataTab);
     auto* note=new QLineEdit(c.note);
+    note->setPlaceholderText(QStringLiteral("便签文本 / 组合卡片自定义备注"));
+    auto* items=new QLineEdit(c.combinedItems);
+    items->setPlaceholderText("clock,date,current,next,week,duty,countdown,note");
+    auto* tokens=new QLabel(QStringLiteral("组合信息可按顺序输入，用英文逗号隔开：\n"
+        "clock 时间 · date 日期 · current 当前课程 · next 下一节 · week 教学周\n"
+        "duty 每日值日 · countdown 倒计日 · note 备注"));
+    tokens->setWordWrap(true);
     auto* target=new QDateTimeEdit(c.target.isValid()?c.target:QDateTime::currentDateTime().addDays(30));
     target->setCalendarPopup(true);target->setDisplayFormat("yyyy-MM-dd HH:mm");
-    auto* visible=new QCheckBox(QStringLiteral("启动时显示"));visible->setChecked(c.visible);
-    auto* top=new QCheckBox(QStringLiteral("保持在其他窗口之上"));top->setChecked(c.topmost);
-    auto* lock=new QCheckBox(QStringLiteral("锁定位置（不可拖动）"));lock->setChecked(c.locked);
-    auto* details=new QCheckBox(QStringLiteral("单击弹出更多内容"));details->setChecked(c.showDetailsOnClick);
-    form->addRow(QStringLiteral("窗口名称"),title);
-    form->addRow(QStringLiteral("信息类型"),type);
-    form->addRow(QStringLiteral("独立配色"),theme);
-    form->addRow(QStringLiteral("文字大小"),size);
-    form->addRow(QStringLiteral("窗口宽度"),width);
-    form->addRow(QStringLiteral("窗口高度"),height);
-    form->addRow(QStringLiteral("背景不透明度"),alpha);
-    form->addRow(QStringLiteral("便签文本"),note);
-    form->addRow(QStringLiteral("倒计时目标"),target);
-    form->addRow(visible);form->addRow(top);form->addRow(lock);form->addRow(details);
-    content->addLayout(form);
-    auto* bar=new QDialogButtonBox(QDialogButtonBox::Save|QDialogButtonBox::Cancel);
-    bar->button(QDialogButtonBox::Save)->setText(QStringLiteral("保存窗口"));
-    bar->button(QDialogButtonBox::Cancel)->setText(QStringLiteral("取消"));
-    content->addWidget(bar);
-    connect(bar,&QDialogButtonBox::rejected,&dlg,&QDialog::reject);
-    connect(bar,&QDialogButtonBox::accepted,&dlg,[&]{
+    auto* editDuty=new QPushButton(QStringLiteral("编辑每周值日信息"));
+    dataForm->addRow(QStringLiteral("备注文字"),note);
+    dataForm->addRow(QStringLiteral("组合信息顺序"),items);
+    dataForm->addRow(tokens);
+    dataForm->addRow(QStringLiteral("倒计日目标"),target);
+    dataForm->addRow(editDuty);
+    connect(editDuty,&QPushButton::clicked,&dlg,[this]{editDutyNotes();});
+    tabs->addTab(dataTab,QStringLiteral("显示内容"));
+
+    // Updating the type from a built-in title should follow the selected template.
+    connect(type,QOverload<int>::of(&QComboBox::currentIndexChanged),&dlg,
+        [title,c,type](int selected){
+            if(title->text()==c.title && c.title==typeName(c.type))
+                title->setText(typeName(types.at(selected)));
+        });
+
+    auto* actions=new QDialogButtonBox(QDialogButtonBox::Save|QDialogButtonBox::Cancel);
+    actions->button(QDialogButtonBox::Save)->setText(QStringLiteral("应用并保存"));
+    actions->button(QDialogButtonBox::Cancel)->setText(QStringLiteral("取消"));
+    root->addWidget(actions);
+    connect(actions,&QDialogButtonBox::rejected,&dlg,&QDialog::reject);
+    connect(actions,&QDialogButtonBox::accepted,&dlg,[&,this] {
+        const QStringList allowed={"clock","date","current","next","week","duty","countdown","note"};
+        for(const auto& raw:items->text().split(',',Qt::SkipEmptyParts)) {
+            if(!allowed.contains(raw.trimmed().toLower())) {
+                QMessageBox::warning(&dlg,QStringLiteral("不支持的组合字段"),
+                    QStringLiteral("无法识别「%1」，请使用“显示内容”中列出的字段。").arg(raw.trimmed()));
+                tabs->setCurrentWidget(dataTab);
+                return;
+            }
+        }
+        if(index>=0) {
+            if(auto* w=windows_.value(c.id,nullptr)) c.geometry=w->geometry();
+            if(c.collapsed) c.compactGeometry=c.geometry;
+            else c.expandedGeometry=c.geometry;
+        }
+        const QPoint origin=c.geometry.topLeft();
         c.title=title->text().trimmed();
         c.type=type->currentData().toString();
         c.theme=theme->currentData().toString();
-        c.fontSize=size->value();
-        c.geometry.setSize(QSize(width->value(),height->value()));
+        c.fontSize=fontSize->value();
         c.opacity=alpha->value();
-        c.note=note->text();
-        c.target=target->dateTime();
         c.visible=visible->isChecked();
         c.topmost=top->isChecked();
         c.locked=lock->isChecked();
         c.showDetailsOnClick=details->isChecked();
+        c.compactShowTitle=showTitle->isChecked();
+        c.combinedItems=items->text().trimmed();
+        c.note=note->text();
+        c.target=target->dateTime();
+        c.compactGeometry=QRect(origin,QSize(compactWidth->value(),compactHeight->value()));
+        c.expandedGeometry=QRect(origin,QSize(expandedWidth->value(),expandedHeight->value()));
+        c.collapsed=collapsed->isChecked();
+        c.geometry=c.collapsed?c.compactGeometry:c.expandedGeometry;
         if(index>=0) configs_[index]=c;
         else configs_.append(c);
         save();rebuild();dlg.accept();
     });
     dlg.exec();
 }
+
 void DesktopOverlays::editDutyNotes() {
     QDialog dlg(configurationDialog_?configurationDialog_.data():nullptr);
     dlg.setWindowTitle(QStringLiteral("每周值日 / 每日提醒"));
