@@ -7,6 +7,7 @@
 #include <QMap>
 #include <QPair>
 #include <QString>
+#include <QStringList>
 #include <QTime>
 #include <QVector>
 
@@ -36,6 +37,7 @@ public:
     int totalWeeks = 20;
     QList<Course> courses;
     QList<DayChange> changes;
+    QMap<int, QStringList> dayInfos; // Legacy Infos, Monday=1..Sunday=7
     QMap<int, QPair<QTime,QTime>> periods;
 
     ScheduleStore();
