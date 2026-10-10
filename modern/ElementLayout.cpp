@@ -191,7 +191,7 @@ void ElementLayout::paint(QPainter& p,const QRect& area,const QList<ElementDefin
         for(const auto& item:visible) {
             QRect row=target;
             if(e.mode=="all") {
-                const int rowHeight=std::max(1,target.height()/visible.size());
+                const int rowHeight=std::max(1,int(target.height()/visible.size()));
                 row=QRect(target.left(),target.top()+offset*rowHeight,target.width(),rowHeight);
                 ++offset;
             }
