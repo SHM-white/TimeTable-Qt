@@ -18,7 +18,11 @@ int main(int argc, char *argv[]) {
     QCoreApplication::setApplicationVersion("4.0.0");
     QApplication::setQuitOnLastWindowClosed(false);
     QFont font;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     font.setFamilies({"Microsoft YaHei UI","Noto Sans CJK SC","Segoe UI","sans-serif"});
+#else
+    font.setFamily("Microsoft YaHei UI");
+#endif
     font.setPointSize(10);
     app.setFont(font);
     const QStringList arguments=app.arguments();
