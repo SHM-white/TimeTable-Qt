@@ -12,6 +12,7 @@
 #include <QFile>
 #include <QUuid>
 #include <QColor>
+#include <QVariant>
 #include <QFormLayout>
 #include <QFrame>
 #include <QGraphicsOpacityEffect>
@@ -520,6 +521,9 @@ void MainWindow::updateDashboard() {
                 remain(now.secsTo(when))));
     } else nextLabel_->setText(QStringLiteral("未来两周没有待上的课程。\n可以先添加一节课，或者调整学期起始日期。"));
 
+    // Refresh today's cards only when the date or timetable changes, not every second.
+    if (todayList_->property("renderedDate").toDate()==now.date()) return;
+    todayList_->setProperty("renderedDate",now.date());
     clear(todayList_);
     const auto dayCourses=store_.coursesForDate(now.date());
     if(dayCourses.isEmpty()) todayList_->addWidget(label(QStringLiteral("今天没有课程，享受自由时间。"),"muted"));
@@ -618,6 +622,8 @@ void MainWindow::fillSettings() {
     }
 }
 void MainWindow::saveAndRefresh() {
+    // Invalidate the cached list after any lesson / holiday edit.
+    todayList_->setProperty("renderedDate",QVariant());
     QString error;
     if(!store_.save(dataPath_,&error))
         QMessageBox::warning(this,QStringLiteral("保存失败"),error);
