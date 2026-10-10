@@ -1,0 +1,62 @@
+name: TimeTable Next - Build and Package
+on:
+  push:
+    branches: [refactor/modern-campus-desktop]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  linux-tests:
+    name: Linux / model tests
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Qt
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qt6-base-dev qt6-base-dev-tools ninja-build
+      - name: Configure
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON
+      - name: Build
+        run: cmake --build build --parallel 2
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
+  windows-portable:
+    name: Windows x64 / portable ZIP
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - name: MSVC developer environment
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+      - name: Install Qt 6
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.3'
+          host: windows
+          target: desktop
+          arch: win64_msvc2022_64
+          cache: true
+      - name: Configure
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON
+      - name: Build
+        run: cmake --build build --parallel 2
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
+      - name: Deploy Qt runtime
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist/TimeTableNext | Out-Null
+          Copy-Item build/bin/TimeTableNext.exe dist/TimeTableNext/
+          windeployqt --release --no-translations --dir dist/TimeTableNext dist/TimeTableNext/TimeTableNext.exe
+          Copy-Item README-NEXT.md dist/TimeTableNext/README.txt
+          Compress-Archive -Path dist/TimeTableNext -DestinationPath TimeTableNext-Windows-x64.zip -Force
+      - name: Upload Windows ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: TimeTableNext-Windows-x64
+          path: TimeTableNext-Windows-x64.zip
+          if-no-files-found: error
+          retention-days: 30
