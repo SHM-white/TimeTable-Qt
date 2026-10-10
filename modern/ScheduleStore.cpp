@@ -194,8 +194,12 @@ const Course* ScheduleStore::currentCourse(const QDateTime& now) const {
     return nullptr;
 }
 bool ScheduleStore::nextCourse(const QDateTime& now, Course* found, QDateTime* start) const {
-    for (int offset=0;offset<15;++offset) {
-        const QDate d=now.date().addDays(offset);
+    // Search through the semester, including sparse courses that meet once a month.
+    // Return immediately outside the term to avoid rescanning hundreds of days per tick.
+    const QDate lastDay=semesterMonday.addDays(totalWeeks*7-1);
+    if (now.date()>lastDay) return false;
+    const QDate firstDay=now.date()<semesterMonday ? semesterMonday : now.date();
+    for (QDate d=firstDay; d<=lastDay; d=d.addDays(1)) {
         for (const auto& c:coursesForDate(d)) {
             const QDateTime when(d,c.start);
             if (when<=now) continue;
