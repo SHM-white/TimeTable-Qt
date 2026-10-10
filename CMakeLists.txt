@@ -28,18 +28,23 @@ add_library(timetable_core STATIC modern/ScheduleStore.h modern/ScheduleStore.cp
 target_include_directories(timetable_core PUBLIC modern)
 target_link_libraries(timetable_core PUBLIC Qt${TT_QT_MAJOR}::Core)
 
+add_library(timetable_elements STATIC modern/ElementLayout.h modern/ElementLayout.cpp)
+target_link_libraries(timetable_elements PUBLIC timetable_core Qt${TT_QT_MAJOR}::Gui)
+target_include_directories(timetable_elements PUBLIC modern)
+
 set(TT_DESKTOP_SOURCES
     modern/main.cpp
     modern/MainWindow.h modern/MainWindow.cpp
     modern/DesktopOverlays.h modern/DesktopOverlays.cpp
     modern/QtCompat.h
+    modern/ElementEditor.h modern/ElementEditor.cpp
 )
 if(TT_QT_MAJOR EQUAL 6)
     qt_add_executable(TimeTableNext WIN32 ${TT_DESKTOP_SOURCES})
 else()
     add_executable(TimeTableNext WIN32 ${TT_DESKTOP_SOURCES})
 endif()
-target_link_libraries(TimeTableNext PRIVATE timetable_core Qt${TT_QT_MAJOR}::Widgets)
+target_link_libraries(TimeTableNext PRIVATE timetable_elements Qt${TT_QT_MAJOR}::Widgets)
 target_compile_definitions(TimeTableNext PRIVATE TIMETABLE_QT_MAJOR=${TT_QT_MAJOR})
 set_target_properties(TimeTableNext PROPERTIES
     OUTPUT_NAME "TimeTableNext"
@@ -52,5 +57,9 @@ if(BUILD_TESTING)
     add_executable(schedule_tests tests/schedule_tests.cpp)
     target_link_libraries(schedule_tests PRIVATE timetable_core Qt${TT_QT_MAJOR}::Core)
     add_test(NAME schedule_tests COMMAND schedule_tests)
+    add_executable(element_tests tests/element_tests.cpp)
+    target_link_libraries(element_tests PRIVATE timetable_elements Qt${TT_QT_MAJOR}::Widgets)
+    add_test(NAME element_tests COMMAND element_tests)
+    set_tests_properties(element_tests PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
     message(STATUS "Building TimeTableNext with Qt ${TT_QT_MAJOR}")
 endif()
