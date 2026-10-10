@@ -5,6 +5,7 @@
 #include <QApplication>
 #include <QCheckBox>
 #include <QColor>
+#include <QColorDialog>
 #include <QComboBox>
 #include <QContextMenuEvent>
 #include <QFont>
@@ -868,6 +869,16 @@ void DesktopOverlays::edit(const QString& id) {
     auto* target=new QDateTimeEdit(c.target.isValid()?c.target:QDateTime::currentDateTime().addDays(30));
     target->setCalendarPopup(true);target->setDisplayFormat("yyyy-MM-dd HH:mm");
     auto* editDuty=new QPushButton(QStringLiteral("编辑每周值日信息"));
+    auto* elementButton=new QPushButton(QStringLiteral("打开元素拖拽布局编辑器"));
+    auto* backgroundPath=new QLineEdit(c.backgroundImage);
+    backgroundPath->setPlaceholderText(QStringLiteral("本地图片文件路径（可留空）"));
+    auto* browseBackground=new QPushButton(QStringLiteral("选择背景图片"));
+    auto* useImage=new QCheckBox(QStringLiteral("显示背景图片"));useImage->setChecked(c.imageBackground);
+    auto* backgroundColor=new QPushButton(QStringLiteral("选择背景颜色"));
+    QColor selectedBackground=c.backgroundColor;
+    backgroundColor->setStyleSheet("background-color:"+selectedBackground.name()+";");
+    auto* autoSize=new QCheckBox(QStringLiteral("根据元素占用空间自动调整展开尺寸"));
+    autoSize->setChecked(c.autoSize);
     dataForm->addRow(QStringLiteral("备注文字"),note);
     dataForm->addRow(QStringLiteral("组合信息顺序"),items);
     dataForm->addRow(cycle);
@@ -875,6 +886,29 @@ void DesktopOverlays::edit(const QString& id) {
     dataForm->addRow(tokens);
     dataForm->addRow(QStringLiteral("倒计日目标"),target);
     dataForm->addRow(editDuty);
+    dataForm->addRow(elementButton);
+    dataForm->addRow(QStringLiteral("背景图片路径"),backgroundPath);
+    dataForm->addRow(browseBackground);
+    dataForm->addRow(useImage);
+    dataForm->addRow(backgroundColor);
+    dataForm->addRow(autoSize);
+    connect(browseBackground,&QPushButton::clicked,&dlg,[&]{
+        const QString image=QFileDialog::getOpenFileName(&dlg,QStringLiteral("选择桌面卡片背景"),
+            backgroundPath->text(),QStringLiteral("图片 (*.png *.jpg *.jpeg *.bmp *.webp)"));
+        if(!image.isEmpty()){backgroundPath->setText(image);useImage->setChecked(true);}
+    });
+    connect(backgroundColor,&QPushButton::clicked,&dlg,[&]{
+        const QColor value=QColorDialog::getColor(selectedBackground,&dlg,
+            QStringLiteral("选择卡片背景色"),QColorDialog::ShowAlphaChannel);
+        if(value.isValid()){selectedBackground=value;backgroundColor->setStyleSheet("background-color:"+value.name()+";");}
+    });
+    QList<ElementDefinition> editElements=c.elements;
+    connect(elementButton,&QPushButton::clicked,&dlg,[&]{
+        if(ElementEditor::edit(&dlg,editElements,planner_->schedule(),
+                              QSize(expandedWidth->value(),expandedHeight->value()),theme->currentData().toString()=="dark")) {
+            type->setCurrentIndex(type->findData("elements"));
+        }
+    });
     connect(editDuty,&QPushButton::clicked,&dlg,[this]{editDutyNotes();});
     tabs->addTab(dataTab,QStringLiteral("显示内容"));
 
@@ -935,9 +969,19 @@ void DesktopOverlays::edit(const QString& id) {
         c.cycleSeconds=seconds->value();
         c.note=note->text();
         c.target=target->dateTime();
+        c.elements=editElements;
+        c.backgroundImage=backgroundPath->text().trimmed();
+        c.imageBackground=useImage->isChecked();
+        c.backgroundColor=selectedBackground;
+        c.autoSize=autoSize->isChecked();
         c.compactGeometry=QRect(origin,QSize(compactWidth->value(),compactHeight->value()));
         c.expandedGeometry=QRect(origin,QSize(expandedWidth->value(),expandedHeight->value()));
         c.collapsed=collapsed->isChecked();
+        if(c.autoSize && c.type=="elements" && !c.elements.isEmpty()) {
+            const QRect bounds=ElementLayout::contentBounds(c.elements);
+            c.expandedGeometry.setSize(QSize(std::clamp(bounds.right()+20,190,1200),
+                                              std::clamp(bounds.bottom()+18,102,750)));
+        }
         c.geometry=c.collapsed?c.compactGeometry:c.expandedGeometry;
         if(index>=0) configs_[index]=c;
         else configs_.append(c);
@@ -946,6 +990,31 @@ void DesktopOverlays::edit(const QString& id) {
     dlg.exec();
 }
 
+void DesktopOverlays::editElements(const QString& id) {
+    const int index=indexOf(id);
+    if(index<0) return;
+    OverlayConfig c=configs_[index];
+    QList<ElementDefinition> layout=c.elements;
+    if(layout.isEmpty()) {
+        ElementDefinition entry;
+        TextElement item;
+        item.type=c.type=="clock"?"clock":c.type=="current"?"current":"note";
+        item.format=item.type=="clock"?"%H:%M:%S":c.note;
+        entry.items<<item;
+        layout<<entry;
+    }
+    if(!ElementEditor::edit(configurationDialog_.data(),layout,planner_->schedule(),
+                             c.expandedGeometry.size(),c.theme=="dark")) return;
+    c.elements=layout;c.type="elements";c.collapsed=false;
+    if(c.autoSize && !layout.isEmpty()) {
+        const QRect bounds=ElementLayout::contentBounds(layout);
+        c.expandedGeometry.setSize(QSize(std::clamp(bounds.right()+20,190,1200),
+                                          std::clamp(bounds.bottom()+18,102,750)));
+    }
+    c.geometry=c.expandedGeometry;
+    configs_[index]=c;
+    save();rebuild();
+}
 void DesktopOverlays::showAll() {
     for(auto& c:configs_) c.visible=true;
     save();rebuild();
