@@ -20,7 +20,7 @@
 | 高精度秒表/时钟 `CurrentTime` | 已实现，自定义 strftime 模板 | 有时钟但格式固定 | 加入时间格式编辑与即时预览 |
 | 当前课程、下一节课、下节倒计时 | 已实现 | 已迁移，但样式固定 | 元素可插入任意容器 |
 | 倒数日 `CountDownDay` | 已实现，秒级与格式字符串 | 只有简化倒计日 | 自定义格式与多个目标 |
-| 每日附加消息 `Infos` / `AddMoreInfo` | 已实现，存于课程 JSON 的七天条目中 | **未完整迁移**，仅 QSettings 每日简短值日 | 将原 Infos 纳入新版数据模型与导入导出 |
+| 每日附加消息 `Infos` / `AddMoreInfo` | 已实现，存于课程 JSON 的七天条目中 | 已补齐 Infos 导入、JSON 往返及每日卡片编辑；尚缺元素级排版 | 将原 Infos 纳入新版数据模型与导入导出 |
 | 单日完整课表 `TodayAllLessons` | 有绘制类；README 表示 v3 后砍掉独立窗口 | 有弹层/主视图 | 恢复可选紧凑桌面课程列表 |
 | 天气 `Timetable.cpp::GetWeather` | 使用高德天气 API，请求/解析逻辑存在 | **缺失** | QtNetwork 重写为异步服务，用户自带 API Key |
 | 新闻 `News`、每日一句 `DailyWord` | 枚举存在；`SingleTextItem` 分支落入固定文本 | 原版未完成，新版也未实现 | 可选插件，不列为已迁移 |
@@ -71,4 +71,4 @@
 
 ## 附：迁移中已发现的数据缺口
 
-旧版 `Lessons.json` 每天有 `Lessons` 和 `Infos` 两项。新版 `ScheduleStore::importLegacy` 目前只处理 `Lessons`；因此从旧课表迁移时，每日附加信息存在丢失风险。即便课程数量正确，也不能认为完整迁移了全部数据。迁移器应先导入事务到临时模型，比较原始和新数据数量，再提交；不能静默丢弃。
+旧版 `Lessons.json` 每天有 `Lessons` 和 `Infos` 两项。审计时发现新版原本遗漏 `Infos`；本轮已在 `ScheduleStore` 补齐 `dayInfos` 的导入、存储及测试，旧占位值会被过滤。今后迁移其它格式仍应坚持临时模型校验，避免静默丢数据。
