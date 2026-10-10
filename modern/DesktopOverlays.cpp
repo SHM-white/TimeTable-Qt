@@ -10,6 +10,8 @@
 #include <QDateTimeEdit>
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QFileDialog>
+#include <QFile>
 #include <QFormLayout>
 #include <QGuiApplication>
 #include <QHBoxLayout>
@@ -610,6 +612,7 @@ void DesktopOverlays::openConfiguration() {
     layout->addWidget(list,1);
     auto* buttons=new QHBoxLayout;
     auto* add=new QPushButton(QStringLiteral("＋ 新建"));
+    auto* importOld=new QPushButton(QStringLiteral("导入旧版窗口"));
     auto* editButton=new QPushButton(QStringLiteral("编辑选中"));
     auto* toggle=new QPushButton(QStringLiteral("显示 / 隐藏"));
     auto* removeButton=new QPushButton(QStringLiteral("删除"));
@@ -617,6 +620,10 @@ void DesktopOverlays::openConfiguration() {
     buttons->addWidget(add);buttons->addWidget(editButton);buttons->addWidget(collapseButton);
     buttons->addWidget(toggle);buttons->addWidget(removeButton);
     layout->addLayout(buttons);
+    auto* migrationHint=new QLabel(QStringLiteral("旧版 config.json 的窗口信息可导入为组合卡片；不影响原课表文件。"));
+    migrationHint->setWordWrap(true);
+    layout->addWidget(migrationHint);
+    layout->addWidget(importOld);
     auto* footer=new QHBoxLayout;
     auto* notes=new QPushButton(QStringLiteral("每周值日 / 提示"));
     auto* autostart=new QCheckBox(QStringLiteral("开机自启动"));
@@ -635,6 +642,7 @@ void DesktopOverlays::openConfiguration() {
     layout->addLayout(footer);
     const auto selectedIndex=[list] { return list->currentRow(); };
     connect(add,&QPushButton::clicked,dlg,[this]{edit();});
+    connect(importOld,&QPushButton::clicked,dlg,[this]{importLegacyWindows();});
     connect(editButton,&QPushButton::clicked,dlg,[this,selectedIndex]{
         int index=selectedIndex();if(index>=0&&index<configs_.size()) edit(configs_[index].id);
     });
@@ -819,6 +827,105 @@ void DesktopOverlays::edit(const QString& id) {
     dlg.exec();
 }
 
+void DesktopOverlays::importLegacyWindows() {
+    const QString path=QFileDialog::getOpenFileName(configurationDialog_.data(),
+        QStringLiteral("导入旧版 TimeTable-Qt 窗口布局"),
+        QString(),QStringLiteral("旧版配置文件 (*.json)"));
+    if(path.isEmpty()) return;
+    QFile file(path);
+    if(!file.open(QIODevice::ReadOnly)) {
+        QMessageBox::warning(configurationDialog_.data(),QStringLiteral("打开失败"),file.errorString());
+        return;
+    }
+    QByteArray bytes=file.readAll();
+    if(bytes.startsWith(QByteArray::fromHex("EFBBBF"))) bytes.remove(0,3);
+    QJsonParseError error;
+    const auto parsed=QJsonDocument::fromJson(bytes,&error);
+    if(!parsed.isObject()) {
+        QMessageBox::warning(configurationDialog_.data(),QStringLiteral("JSON 格式错误"),error.errorString());
+        return;
+    }
+    const auto root=parsed.object();
+    auto legacyWindows=root.value("Windows").toArray();
+    if(legacyWindows.isEmpty() && root.value("MainWindow").isObject())
+        legacyWindows.append(root.value("MainWindow"));
+    if(legacyWindows.isEmpty()) {
+        QMessageBox::warning(configurationDialog_.data(),QStringLiteral("配置无法识别"),
+            QStringLiteral("找不到旧版 Windows 或 MainWindow 数组。"));
+        return;
+    }
+    QVector<OverlayConfig> imported;
+    int skipped=0;
+    for(const auto& rawWindow:legacyWindows) {
+        const auto legacy=rawWindow.toObject();
+        const auto elements=legacy.value("UIElements").toArray();
+        if(elements.isEmpty()) {++skipped;continue;}
+        QStringList tokens;
+        QDateTime target;
+        QString note;
+        for(const auto& e:elements) {
+            const auto payload=e.toObject().value("Data").toArray();
+            for(const auto& entry:payload) {
+                const auto data=entry.toObject();
+                const int kind=data.value("Type").toInt(-1);
+                QString token;
+                if(kind==1) token="clock";
+                else if(kind==2) token="current";
+                else if(kind==3||kind==4) token="next";
+                else if(kind==5) {
+                    token="countdown";
+                    const auto dateFields=data.value("Data").toObject().value("TargetTime").toArray();
+                    if(dateFields.size()>=3) {
+                        const QDate date(dateFields.at(0).toInt(),dateFields.at(1).toInt(),dateFields.at(2).toInt());
+                        const QTime time(dateFields.size()>3?dateFields.at(3).toInt():0,
+                            dateFields.size()>4?dateFields.at(4).toInt():0,
+                            dateFields.size()>5?dateFields.at(5).toInt():0);
+                        if(date.isValid() && time.isValid()) target=QDateTime(date,time);
+                    }
+                } else if(kind==6) token="duty";
+                else if(kind==0 && !data.value("TextFormat").toString().isEmpty()) {
+                    token="note";note=data.value("TextFormat").toString();
+                } else {++skipped;continue;}
+                if(!tokens.contains(token)) tokens<<token;
+            }
+        }
+        if(tokens.isEmpty()) {++skipped;continue;}
+        OverlayConfig c=defaultConfig(tokens.size()==1?tokens.first():"combined");
+        c.title=legacy.value("Name").toString().trimmed();
+        if(c.title.isEmpty()) c.title=QStringLiteral("旧版窗口 %1").arg(imported.size()+1);
+        c.combinedItems=tokens.join(",");
+        c.note=note;
+        if(target.isValid()) c.target=target;
+        const auto location=legacy.value("WindowLocation").toArray();
+        const auto dims=legacy.value("WindowSize").toArray();
+        const QPoint position(location.size()>=2 ? location[0].toInt(c.geometry.x()) : c.geometry.x(),
+                              location.size()>=2 ? location[1].toInt(c.geometry.y()) : c.geometry.y());
+        c.compactGeometry.moveTopLeft(position);
+        c.expandedGeometry.moveTopLeft(position);
+        if(dims.size()>=2) {
+            c.expandedGeometry.setSize(QSize(std::clamp(dims[0].toInt(),190,900),
+                                              std::clamp(dims[1].toInt(),102,600)));
+        }
+        c.collapsed=true;
+        c.geometry=c.compactGeometry;
+        c.visible=legacy.value("AutoOpen").toBool(true);
+        c.topmost=legacy.value("TopMost").toBool(true);
+        c.locked=!legacy.value("Moveable").toBool(true);
+        imported<<c;
+    }
+    if(imported.isEmpty()) {
+        QMessageBox::information(configurationDialog_.data(),QStringLiteral("无可迁移窗口"),
+            QStringLiteral("旧配置中的窗口没有可识别的信息元素，原有设置没有变化。"));
+        return;
+    }
+    const QString message=QStringLiteral("识别出 %1 个桌面窗口，跳过 %2 个不兼容信息项。\n"
+        "导入会添加到现有窗口列表中，不会覆盖课程文件。是否继续？")
+        .arg(imported.size()).arg(skipped);
+    if(QMessageBox::question(configurationDialog_.data(),QStringLiteral("确认导入窗口"),message)
+       !=QMessageBox::Yes) return;
+    for(const auto& config:imported) configs_.append(config);
+    save();rebuild();
+}
 void DesktopOverlays::editDutyNotes() {
     QDialog dlg(configurationDialog_?configurationDialog_.data():nullptr);
     dlg.setWindowTitle(QStringLiteral("每周值日 / 每日提醒"));
