@@ -559,7 +559,7 @@ void DesktopOverlays::showDetail(const QString& id,const QPoint& anchor) {
     const int index=indexOf(id);
     if(index<0) return;
     const OverlayConfig c=configs_[index];
-    auto* popup=new QDialog(nullptr,Qt::Popup|Qt::FramelessWindowHint);
+    auto* popup=new QDialog(nullptr,Qt::Popup|Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);
     popup->setAttribute(Qt::WA_DeleteOnClose);
     popup->setStyleSheet(paletteCss(c.theme=="dark"));
     auto* layout=new QVBoxLayout(popup);
@@ -733,6 +733,7 @@ void DesktopOverlays::edit(const QString& id) {
     const int index=indexOf(id);
     OverlayConfig c=index>=0?configs_[index]:defaultConfig("current");
     QDialog dlg(configurationDialog_?configurationDialog_.data():nullptr);
+    if(!configurationDialog_) dlg.setWindowFlag(Qt::WindowStaysOnTopHint,true);
     dlg.setWindowTitle(index<0?QStringLiteral("创建桌面卡片"):QStringLiteral("桌面卡片设置"));
     dlg.resize(470,550);
     dlg.setMinimumWidth(450);
@@ -998,6 +999,7 @@ void DesktopOverlays::importLegacyWindows() {
 }
 void DesktopOverlays::editDutyNotes() {
     QDialog dlg(configurationDialog_?configurationDialog_.data():nullptr);
+    if(!configurationDialog_) dlg.setWindowFlag(Qt::WindowStaysOnTopHint,true);
     dlg.setWindowTitle(QStringLiteral("每周值日 / 每日提醒"));
     dlg.setMinimumWidth(430);
     dlg.setStyleSheet(paletteCss(QSettings().value("dark",false).toBool()));
