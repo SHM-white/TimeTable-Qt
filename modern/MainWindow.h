@@ -2,6 +2,7 @@
 
 #include "ScheduleStore.h"
 #include <QMainWindow>
+#include <functional>
 
 class QCheckBox;
 class QDateEdit;
@@ -20,10 +21,16 @@ namespace tt {
 class MainWindow final : public QMainWindow {
 public:
     explicit MainWindow(QWidget* parent = nullptr);
+    const ScheduleStore& schedule() const { return store_; }
+    void openPage(int index);
+    void setOnScheduleChanged(std::function<void()> callback) { onScheduleChanged_ = std::move(callback); }
+    void setOpenOverlaySettings(std::function<void()> callback) { onOpenOverlaySettings_ = std::move(callback); }
 protected:
     void closeEvent(QCloseEvent* event) override;
 private:
     ScheduleStore store_;
+    std::function<void()> onScheduleChanged_;
+    std::function<void()> onOpenOverlaySettings_;
     QString dataPath_;
     int shownWeek_=1;
     bool dark_=false;
