@@ -1,5 +1,6 @@
 #pragma once
 #include <QDateTime>
+#include "ElementLayout.h"
 #include <QHash>
 #include <QObject>
 #include <QPointer>
@@ -22,6 +23,11 @@ struct OverlayConfig {
     QString type = "current";
     QString theme = "light";
     QString note;
+    QList<ElementDefinition> elements;
+    QString backgroundImage;
+    QColor backgroundColor = QColor("#FFFFFF");
+    bool imageBackground = false;
+    bool autoSize = false;
     QRect geometry;
     QRect compactGeometry;
     QRect expandedGeometry;
@@ -53,6 +59,7 @@ public:
     void toggleCollapsed(const QString& id);
     void editDutyNotes();
     void importLegacyWindows();
+    void editElements(const QString& id);
     void showAll();
     void hideAll();
 protected:
