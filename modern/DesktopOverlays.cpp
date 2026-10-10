@@ -229,14 +229,22 @@ protected:
     void mouseReleaseEvent(QMouseEvent* ev) override {
         if(ev->button()==Qt::LeftButton && pressed_) {
             pressed_=false;
-            if(moved_) manager_->moved(config_.id,geometry());
-            else if(config_.showDetailsOnClick) manager_->showDetail(config_.id,ev->globalPosition().toPoint());
+            if(moved_) { ++clickSerial_; manager_->moved(config_.id,geometry()); }
+            else if(config_.showDetailsOnClick) {
+                // Do not open a popup on the first click of a double-click sequence.
+                const int serial=++clickSerial_;
+                const QPoint anchor=ev->globalPosition().toPoint();
+                QTimer::singleShot(QApplication::doubleClickInterval(),this,[this,serial,anchor] {
+                    if(serial==clickSerial_) manager_->showDetail(config_.id,anchor);
+                });
+            }
             ev->accept();return;
         }
         QWidget::mouseReleaseEvent(ev);
     }
     void mouseDoubleClickEvent(QMouseEvent* ev) override {
         if(ev->button()==Qt::LeftButton) {
+            ++clickSerial_;
             manager_->openPlanner(config_.type=="week"?1:0);
             ev->accept();return;
         }
@@ -255,6 +263,7 @@ private:
     QLabel* secondary_;
     QLabel* footer_;
     bool pressed_=false,moved_=false;
+    int clickSerial_=0;
     QPoint down_,startPos_;
 };
 
