@@ -23,6 +23,7 @@ int main(int argc,char** argv) {
     course.start=QTime(8,0);course.end=QTime(9,40);
     course.weeks={1,3,5,7};
     s.courses<<course;
+    s.dayInfos[1]={QStringLiteral("早班值日"),QStringLiteral("值班 A 组")};
     check(s.weekNumber(QDate(2026,9,7))==1,"week 1 start");
     check(s.weekNumber(QDate(2026,9,14))==2,"week 2 start");
     check(s.coursesForDate(QDate(2026,9,7)).size()==1,"odd week active");
@@ -46,6 +47,7 @@ int main(int argc,char** argv) {
     ScheduleStore loaded;
     check(loaded.load(json,&error),"load JSON");
     check(loaded.courses.size()==1&&loaded.changes.size()==1&&loaded.totalWeeks==20,"round trip");
+    check(loaded.dayInfos.value(1)==s.dayInfos.value(1),"daily Infos survive round-trip");
     const QString csv=temp.path()+"/table.csv";
     check(s.exportCsv(csv,&error),"CSV export");
     ScheduleStore fromCsv;fromCsv.totalWeeks=20;
@@ -57,11 +59,12 @@ int main(int argc,char** argv) {
     check(file.readAll().contains("BEGIN:VEVENT"),"ICS has events");
     QFile legacy(temp.path()+"/legacy.json");
     check(legacy.open(QIODevice::WriteOnly),"legacy writable");
-    legacy.write(R"({"Mon":{"Lessons":[["Math","0800","0940"],["未录入","1000","1100"]]}})");
+    legacy.write(R"({"Mon":{"Lessons":[["Math","0800","0940"],["未录入","1000","1100"]],"Infos":["值日 A 组","请录入"]}})");
     legacy.close();
     ScheduleStore old;
     check(old.importFile(legacy.fileName(),&error),"legacy import");
     check(old.courses.size()==1&&old.courses.first().name=="Math","placeholder skipped");
+    check(old.dayInfos.value(1)==QStringList({QStringLiteral("值日 A 组")}),"legacy Infos preserved");
     QFile xiaomi(temp.path()+"/xiaomi.json");
     check(xiaomi.open(QIODevice::WriteOnly),"XiaoAi sample writable");
     xiaomi.write(R"({"data":{"courseInfos":[{"name":"AI","day":1,"sections":[{"section":1},{"section":2}],"weeks":[1,3,5],"teacher":"Professor","position":"Room"}]}})");
