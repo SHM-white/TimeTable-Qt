@@ -1,3 +1,19 @@
+## Qt 5 / Windows 7 兼容候选与设置页更新
+
+当前分支的 CMake 支持 Qt6 主构建与 Qt5.15 兼容构建。Windows 系统的设置管理页改为更接近 WinUI Settings 的导航与分组卡片设计，实际基于 Qt Widgets（不是原生 Windows App SDK，也尚未绑定第三方 Fluent 库）。
+
+```sh
+cmake -S . -B build-qt5 -DTIMETABLE_FORCE_QT5=ON -DBUILD_TESTING=ON
+cmake --build build-qt5 --config Release
+ctest --test-dir build-qt5 --output-on-failure
+```
+
+CI 另有 Windows Qt5.15.2 便携包 `TimeTableNext-Qt5-Win7-Candidate`。**这是 Win7 候选包，而非经过 Win7 实机认证的发行版**；需在 Windows 7 SP1 虚拟机或真实系统验证 VC Runtime、Qt qwindows 平台插件、缩放、多窗口和托盘。Win11/10 主版本继续使用 Qt6。
+
+本轮同步修复了旧课表七天 `Infos` 附加文本的导入与往返保存，旧 MainWindow 也纳入窗口导入器。完整历史功能差异请看 `docs/LEGACY_FEATURE_AUDIT.md`。
+
+---
+
 ## 当前版本：紧凑卡片与原版功能迁移（本次更新）
 
 **第一次运行即显示精简卡片**：时钟约 158×48，当前课程/下一节课程约 195×54，而不再默认创建三块约 310×150 的大窗口。已有上个预览版配置的窗口也默认迁移成小尺寸，并保留屏幕位置。
