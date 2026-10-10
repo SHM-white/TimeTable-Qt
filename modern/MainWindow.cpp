@@ -16,7 +16,6 @@
 #include <QPalette>
 #include <QFormLayout>
 #include <QFrame>
-#include <QGraphicsOpacityEffect>
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QHBoxLayout>
@@ -27,7 +26,6 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QProgressBar>
-#include <QPropertyAnimation>
 #include <QPushButton>
 #include <QScrollArea>
 #include <QSettings>
@@ -445,20 +443,17 @@ void MainWindow::openPage(int index) {
     switchPage(std::clamp(index,0,stack_->count()-1));
 }
 void MainWindow::switchPage(int index) {
-    stack_->setCurrentIndex(index);
+    if(!stack_ || index<0 || index>=stack_->count()) return;
+    // QGraphicsOpacityEffect on a QStackedWidget page causes native Qt Widgets
+    // child surfaces (tables/scroll areas) to display stale pixels on Windows.
+    // Never attach an effect to the page; a deterministic stack switch is faster.
+    if(stack_->currentIndex()!=index) stack_->setCurrentIndex(index);
     for(int i=0;i<navigation_.size();++i) {
         navigation_[i]->setChecked(i==index);
         navigation_[i]->style()->unpolish(navigation_[i]);
         navigation_[i]->style()->polish(navigation_[i]);
     }
-    auto* effect=new QGraphicsOpacityEffect(stack_->currentWidget());
-    stack_->currentWidget()->setGraphicsEffect(effect);
-    auto* animation=new QPropertyAnimation(effect,"opacity",effect);
-    animation->setDuration(230);
-    animation->setStartValue(0.40);animation->setEndValue(1.0);
-    animation->setEasingCurve(QEasingCurve::OutCubic);
-    connect(animation,&QPropertyAnimation::finished,effect,[effect]{effect->deleteLater();});
-    animation->start(QAbstractAnimation::DeleteWhenStopped);
+    stack_->update();
 }
 
 void MainWindow::applyTheme() {
