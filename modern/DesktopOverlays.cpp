@@ -73,7 +73,7 @@ QJsonObject toJson(const OverlayConfig& c) {
         {"height",c.geometry.height()},{"visible",c.visible},{"topmost",c.topmost},
         {"locked",c.locked},{"showDetailsOnClick",c.showDetailsOnClick},
         {"collapsed",c.collapsed},{"compactShowTitle",c.compactShowTitle},
-        {"combinedItems",c.combinedItems},
+        {"combinedItems",c.combinedItems},{"cycleItems",c.cycleItems},{"cycleSeconds",c.cycleSeconds},
         {"compactX",c.compactGeometry.x()},{"compactY",c.compactGeometry.y()},
         {"compactWidth",c.compactGeometry.width()},{"compactHeight",c.compactGeometry.height()},
         {"expandedX",c.expandedGeometry.x()},{"expandedY",c.expandedGeometry.y()},
@@ -93,6 +93,8 @@ OverlayConfig fromJson(const QJsonObject& j) {
     c.collapsed=j.value("collapsed").toBool(true);
     c.compactShowTitle=j.value("compactShowTitle").toBool(false);
     c.combinedItems=j.value("combinedItems").toString("clock,current,next");
+    c.cycleItems=j.value("cycleItems").toBool(false);
+    c.cycleSeconds=std::clamp(j.value("cycleSeconds").toInt(5),2,300);
     c.compactGeometry=QRect(j.value("compactX").toInt(c.geometry.x()),j.value("compactY").toInt(c.geometry.y()),
         j.value("compactWidth").toInt(195),j.value("compactHeight").toInt(54));
     c.expandedGeometry=QRect(j.value("expandedX").toInt(c.geometry.x()),j.value("expandedY").toInt(c.geometry.y()),
@@ -227,7 +229,12 @@ public:
                 } else if(key=="countdown"&&config_.target.isValid()) parts<<timeLeft(now.secsTo(config_.target));
                 else if(key=="note"&&!config_.note.isEmpty()) parts<<config_.note;
             }
-            big=parts.isEmpty()?QStringLiteral("请配置组合信息"):parts.join("  ·  ");
+            if(parts.isEmpty()) big=QStringLiteral("请配置组合信息");
+            else if(config_.cycleItems) {
+                const auto step=now.toSecsSinceEpoch()/std::max(2,config_.cycleSeconds);
+                big=parts.at(int(step%parts.size()));
+                foot=QStringLiteral("信息轮播 %1/%2").arg(int(step%parts.size())+1).arg(parts.size());
+            } else big=parts.join("  ·  ");
             smallText=parts.join("\n");
             foot=QStringLiteral("右键编辑组合信息");
         } else {
@@ -563,6 +570,7 @@ void DesktopOverlays::contextMenu(const QString& id,const QPoint& anchor) {
     QAction* top=menu.addAction(c.topmost?QStringLiteral("取消置顶"):QStringLiteral("始终置顶"));
     QAction* lock=menu.addAction(c.locked?QStringLiteral("解锁拖动"):QStringLiteral("锁定位置"));
     QAction* hide=menu.addAction(QStringLiteral("隐藏此窗口"));
+    QAction* hideEverything=menu.addAction(QStringLiteral("隐藏全部桌面卡片（可从托盘恢复）"));
     QAction* removeWindow=menu.addAction(QStringLiteral("删除此窗口"));
     menu.addSeparator();
     QAction* quit=menu.addAction(QStringLiteral("退出 TimeTable Next"));
@@ -578,6 +586,7 @@ void DesktopOverlays::contextMenu(const QString& id,const QPoint& anchor) {
     else if(selected==top) { configs_[index].topmost=!c.topmost;save();rebuild(); }
     else if(selected==lock) { configs_[index].locked=!c.locked;save();rebuild(); }
     else if(selected==hide) { configs_[index].visible=false;save();rebuild();openConfiguration(); }
+    else if(selected==hideEverything) hideAll();
     else if(selected==removeWindow) remove(id);
     else if(selected==quit) QApplication::quit();
 }
@@ -613,6 +622,8 @@ void DesktopOverlays::openConfiguration() {
     auto* buttons=new QHBoxLayout;
     auto* add=new QPushButton(QStringLiteral("＋ 新建"));
     auto* importOld=new QPushButton(QStringLiteral("导入旧版窗口"));
+    auto* showAllButton=new QPushButton(QStringLiteral("全部显示"));
+    auto* hideAllButton=new QPushButton(QStringLiteral("全部隐藏"));
     auto* editButton=new QPushButton(QStringLiteral("编辑选中"));
     auto* toggle=new QPushButton(QStringLiteral("显示 / 隐藏"));
     auto* removeButton=new QPushButton(QStringLiteral("删除"));
@@ -623,7 +634,9 @@ void DesktopOverlays::openConfiguration() {
     auto* migrationHint=new QLabel(QStringLiteral("旧版 config.json 的窗口信息可导入为组合卡片；不影响原课表文件。"));
     migrationHint->setWordWrap(true);
     layout->addWidget(migrationHint);
-    layout->addWidget(importOld);
+    auto* allActions=new QHBoxLayout;
+    allActions->addWidget(importOld);allActions->addWidget(showAllButton);allActions->addWidget(hideAllButton);
+    layout->addLayout(allActions);
     auto* footer=new QHBoxLayout;
     auto* notes=new QPushButton(QStringLiteral("每周值日 / 提示"));
     auto* autostart=new QCheckBox(QStringLiteral("开机自启动"));
@@ -643,6 +656,8 @@ void DesktopOverlays::openConfiguration() {
     const auto selectedIndex=[list] { return list->currentRow(); };
     connect(add,&QPushButton::clicked,dlg,[this]{edit();});
     connect(importOld,&QPushButton::clicked,dlg,[this]{importLegacyWindows();});
+    connect(showAllButton,&QPushButton::clicked,dlg,[this]{showAll();});
+    connect(hideAllButton,&QPushButton::clicked,dlg,[this]{hideAll();});
     connect(editButton,&QPushButton::clicked,dlg,[this,selectedIndex]{
         int index=selectedIndex();if(index>=0&&index<configs_.size()) edit(configs_[index].id);
     });
@@ -760,6 +775,12 @@ void DesktopOverlays::edit(const QString& id) {
     note->setPlaceholderText(QStringLiteral("便签文本 / 组合卡片自定义备注"));
     auto* items=new QLineEdit(c.combinedItems);
     items->setPlaceholderText("clock,date,current,next,week,duty,countdown,note");
+    auto* cycle=new QCheckBox(QStringLiteral("逐项轮播（兼容旧版按顺序显示多个信息）"));
+    cycle->setChecked(c.cycleItems);
+    auto* seconds=new QSpinBox;
+    seconds->setRange(2,300);seconds->setSuffix(QStringLiteral(" 秒"));seconds->setValue(c.cycleSeconds);
+    seconds->setEnabled(c.cycleItems);
+    connect(cycle,&QCheckBox::toggled,seconds,&QWidget::setEnabled);
     auto* tokens=new QLabel(QStringLiteral("组合信息可按顺序输入，用英文逗号隔开：\n"
         "clock 时间 · date 日期 · current 当前课程 · next 下一节 · week 教学周\n"
         "duty 每日值日 · countdown 倒计日 · note 备注"));
@@ -769,6 +790,8 @@ void DesktopOverlays::edit(const QString& id) {
     auto* editDuty=new QPushButton(QStringLiteral("编辑每周值日信息"));
     dataForm->addRow(QStringLiteral("备注文字"),note);
     dataForm->addRow(QStringLiteral("组合信息顺序"),items);
+    dataForm->addRow(cycle);
+    dataForm->addRow(QStringLiteral("轮播间隔"),seconds);
     dataForm->addRow(tokens);
     dataForm->addRow(QStringLiteral("倒计日目标"),target);
     dataForm->addRow(editDuty);
@@ -814,6 +837,8 @@ void DesktopOverlays::edit(const QString& id) {
         c.showDetailsOnClick=details->isChecked();
         c.compactShowTitle=showTitle->isChecked();
         c.combinedItems=items->text().trimmed();
+        c.cycleItems=cycle->isChecked();
+        c.cycleSeconds=seconds->value();
         c.note=note->text();
         c.target=target->dateTime();
         c.compactGeometry=QRect(origin,QSize(compactWidth->value(),compactHeight->value()));
@@ -827,6 +852,14 @@ void DesktopOverlays::edit(const QString& id) {
     dlg.exec();
 }
 
+void DesktopOverlays::showAll() {
+    for(auto& c:configs_) c.visible=true;
+    save();rebuild();
+}
+void DesktopOverlays::hideAll() {
+    for(auto& c:configs_) c.visible=false;
+    save();rebuild();
+}
 void DesktopOverlays::importLegacyWindows() {
     const QString path=QFileDialog::getOpenFileName(configurationDialog_.data(),
         QStringLiteral("导入旧版 TimeTable-Qt 窗口布局"),
