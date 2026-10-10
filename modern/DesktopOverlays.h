@@ -55,6 +55,8 @@ public:
     void importLegacyWindows();
     void showAll();
     void hideAll();
+protected:
+    bool eventFilter(QObject* watched, QEvent* event) override;
 
 private:
     friend class OverlayCard;
@@ -72,6 +74,7 @@ private:
     void edit(const QString& id = {});
     void remove(const QString& id);
     void refreshConfigurationList();
+    void syncVisibility();
     QString detailsText(const OverlayConfig& config) const;
 };
 } // namespace tt
