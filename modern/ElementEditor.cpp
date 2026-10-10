@@ -3,6 +3,7 @@
 #include <QColorDialog>
 #include <QComboBox>
 #include <QDateTimeEdit>
+#include <QElapsedTimer>
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QFontComboBox>
@@ -21,6 +22,7 @@
 #include <QVBoxLayout>
 #include <QTimer>
 #include <algorithm>
+#include <functional>
 #include "QtCompat.h"
 namespace tt {
 namespace {
@@ -35,7 +37,7 @@ public:
         setMinimumSize(460,240);
         setMouseTracking(true);
         auto* timer=new QTimer(this);
-        connect(timer,&QTimer::timeout,this,QOverload<>::of(&QWidget::update));
+        QObject::connect(timer,&QTimer::timeout,this,QOverload<>::of(&QWidget::update));
         timer->start(60);
         clock_.start();
     }
@@ -224,26 +226,26 @@ bool ElementEditor::edit(QWidget* parent,QList<ElementDefinition>& output,
         preview->setActive(list->currentRow());
         updating=false;
     };
-    connect(list,&QListWidget::currentRowChanged,&dialog,[&](int){refreshFields();});
-    connect(itemIndex,QOverload<int>::of(&QSpinBox::valueChanged),&dialog,[&](int){if(!updating)refreshFields();});
-    connect(add,&QPushButton::clicked,&dialog,[&]{
+    QObject::connect(list,&QListWidget::currentRowChanged,&dialog,[&](int){refreshFields();});
+    QObject::connect(itemIndex,QOverload<int>::of(&QSpinBox::valueChanged),&dialog,[&](int){if(!updating)refreshFields();});
+    QObject::connect(add,&QPushButton::clicked,&dialog,[&]{
         ElementDefinition e;
         e.rect=QRect(10+int(working.size())*12,10+int(working.size())*12,170,30);
         TextElement t;t.type="clock";t.format="%H:%M:%S";e.items<<t;
         working<<e;refreshList();list->setCurrentRow(working.size()-1);
     });
-    connect(remove,&QPushButton::clicked,&dialog,[&]{
+    QObject::connect(remove,&QPushButton::clicked,&dialog,[&]{
         int n=list->currentRow();if(n<0||n>=working.size())return;
         working.removeAt(n);refreshList();
     });
-    connect(addText,&QPushButton::clicked,&dialog,[&]{
+    QObject::connect(addText,&QPushButton::clicked,&dialog,[&]{
         if(auto* e=selected()) {
             e->items<<TextElement{};
             itemIndex->setMaximum(e->items.size());
             itemIndex->setValue(e->items.size());refreshFields();
         }
     });
-    connect(removeText,&QPushButton::clicked,&dialog,[&]{
+    QObject::connect(removeText,&QPushButton::clicked,&dialog,[&]{
         if(auto* e=selected()) {
             if(e->items.size()<=1)return;
             e->items.removeAt(itemIndex->value()-1);
@@ -264,14 +266,14 @@ bool ElementEditor::edit(QWidget* parent,QList<ElementDefinition>& output,
         preview->update();
     };
     for(auto* control:{x,y,w,h,interval,fontSize})connect(control,QOverload<int>::of(&QSpinBox::valueChanged),&dialog,[&](int){persist();});
-    connect(kind,QOverload<int>::of(&QComboBox::currentIndexChanged),&dialog,[&](int){persist();});
-    connect(mode,QOverload<int>::of(&QComboBox::currentIndexChanged),&dialog,[&](int){persist();});
-    connect(format,&QLineEdit::textChanged,&dialog,[&](const QString&){persist();});
-    connect(font,&QFontComboBox::currentFontChanged,&dialog,[&](const QFont&){persist();});
-    connect(marquee,&QCheckBox::toggled,&dialog,[&](bool){persist();});
-    connect(bold,&QCheckBox::toggled,&dialog,[&](bool){persist();});
-    connect(target,&QDateTimeEdit::dateTimeChanged,&dialog,[&](const QDateTime&){persist();});
-    connect(color,&QPushButton::clicked,&dialog,[&]{
+    QObject::connect(kind,QOverload<int>::of(&QComboBox::currentIndexChanged),&dialog,[&](int){persist();});
+    QObject::connect(mode,QOverload<int>::of(&QComboBox::currentIndexChanged),&dialog,[&](int){persist();});
+    QObject::connect(format,&QLineEdit::textChanged,&dialog,[&](const QString&){persist();});
+    QObject::connect(font,&QFontComboBox::currentFontChanged,&dialog,[&](const QFont&){persist();});
+    QObject::connect(marquee,&QCheckBox::toggled,&dialog,[&](bool){persist();});
+    QObject::connect(bold,&QCheckBox::toggled,&dialog,[&](bool){persist();});
+    QObject::connect(target,&QDateTimeEdit::dateTimeChanged,&dialog,[&](const QDateTime&){persist();});
+    QObject::connect(color,&QPushButton::clicked,&dialog,[&]{
         if(auto* text=selectedText()) {
             const QColor picked=QColorDialog::getColor(text->color,&dialog,
                 QStringLiteral("元素文字颜色"),QColorDialog::ShowAlphaChannel);
@@ -283,8 +285,8 @@ bool ElementEditor::edit(QWidget* parent,QList<ElementDefinition>& output,
         if(auto* e=selected()){x->setValue(e->rect.x());y->setValue(e->rect.y());}
         updating=false;
     });
-    connect(buttons,&QDialogButtonBox::rejected,&dialog,&QDialog::reject);
-    connect(buttons,&QDialogButtonBox::accepted,&dialog,&QDialog::accept);
+    QObject::connect(buttons,&QDialogButtonBox::rejected,&dialog,&QDialog::reject);
+    QObject::connect(buttons,&QDialogButtonBox::accepted,&dialog,&QDialog::accept);
     refreshList();
     if(working.isEmpty())add->click();
     if(dialog.exec()!=QDialog::Accepted)return false;
