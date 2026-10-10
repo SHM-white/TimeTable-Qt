@@ -1,5 +1,6 @@
 #include "DesktopOverlays.h"
 #include "QtCompat.h"
+#include "ElementEditor.h"
 #include "MainWindow.h"
 #include <QApplication>
 #include <QCheckBox>
@@ -13,6 +14,8 @@
 #include <QDialogButtonBox>
 #include <QFileDialog>
 #include <QFile>
+#include <QFileInfo>
+#include <QPixmap>
 #include <QFormLayout>
 #include <QGuiApplication>
 #include <QHBoxLayout>
@@ -26,6 +29,7 @@
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QPainter>
+#include <QPainterPath>
 #include <QPropertyAnimation>
 #include <QPushButton>
 #include <QScreen>
@@ -44,10 +48,10 @@
 
 namespace tt {
 namespace {
-const QStringList types={"clock","current","next","today","week","countdown","note","duty","combined"};
+const QStringList types={"clock","current","next","today","week","countdown","note","duty","combined","elements"};
 const QStringList names={QStringLiteral("时钟与日期"),QStringLiteral("当前课程"),QStringLiteral("下一节课程"),
                          QStringLiteral("今日课程"),QStringLiteral("教学周信息"),
-                         QStringLiteral("目标日倒计时"),QStringLiteral("自定义便签"),QStringLiteral("每日信息 / 值日"),QStringLiteral("组合信息栏")};
+                         QStringLiteral("目标日倒计时"),QStringLiteral("自定义便签"),QStringLiteral("每日信息 / 值日"),QStringLiteral("组合信息栏"),QStringLiteral("自由元素布局")};
 QRect visibleGeometry(QRect rectangle) {
     QScreen* screen=QGuiApplication::screenAt(rectangle.center());
     if(!screen) screen=QGuiApplication::primaryScreen();
@@ -84,6 +88,9 @@ QLabel* overlayLabel(QWidget* parent) {
 QJsonObject toJson(const OverlayConfig& c) {
     return QJsonObject{
         {"id",c.id},{"title",c.title},{"type",c.type},{"theme",c.theme},{"note",c.note},
+        {"elements",ElementLayout::toJson(c.elements)},{"backgroundImage",c.backgroundImage},
+        {"backgroundColor",c.backgroundColor.name(QColor::HexArgb)},
+        {"imageBackground",c.imageBackground},{"autoSize",c.autoSize},
         {"x",c.geometry.x()},{"y",c.geometry.y()},{"width",c.geometry.width()},
         {"height",c.geometry.height()},{"visible",c.visible},{"topmost",c.topmost},
         {"locked",c.locked},{"showDetailsOnClick",c.showDetailsOnClick},
@@ -103,6 +110,12 @@ OverlayConfig fromJson(const QJsonObject& j) {
     c.type=j.value("type").toString("current");
     c.theme=j.value("theme").toString("light");
     c.note=j.value("note").toString();
+    c.elements=ElementLayout::fromJson(j.value("elements").toArray());
+    c.backgroundImage=j.value("backgroundImage").toString();
+    const QColor background(j.value("backgroundColor").toString("#FFFFFF"));
+    if(background.isValid())c.backgroundColor=background;
+    c.imageBackground=j.value("imageBackground").toBool(false);
+    c.autoSize=j.value("autoSize").toBool(false);
     c.geometry=QRect(j.value("x").toInt(20),j.value("y").toInt(20),
                      j.value("width").toInt(300),j.value("height").toInt(160));
     c.collapsed=j.value("collapsed").toBool(true);
@@ -166,6 +179,9 @@ public:
         for(auto* child:{heading_,main_,secondary_,footer_})
             child->setVisible(!c.collapsed);
         setGeometry(c.geometry);
+        if(config_.type=="elements") {
+            for(auto* child:{heading_,main_,secondary_,footer_})child->hide();
+        }
         updateModel();
     }
 
@@ -189,7 +205,10 @@ public:
         Course next;QDateTime when;
         const bool hasNext=store.nextCourse(now,&next,&when);
         QString big,smallText,foot;
-        if(config_.type=="clock") {
+        if(config_.type=="elements") {
+            big=QStringLiteral("%1 个自由元素").arg(config_.elements.size());
+            smallText=QStringLiteral("右键编辑布局");
+        } else if(config_.type=="clock") {
             big=now.toString("HH:mm:ss");
             smallText=now.toString("yyyy-MM-dd dddd");
             foot=QStringLiteral("双击打开课表 · 右键设置");
@@ -263,7 +282,10 @@ public:
         if(main_->text()!=big) main_->setText(big);
         if(secondary_->text()!=smallText) secondary_->setText(smallText);
         if(footer_->text()!=foot) footer_->setText(foot);
-        if(!config_.collapsed) {
+        if(config_.type=="elements") {
+            for(auto* child:{heading_,main_,secondary_,footer_})child->hide();
+            update();  // Marquee/cycle/time elements are drawn directly by QPainter
+        } else if(!config_.collapsed) {
             secondary_->setVisible(!smallText.isEmpty());
             footer_->setVisible(!foot.isEmpty());
         }
@@ -274,12 +296,28 @@ protected:
         QPainter p(this);
         p.setRenderHint(QPainter::Antialiasing);
         const bool dark=config_.theme=="dark";
-        QColor background=dark?QColor("#202535"):QColor("#FDFEFF");
-        background.setAlphaF(config_.opacity/100.0);
+        QColor background=config_.backgroundColor;
+        if(!background.isValid()) background=dark?QColor("#202535"):QColor("#FDFEFF");
+        background.setAlphaF(background.alphaF()*config_.opacity/100.0);
         p.setBrush(background);
         p.setPen(QPen(dark?QColor("#485069"):QColor("#DCE1ED"),1));
         p.drawRoundedRect(rect().adjusted(1,1,-2,-2),config_.collapsed?11:17,config_.collapsed?11:17);
-        if(config_.collapsed) {
+        if(config_.imageBackground && !config_.backgroundImage.isEmpty()) {
+            QPixmap picture(config_.backgroundImage);
+            if(!picture.isNull()) {
+                QPainterPath clip;
+                clip.addRoundedRect(rect().adjusted(1,1,-2,-2),config_.collapsed?11:17,config_.collapsed?11:17);
+                p.save();p.setClipPath(clip);
+                p.setOpacity(config_.opacity/100.0);
+                p.drawPixmap(rect(),picture);
+                p.restore();
+            }
+        }
+        if(config_.type=="elements") {
+            ElementLayout::paint(p,rect().adjusted(5,4,-5,-4),config_.elements,
+                manager_->planner_->schedule(),QDateTime::currentDateTime(),
+                QDateTime::currentMSecsSinceEpoch(),dark);
+        } else if(config_.collapsed) {
             const int inset=10;
             QRect textRect=rect().adjusted(inset,4,-19,-4);
             const QColor ink=dark?QColor("#F5F6FC"):QColor("#22283A");
@@ -601,6 +639,7 @@ void DesktopOverlays::contextMenu(const QString& id,const QPoint& anchor) {
     menu.addSeparator();
     QAction* collapse=menu.addAction(c.collapsed?QStringLiteral("展开卡片（显示完整信息）"):QStringLiteral("折叠成小卡片"));
     QAction* editWindow=menu.addAction(QStringLiteral("设置此窗口"));
+    QAction* editLayout=menu.addAction(QStringLiteral("编辑自由元素布局"));
     QAction* manage=menu.addAction(QStringLiteral("管理全部桌面窗口"));
     QAction* add=menu.addAction(QStringLiteral("新建桌面窗口"));
     QAction* duty=menu.addAction(QStringLiteral("编辑每周值日 / 提示"));
@@ -618,6 +657,7 @@ void DesktopOverlays::contextMenu(const QString& id,const QPoint& anchor) {
     else if(selected==planner) openPlanner();
     else if(selected==collapse) toggleCollapsed(id);
     else if(selected==editWindow) edit(id);
+    else if(selected==editLayout) editElements(id);
     else if(selected==manage) openConfiguration();
     else if(selected==add) edit();
     else if(selected==duty) editDutyNotes();
