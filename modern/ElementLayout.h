@@ -17,6 +17,8 @@ struct TextElement {
     int pointSize = 11;
     QDateTime target;
     bool bold = false;
+    bool vertical = false;          // today: vertical list or horizontal strip
+    bool abbreviate = false;        // today: legacy first-character display
     QJsonObject toJson() const;
     static TextElement fromJson(const QJsonObject& object);
 };
