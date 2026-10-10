@@ -160,6 +160,8 @@ bool ElementEditor::edit(QWidget* parent,QList<ElementDefinition>& output,
     for(auto* v:{w,h})v->setRange(16,3000);
     auto* interval=new QSpinBox;interval->setRange(1,600);interval->setSuffix(QStringLiteral(" 秒"));
     auto* marquee=new QCheckBox(QStringLiteral("超宽文字滚动"));
+    auto* vertical=new QCheckBox(QStringLiteral("今日课表按竖列显示"));
+    auto* abbreviate=new QCheckBox(QStringLiteral("今日课表只显示课程首字"));
     auto* target=new QDateTimeEdit(QDateTime::currentDateTime().addDays(30));
     target->setDisplayFormat("yyyy-MM-dd HH:mm:ss");target->setCalendarPopup(true);
     form->addRow(QStringLiteral("内容类型"),kind);
@@ -174,6 +176,8 @@ bool ElementEditor::edit(QWidget* parent,QList<ElementDefinition>& output,
     form->addRow(QStringLiteral("宽度"),w);form->addRow(QStringLiteral("高度"),h);
     form->addRow(QStringLiteral("轮播间隔"),interval);
     form->addRow(marquee);
+    form->addRow(vertical);
+    form->addRow(abbreviate);
     form->addRow(QStringLiteral("倒计目标"),target);
     split->addWidget(right);
     split->setStretchFactor(0,0);split->setStretchFactor(1,2);split->setStretchFactor(2,1);
@@ -218,6 +222,9 @@ bool ElementEditor::edit(QWidget* parent,QList<ElementDefinition>& output,
                 format->setText(t->format);
                 font->setCurrentFont(QFont(t->font));
                 fontSize->setValue(t->pointSize);bold->setChecked(t->bold);
+                vertical->setChecked(t->vertical);abbreviate->setChecked(t->abbreviate);
+                const bool isToday=t->type=="today";
+                vertical->setEnabled(isToday);abbreviate->setEnabled(isToday);
                 color->setStyleSheet("background-color:"+t->color.name()+";color:"+(
                     t->color.lightness()<128?"white":"black")+";");
                 target->setDateTime(t->target.isValid()?t->target:QDateTime::currentDateTime().addDays(30));
@@ -262,6 +269,7 @@ bool ElementEditor::edit(QWidget* parent,QList<ElementDefinition>& output,
             t->type=kind->currentData().toString();
             t->format=format->text();t->font=font->currentFont().family();
             t->pointSize=fontSize->value();t->bold=bold->isChecked();t->target=target->dateTime();
+            t->vertical=vertical->isChecked();t->abbreviate=abbreviate->isChecked();
         }
         preview->update();
     };
@@ -272,6 +280,8 @@ bool ElementEditor::edit(QWidget* parent,QList<ElementDefinition>& output,
     QObject::connect(font,&QFontComboBox::currentFontChanged,&dialog,[&](const QFont&){persist();});
     QObject::connect(marquee,&QCheckBox::toggled,&dialog,[&](bool){persist();});
     QObject::connect(bold,&QCheckBox::toggled,&dialog,[&](bool){persist();});
+    QObject::connect(vertical,&QCheckBox::toggled,&dialog,[&](bool){persist();});
+    QObject::connect(abbreviate,&QCheckBox::toggled,&dialog,[&](bool){persist();});
     QObject::connect(target,&QDateTimeEdit::dateTimeChanged,&dialog,[&](const QDateTime&){persist();});
     QObject::connect(color,&QPushButton::clicked,&dialog,[&]{
         if(auto* text=selectedText()) {
