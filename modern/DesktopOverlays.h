@@ -28,6 +28,8 @@ struct OverlayConfig {
     bool collapsed = true;
     bool compactShowTitle = false;
     QString combinedItems = "clock,current,next";
+    bool cycleItems = false;
+    int cycleSeconds = 5;
     QDateTime target;
     bool visible = true;
     bool topmost = true;
@@ -51,6 +53,8 @@ public:
     void toggleCollapsed(const QString& id);
     void editDutyNotes();
     void importLegacyWindows();
+    void showAll();
+    void hideAll();
 
 private:
     friend class OverlayCard;
