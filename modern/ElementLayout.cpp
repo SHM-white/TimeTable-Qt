@@ -7,7 +7,7 @@
 namespace tt {
 namespace {
 QString dateFormat(const QDateTime& date,const QString& fmt) {
-    const QByteArray pattern=(fmt.isEmpty()?"%a %H:%M:%S":fmt.toUtf8());
+    const QByteArray pattern=fmt.isEmpty()?QByteArray("%a %H:%M:%S"):fmt.toUtf8();
     if(pattern.size()>500) return QStringLiteral("时间格式过长");
     const std::time_t stamp=static_cast<std::time_t>(date.toSecsSinceEpoch());
     std::tm local{};
