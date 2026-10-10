@@ -39,6 +39,7 @@
 #include <QVBoxLayout>
 #include <QUuid>
 #include <algorithm>
+#include <memory>
 
 namespace tt {
 namespace {
@@ -836,12 +837,26 @@ void DesktopOverlays::edit(const QString& id) {
     connect(editDuty,&QPushButton::clicked,&dlg,[this]{editDutyNotes();});
     tabs->addTab(dataTab,QStringLiteral("显示内容"));
 
-    // Updating the type from a built-in title should follow the selected template.
+    // Update generated titles as the template changes; never overwrite a title typed by the user.
+    auto automaticTitle=std::make_shared<bool>(c.title==typeName(c.type));
+    connect(title,&QLineEdit::textEdited,&dlg,[automaticTitle](const QString&){*automaticTitle=false;});
     connect(type,QOverload<int>::of(&QComboBox::currentIndexChanged),&dlg,
-        [title,c,type](int selected){
-            if(title->text()==c.title && c.title==typeName(c.type))
-                title->setText(typeName(types.at(selected)));
+        [title,automaticTitle](int selected) {
+            if(*automaticTitle) title->setText(typeName(types.at(selected)));
         });
+    const auto syncFields=[type,note,items,cycle,seconds,target]() {
+        const QString selected=type->currentData().toString();
+        const bool combined=selected=="combined";
+        note->setEnabled(combined || selected=="note");
+        items->setEnabled(combined);
+        cycle->setEnabled(combined);
+        seconds->setEnabled(combined && cycle->isChecked());
+        target->setEnabled(combined || selected=="countdown");
+    };
+    connect(type,QOverload<int>::of(&QComboBox::currentIndexChanged),&dlg,
+        [syncFields](int){syncFields();});
+    connect(cycle,&QCheckBox::toggled,&dlg,[syncFields](bool){syncFields();});
+    syncFields();
 
     auto* actions=new QDialogButtonBox(QDialogButtonBox::Save|QDialogButtonBox::Cancel);
     actions->button(QDialogButtonBox::Save)->setText(QStringLiteral("应用并保存"));
