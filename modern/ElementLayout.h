@@ -19,6 +19,9 @@ struct TextElement {
     bool bold = false;
     bool vertical = false;          // today: vertical list or horizontal strip
     bool abbreviate = false;        // today: legacy first-character display
+    QString weatherApiKey;
+    QString weatherAdcode;
+    QString weatherCity;
     QJsonObject toJson() const;
     static TextElement fromJson(const QJsonObject& object);
 };
