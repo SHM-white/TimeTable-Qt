@@ -9,6 +9,9 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QFileDialog>
+#include <QFile>
+#include <QUuid>
+#include <QColor>
 #include <QFormLayout>
 #include <QFrame>
 #include <QGraphicsOpacityEffect>
