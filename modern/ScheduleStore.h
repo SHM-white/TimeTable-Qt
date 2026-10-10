@@ -1,0 +1,69 @@
+#pragma once
+
+#include <QDate>
+#include <QDateTime>
+#include <QJsonObject>
+#include <QList>
+#include <QMap>
+#include <QPair>
+#include <QString>
+#include <QTime>
+#include <QVector>
+
+namespace tt {
+
+struct Course {
+    QString id;
+    QString name;
+    QString teacher;
+    QString room;
+    int weekday = 1;                // Qt: Monday = 1 ... Sunday = 7
+    QTime start;
+    QTime end;
+    QVector<int> weeks;              // Explicit active weeks, no parity ambiguity
+    QString color = "#6C6AF6";
+};
+
+struct DayChange {
+    QDate date;
+    bool holiday = true;            // true: no courses; false: use another date's lessons
+    QDate sourceDate;
+};
+
+class ScheduleStore {
+public:
+    QDate semesterMonday;
+    int totalWeeks = 20;
+    QList<Course> courses;
+    QList<DayChange> changes;
+    QMap<int, QPair<QTime,QTime>> periods;
+
+    ScheduleStore();
+
+    static QString defaultPath();
+    static QDate mondayOf(QDate date);
+    static QString formatWeeks(const QVector<int>& weeks);
+    static QVector<int> parseWeeks(const QString& text, int maxWeek, QString* error = nullptr);
+    static bool validCourse(const Course& course, QString* error = nullptr);
+    int weekNumber(QDate date) const;
+    QList<Course> coursesForDate(QDate date) const;
+    QList<Course> coursesForWeek(int week) const;
+    const Course* currentCourse(const QDateTime& now) const;
+    bool nextCourse(const QDateTime& now, Course* course, QDateTime* start) const;
+
+    QJsonObject toJson() const;
+    bool fromJson(const QJsonObject& root, QString* error = nullptr);
+    bool load(const QString& path, QString* error = nullptr);
+    bool save(const QString& path, QString* error = nullptr) const;
+    bool importFile(const QString& path, QString* error = nullptr);
+    bool exportCsv(const QString& path, QString* error = nullptr) const;
+    bool exportIcs(const QString& path, QString* error = nullptr) const;
+    bool exportXiaoAiJson(const QString& path, QString* error = nullptr) const;
+
+private:
+    bool importCsv(const QByteArray& bytes, QString* error);
+    bool importLegacy(const QJsonObject& root, QString* error);
+    bool importXiaoAi(const QJsonObject& root, QString* error);
+};
+
+} // namespace tt
