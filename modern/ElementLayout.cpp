@@ -225,6 +225,7 @@ void ElementLayout::paint(QPainter& p,const QRect& area,const QList<ElementDefin
             QColor ink=item.color;
             if(!ink.isValid())ink=dark?QColor("#F5F7FF"):QColor("#242A35");
             p.setPen(ink);
+            const QFontMetrics metrics(f);
             if(item.type=="today") {
                 const auto today=store.coursesForDate(now.date());
                 if(today.isEmpty()) {
@@ -266,7 +267,6 @@ void ElementLayout::paint(QPainter& p,const QRect& area,const QList<ElementDefin
                 continue;
             }
             const QString text=evaluate(item,store,now).replace('\n',' ');
-            const QFontMetrics metrics(f);
             const int textWidth=metrics.horizontalAdvance(text);
             if(e.marquee&&textWidth>row.width()) {
                 const int gap=std::max(35,row.width()/3);
