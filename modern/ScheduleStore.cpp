@@ -7,6 +7,7 @@
 #include <QJsonDocument>
 #include <QJsonParseError>
 #include <QSaveFile>
+#include <QRegularExpression>
 #include <QStandardPaths>
 #include <QUuid>
 #include <algorithm>
