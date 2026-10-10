@@ -466,18 +466,18 @@ void MainWindow::applyTheme() {
     // application palette so light windows remain readable on dark-mode Windows.
     QPalette palette;
     const QColor background(dark_?"#10121E":"#F3F5FB");
-    const QColor surface(dark_?"#1C2030":"#FFFFFF");
+    const QColor paletteSurface(dark_?"#1C2030":"#FFFFFF");
     const QColor foreground(dark_?"#F1F2FA":"#1E2334");
     const QColor muted(dark_?"#AFB6CF":"#59677F");
     palette.setColor(QPalette::Window,background);
     palette.setColor(QPalette::WindowText,foreground);
-    palette.setColor(QPalette::Base,surface);
+    palette.setColor(QPalette::Base,paletteSurface);
     palette.setColor(QPalette::AlternateBase,background);
     palette.setColor(QPalette::Text,foreground);
-    palette.setColor(QPalette::Button,surface);
+    palette.setColor(QPalette::Button,paletteSurface);
     palette.setColor(QPalette::ButtonText,foreground);
     palette.setColor(QPalette::BrightText,QColor("#FFFFFF"));
-    palette.setColor(QPalette::ToolTipBase,surface);
+    palette.setColor(QPalette::ToolTipBase,paletteSurface);
     palette.setColor(QPalette::ToolTipText,foreground);
     palette.setColor(QPalette::Highlight,QColor("#6763DE"));
     palette.setColor(QPalette::HighlightedText,QColor("#FFFFFF"));
