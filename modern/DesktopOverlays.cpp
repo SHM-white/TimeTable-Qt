@@ -1080,13 +1080,15 @@ void DesktopOverlays::importLegacyWindows() {
                         if(date.isValid() && time.isValid()) target=QDateTime(date,time);
                     }
                 } else if(kind==6) token="duty";
+                else if(kind==9) token="weather";
+                else if(kind==10) token="today";
+                else if(kind==11) token="progress";
                 else if(kind==0 && !data.value("TextFormat").toString().isEmpty()) {
                     token="note";note=data.value("TextFormat").toString();
                 } else {++skipped;continue;}
                 if(!tokens.contains(token)) tokens<<token;
             }
         }
-        if(tokens.isEmpty()) {++skipped;continue;}
         const auto restored=ElementLayout::fromLegacy(elements,&skipped);
         if(restored.isEmpty()) {++skipped;continue;}
         OverlayConfig c=defaultConfig("elements");
