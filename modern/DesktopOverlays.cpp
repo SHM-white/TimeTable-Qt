@@ -34,6 +34,7 @@
 #include <QTabWidget>
 #include <QFontMetrics>
 #include <QCoreApplication>
+#include <QEvent>
 #include <QTimer>
 #include <QVBoxLayout>
 #include <QUuid>
@@ -45,6 +46,18 @@ const QStringList types={"clock","current","next","today","week","countdown","no
 const QStringList names={QStringLiteral("时钟与日期"),QStringLiteral("当前课程"),QStringLiteral("下一节课程"),
                          QStringLiteral("今日课程"),QStringLiteral("教学周信息"),
                          QStringLiteral("目标日倒计时"),QStringLiteral("自定义便签"),QStringLiteral("每日信息 / 值日"),QStringLiteral("组合信息栏")};
+QRect visibleGeometry(QRect rectangle) {
+    QScreen* screen=QGuiApplication::screenAt(rectangle.center());
+    if(!screen) screen=QGuiApplication::primaryScreen();
+    if(!screen) return rectangle;
+    const QRect bounds=screen->availableGeometry();
+    rectangle.setSize(rectangle.size().boundedTo(bounds.size()));
+    rectangle.moveLeft(std::clamp(rectangle.left(),bounds.left(),
+        std::max(bounds.left(),bounds.right()-rectangle.width()+1)));
+    rectangle.moveTop(std::clamp(rectangle.top(),bounds.top(),
+        std::max(bounds.top(),bounds.bottom()-rectangle.height()+1)));
+    return rectangle;
+}
 QString typeName(const QString& type) {
     const int i=types.indexOf(type);
     return names.value(i,QStringLiteral("信息组件"));
@@ -398,6 +411,8 @@ void DesktopOverlays::load() {
             if(config.theme!="dark"&&config.theme!="light") config.theme="light";
             config.compactGeometry.setSize(config.compactGeometry.size().expandedTo(QSize(125,44)));
             config.expandedGeometry.setSize(config.expandedGeometry.size().expandedTo(QSize(190,102)));
+            config.compactGeometry=visibleGeometry(config.compactGeometry);
+            config.expandedGeometry=visibleGeometry(config.expandedGeometry);
             config.geometry=config.collapsed?config.compactGeometry:config.expandedGeometry;
             configs_.append(config);
         }
@@ -416,6 +431,7 @@ void DesktopOverlays::save() const {
 }
 void DesktopOverlays::start() {
     load();
+    planner_->installEventFilter(this);
     rebuild();
     planner_->setOnScheduleChanged([this]{refresh();});
     auto* timer=new QTimer(this);
@@ -430,7 +446,8 @@ void DesktopOverlays::rebuild() {
     for(const auto& c:configs_) {
         auto* w=new OverlayCard(c,this);
         windows_.insert(c.id,w);
-        if(c.visible) {
+        if(c.visible && !planner_->isVisible() &&
+            !(configurationDialog_ && configurationDialog_->isVisible())) {
             w->show();
             auto* animation=new QPropertyAnimation(w,"windowOpacity",w);
             animation->setDuration(190);
@@ -440,6 +457,25 @@ void DesktopOverlays::rebuild() {
         }
     }
     refreshConfigurationList();
+}
+bool DesktopOverlays::eventFilter(QObject* watched, QEvent* event) {
+    if(watched==planner_ || watched==configurationDialog_.data()) {
+        if(event->type()==QEvent::Show || event->type()==QEvent::Hide) {
+            // Complete widget visibility changes at the next event-loop turn.
+            QTimer::singleShot(0,this,[this]{syncVisibility();});
+        }
+    }
+    return QObject::eventFilter(watched,event);
+}
+void DesktopOverlays::syncVisibility() {
+    const bool covered=planner_->isVisible() ||
+        (configurationDialog_ && configurationDialog_->isVisible());
+    for(const auto& c:configs_) {
+        if(auto* w=windows_.value(c.id,nullptr)) {
+            if(c.visible && !covered) w->show();
+            else w->hide();
+        }
+    }
 }
 int DesktopOverlays::indexOf(const QString& id) const {
     for(int i=0;i<configs_.size();++i) if(configs_[i].id==id) return i;
@@ -606,6 +642,7 @@ void DesktopOverlays::openConfiguration() {
     }
     auto* dlg=new QDialog(nullptr,Qt::Window);
     configurationDialog_=dlg;
+    dlg->installEventFilter(this);
     dlg->setAttribute(Qt::WA_DeleteOnClose);
     dlg->setWindowTitle(QStringLiteral("桌面窗口管理 · TimeTable Next"));
     dlg->setMinimumSize(650,480);
