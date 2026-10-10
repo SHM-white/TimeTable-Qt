@@ -547,7 +547,7 @@ void MainWindow::updateWeek() {
     shownWeek_=std::clamp(shownWeek_,1,store_.totalWeeks);
     const QDate monday=store_.semesterMonday.addDays((shownWeek_-1)*7);
     weekLabel_->setText(QStringLiteral("第 %1 / %2 周").arg(shownWeek_).arg(store_.totalWeeks));
-    auto* outer=weekContent_->layout();
+    auto* outer=static_cast<QHBoxLayout*>(weekContent_->layout());
     clear(outer);
     for(int i=0;i<7;++i) {
         const QDate date=monday.addDays(i);
