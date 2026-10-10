@@ -220,12 +220,12 @@ QJsonObject ScheduleStore::toJson() const {
     for(const auto& d:changes)
         exceptions.append(QJsonObject{{"date",d.date.toString(Qt::ISODate)},
             {"type",d.holiday?"holiday":"use"},{"sourceDate",d.sourceDate.toString(Qt::ISODate)}});
-    QJsonArray slots;
+    QJsonArray periodItems;
     for(auto i=periods.cbegin();i!=periods.cend();++i)
-        slots.append(QJsonObject{{"section",i.key()},{"start",timeText(i.value().first)},
+        periodItems.append(QJsonObject{{"section",i.key()},{"start",timeText(i.value().first)},
                 {"end",timeText(i.value().second)}});
     return QJsonObject{{"schema","timetable-next/v1"},{"semesterStart",semesterMonday.toString(Qt::ISODate)},
-        {"totalWeeks",totalWeeks},{"courses",classes},{"dayChanges",exceptions},{"periods",slots}};
+        {"totalWeeks",totalWeeks},{"courses",classes},{"dayChanges",exceptions},{"periods",periodItems}};
 }
 
 bool ScheduleStore::fromJson(const QJsonObject& root, QString* error) {
