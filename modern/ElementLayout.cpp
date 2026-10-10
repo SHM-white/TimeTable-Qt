@@ -39,7 +39,8 @@ QString clampString(QString value,int limit=2000) { if(value.size()>limit)value.
 } // namespace
 QJsonObject TextElement::toJson() const {
     return {{"type",type},{"format",format},{"font",font},{"color",color.name(QColor::HexArgb)},
-        {"pointSize",pointSize},{"bold",bold},{"target",target.toString(Qt::ISODate)}};
+        {"pointSize",pointSize},{"bold",bold},{"vertical",vertical},{"abbreviate",abbreviate},
+        {"target",target.toString(Qt::ISODate)}};
 }
 TextElement TextElement::fromJson(const QJsonObject& o) {
     TextElement item;
@@ -50,6 +51,8 @@ TextElement TextElement::fromJson(const QJsonObject& o) {
     if(color.isValid()) item.color=color;
     item.pointSize=std::clamp(o.value("pointSize").toInt(11),7,64);
     item.bold=o.value("bold").toBool(false);
+    item.vertical=o.value("vertical").toBool(false);
+    item.abbreviate=o.value("abbreviate").toBool(false);
     item.target=QDateTime::fromString(o.value("target").toString(),Qt::ISODate);
     return item;
 }
@@ -114,6 +117,11 @@ QList<ElementDefinition> ElementLayout::fromLegacy(const QJsonArray& array,int* 
                 std::clamp(colors[0].toInt(),0,255),std::clamp(colors[1].toInt(),0,255),
                 std::clamp(colors[2].toInt(),0,255),colors.size()>3?std::clamp(colors[3].toInt(),0,255):255);
             text.target=readTarget(value.value("Data"));
+            if(type=="today") {
+                const auto extra=value.value("Data").toObject();
+                text.vertical=extra.value("Direction").toInt()!=0;
+                text.abbreviate=!extra.value("FullName").toBool(true);
+            }
             e.items<<text;
         }
         if(!e.items.isEmpty())out<<e;
@@ -201,6 +209,46 @@ void ElementLayout::paint(QPainter& p,const QRect& area,const QList<ElementDefin
             QColor ink=item.color;
             if(!ink.isValid())ink=dark?QColor("#F5F7FF"):QColor("#242A35");
             p.setPen(ink);
+            if(item.type=="today") {
+                const auto today=store.coursesForDate(now.date());
+                if(today.isEmpty()) {
+                    p.drawText(row,Qt::AlignCenter,QStringLiteral("今天没有课程"));
+                    continue;
+                }
+                const int count=std::min(40,int(today.size()));
+                for(int n=0;n<count;++n) {
+                    const auto& course=today.at(n);
+                    const bool active=course.start<=now.time() && now.time()<course.end;
+                    QRect area;
+                    if(item.vertical) {
+                        const int unit=std::max(1,row.width()/count);
+                        area=QRect(row.left()+n*unit,row.top(),unit,row.height());
+                    } else {
+                        const int unit=std::max(1,row.height()/count);
+                        area=QRect(row.left(),row.top()+n*unit,row.width(),unit);
+                    }
+                    if(active) {
+                        p.save();
+                        p.setPen(QPen(QColor("#6F64E8"),2));
+                        p.setBrush(QColor(105,94,230,45));
+                        p.drawRoundedRect(area.adjusted(1,1,-2,-2),3,3);
+                        p.restore();
+                    }
+                    QString title=course.name;
+                    if(item.abbreviate && !title.isEmpty())title=title.left(1);
+                    if(item.vertical) {
+                        // Arrange a compressed vertical list across columns.
+                        QString lines;
+                        for(const auto& ch:title) { if(!lines.isEmpty())lines+="\n"; lines+=ch; }
+                        p.drawText(area,Qt::AlignCenter|Qt::TextWordWrap,lines);
+                    } else {
+                        const QString line=course.start.toString("HH:mm")+" "+title;
+                        p.drawText(area.adjusted(3,0,-2,0),Qt::AlignLeft|Qt::AlignVCenter,
+                            metrics.elidedText(line,Qt::ElideRight,std::max(1,area.width()-5)));
+                    }
+                }
+                continue;
+            }
             const QString text=evaluate(item,store,now).replace('\n',' ');
             const QFontMetrics metrics(f);
             const int textWidth=metrics.horizontalAdvance(text);
