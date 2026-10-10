@@ -1,4 +1,5 @@
 #include "DesktopOverlays.h"
+#include "QtCompat.h"
 #include "MainWindow.h"
 #include <QApplication>
 #include <QCheckBox>
@@ -313,18 +314,18 @@ protected:
     }
     void mousePressEvent(QMouseEvent* event) override {
         if(event->button()==Qt::LeftButton) {
-            down_=event->globalPosition().toPoint();
+            down_=mouseGlobalPoint(event);
             originalGeometry_=geometry();
             pressed_=true; moved_=false;
-            resizing_=!config_.locked && event->position().x()>width()-18 &&
-                      event->position().y()>height()-18;
+            resizing_=!config_.locked && mouseLocalPoint(event).x()>width()-18 &&
+                      mouseLocalPoint(event).y()>height()-18;
             event->accept();return;
         }
         QWidget::mousePressEvent(event);
     }
     void mouseMoveEvent(QMouseEvent* event) override {
         if(pressed_ && (event->buttons()&Qt::LeftButton)) {
-            const QPoint delta=event->globalPosition().toPoint()-down_;
+            const QPoint delta=mouseGlobalPoint(event)-down_;
             if(delta.manhattanLength()>4) moved_=true;
             if(moved_ && !config_.locked) {
                 if(resizing_) resize(QSize(originalGeometry_.width()+delta.x(),
@@ -334,8 +335,8 @@ protected:
             }
             event->accept();return;
         }
-        const bool overCorner=event->position().x()>width()-18 &&
-                              event->position().y()>height()-18;
+        const bool overCorner=mouseLocalPoint(event).x()>width()-18 &&
+                              mouseLocalPoint(event).y()>height()-18;
         setCursor(!config_.locked && overCorner?Qt::SizeFDiagCursor:Qt::ArrowCursor);
         update();
         QWidget::mouseMoveEvent(event);
@@ -348,7 +349,7 @@ protected:
                 if(!config_.locked) manager_->moved(config_.id,geometry());
             } else if(config_.showDetailsOnClick && !resizing_) {
                 const int serial=++clickSerial_;
-                const QPoint anchor=event->globalPosition().toPoint();
+                const QPoint anchor=mouseGlobalPoint(event);
                 QTimer::singleShot(QApplication::doubleClickInterval(),this,[this,serial,anchor] {
                     if(serial==clickSerial_) manager_->showDetail(config_.id,anchor);
                 });
