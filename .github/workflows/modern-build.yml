@@ -26,6 +26,7 @@ jobs:
         run: |
           ./build/bin/TimeTableNext --smoke-test-light
           ./build/bin/TimeTableNext --smoke-test-dark
+          ./build/bin/TimeTableNext --smoke-navigation
   windows-portable:
     name: Windows x64 / portable ZIP
     runs-on: windows-2022
