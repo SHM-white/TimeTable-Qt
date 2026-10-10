@@ -23,6 +23,11 @@ struct OverlayConfig {
     QString theme = "light";
     QString note;
     QRect geometry;
+    QRect compactGeometry;
+    QRect expandedGeometry;
+    bool collapsed = true;
+    bool compactShowTitle = false;
+    QString combinedItems = "clock,current,next";
     QDateTime target;
     bool visible = true;
     bool topmost = true;
@@ -43,6 +48,8 @@ public:
     void showDetail(const QString& id, const QPoint& anchor);
     void contextMenu(const QString& id, const QPoint& anchor);
     void moved(const QString& id, const QRect& geometry);
+    void toggleCollapsed(const QString& id);
+    void editDutyNotes();
 
 private:
     friend class OverlayCard;
