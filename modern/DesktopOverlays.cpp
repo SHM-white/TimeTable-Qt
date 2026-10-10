@@ -4,6 +4,9 @@
 #include <QCheckBox>
 #include <QColor>
 #include <QComboBox>
+#include <QContextMenuEvent>
+#include <QFont>
+#include <QFrame>
 #include <QDateTimeEdit>
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -521,7 +524,7 @@ void DesktopOverlays::edit(const QString& id) {
     auto* title=new QLineEdit(c.title);
     auto* type=new QComboBox;
     for(int i=0;i<types.size();++i) type->addItem(names[i],types[i]);
-    type->setCurrentIndex(std::max(0,types.indexOf(c.type)));
+    type->setCurrentIndex(std::max(0,int(types.indexOf(c.type))));
     auto* theme=new QComboBox;
     theme->addItem(QStringLiteral("柔和浅色"),"light");
     theme->addItem(QStringLiteral("夜间深色"),"dark");
