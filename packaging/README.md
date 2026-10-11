@@ -1,6 +1,6 @@
 # Windows 安装包与便携包
 
-`.github/workflows/modern-build.yml` 在原有 Qt 5/Qt 6 便携 ZIP 之外，分别生成 Inno Setup 安装包 artifact。安装包不会自动发布到 Releases。Qt 5 和 Qt 6 安装包使用同一应用标识，安装其中一个会升级或替换当前安装；不会覆盖旧版 v3 的安装标识。
+`.github/workflows/modern-build.yml` 在原有 Qt 5/Qt 6 便携 ZIP 之外，分别生成 Inno Setup 安装包 artifact。正常 PR 和主分支 CI 仅上传 Actions artifacts；推送正式版本 Tag 时，Release 工作流会复用构建结果，将 ZIP 与安装包一同发布。Qt 5 和 Qt 6 安装包使用同一应用标识，安装其中一个会升级或替换当前安装；不会覆盖旧版 v3 的安装标识。
 
 | 构建 | ZIP artifact（保留原名） | 安装包 artifact | 系统范围 |
 | --- | --- | --- | --- |
@@ -60,4 +60,4 @@ sudo apt install ./TimeTableNext-v4.2.0-Linux-Debian13-Qt6-amd64.deb
 TimeTableNext
 ```
 
-本地使用 `bash packaging/linux/package.sh build Qt6` 打包；只支持 Debian 13 和 Ubuntu 24.04 AMD64，且需要在目标发行版已经完成的 CMake 构建目录。CI 检查真实 APT 包名并执行 `apt-get install --simulate`。Debian 12、Ubuntu 22.04 不在本次构建范围。开发产物保存在 Actions Artifacts，不会自动发布 Releases；`release.yml` 当前仍是历史 v4.1.0 正式发布工作流。
+本地使用 `bash packaging/linux/package.sh build Qt6` 打包；只支持 Debian 13 和 Ubuntu 24.04 AMD64，且需要在目标发行版已经完成的 CMake 构建目录。CI 检查真实 APT 包名并执行 `apt-get install --simulate`。Debian 12、Ubuntu 22.04 不在本次构建范围。PR / 主分支构建产物保存在 Actions Artifacts；正式版本 Tag 的 Release 工作流复用相同构建过程，发布所有 12 个安装包及 `SHA256SUMS.txt`。发版操作与安全检查见 [CI 和 Release 流程](../docs/CI_RELEASE.md)。

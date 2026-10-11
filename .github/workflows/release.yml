@@ -1,186 +1,139 @@
-name: Publish TimeTable Next v4.1.0
+name: Publish TimeTable Next
 
-# Auto-run once when the workflow is introduced into master by PR merge.
-# Subsequent ordinary source changes will not publish unexpected versions.
 on:
   push:
-    branches: [master]
-    paths:
-      - '.github/workflows/release.yml'
+    tags:
+      - 'v[0-9]*.[0-9]*.[0-9]*'
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing Git tag to package, for example v4.2.0'
+        required: true
+        type: string
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: timetable-next-v4.1.0-release
+  group: timetable-release-${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
   cancel-in-progress: false
 
 jobs:
-  windows-qt6:
-    runs-on: windows-2022
-    name: Package Windows Qt 6 x64
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: x64
-      - uses: jurplel/install-qt-action@v4
-        with:
-          version: '6.8.3'
-          host: windows
-          target: desktop
-          arch: win64_msvc2022_64
-          cache: true
-      - shell: pwsh
-        name: Build and test
-        run: |
-          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON
-          cmake --build build --parallel 2
-          ctest --test-dir build --output-on-failure
-      - shell: pwsh
-        name: Deploy Qt runtime
-        run: |
-          $folder='dist/TimeTableNext-Qt6'
-          New-Item -ItemType Directory -Force -Path $folder | Out-Null
-          Copy-Item 'build/bin/TimeTableNext.exe' "$folder/"
-          windeployqt --release --no-translations --dir $folder "$folder/TimeTableNext.exe"
-          Copy-Item 'README-NEXT.md' "$folder/README.txt"
-          Compress-Archive -Path $folder -DestinationPath 'TimeTableNext-v4.1.0-Windows-Qt6-x64.zip' -Force
-      - uses: actions/upload-artifact@v4
-        with:
-          name: release-windows-qt6
-          path: TimeTableNext-v4.1.0-Windows-Qt6-x64.zip
-          if-no-files-found: error
-
-  windows-qt5:
-    runs-on: windows-2022
-    name: Package Windows Qt 5.15 x64 / Win7 candidate
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: x64
-      - uses: jurplel/install-qt-action@v4
-        with:
-          version: '5.15.2'
-          host: windows
-          target: desktop
-          arch: win64_msvc2019_64
-          cache: true
-      - shell: pwsh
-        name: Set Qt5 runtime tools path
-        run: |
-          "$env:QT_ROOT_DIR/bin" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
-      - shell: pwsh
-        name: Build and test
-        run: |
-          cmake -S . -B build5 -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON -DTIMETABLE_FORCE_QT5=ON
-          cmake --build build5 --parallel 2
-          windeployqt --release --no-translations --dir build5 build5/schedule_tests.exe
-          ctest --test-dir build5 --output-on-failure
-      - shell: pwsh
-        name: Deploy Qt5 runtime
-        run: |
-          $folder='dist/TimeTableNext-Qt5'
-          New-Item -ItemType Directory -Force -Path $folder | Out-Null
-          Copy-Item 'build5/bin/TimeTableNext.exe' "$folder/"
-          windeployqt --release --no-translations --dir $folder "$folder/TimeTableNext.exe"
-          Copy-Item 'README-NEXT.md' "$folder/README.txt"
-          Compress-Archive -Path $folder -DestinationPath 'TimeTableNext-v4.1.0-Windows-Qt5-x64-Win7-Candidate.zip' -Force
-      - uses: actions/upload-artifact@v4
-        with:
-          name: release-windows-qt5
-          path: TimeTableNext-v4.1.0-Windows-Qt5-x64-Win7-Candidate.zip
-          if-no-files-found: error
-
-  linux:
+  validate:
+    name: Check release tag and project version
     runs-on: ubuntu-24.04
-    name: Linux ${{ matrix.qt }} x86_64
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - qt: Qt6
-            packages: qt6-base-dev qt6-base-dev-tools
-            extra: -DTIMETABLE_FORCE_QT5=OFF
-            depends: libqt6widgets6t64, libqt6network6t64, libc6, libstdc++6
-          - qt: Qt5
-            packages: qtbase5-dev qtbase5-dev-tools
-            extra: -DTIMETABLE_FORCE_QT5=ON
-            depends: libqt5widgets5t64, libqt5network5t64, libc6, libstdc++6
+    outputs:
+      tag: ${{ steps.version.outputs.tag }}
+      version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
-      - shell: bash
-        name: Install build prerequisites
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ninja-build ${{ matrix.packages }}
-      - shell: bash
-        name: Build and test
-        run: |
-          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON ${{ matrix.extra }}
-          cmake --build build --parallel 2
-          ctest --test-dir build --output-on-failure
-          QT_QPA_PLATFORM=offscreen ./build/bin/TimeTableNext --smoke-test-light
-          QT_QPA_PLATFORM=offscreen ./build/bin/TimeTableNext --smoke-test-dark
-          QT_QPA_PLATFORM=offscreen ./build/bin/TimeTableNext --smoke-navigation
-      - shell: bash
-        name: Create Linux tarball and Ubuntu 24.04 deb
-        run: |
-          set -euo pipefail
-          mkdir -p package/TimeTableNext package/debian/DEBIAN package/debian/usr/bin
-          cp build/bin/TimeTableNext package/TimeTableNext/TimeTableNext
-          cp README-NEXT.md package/TimeTableNext/README.md
-          cp build/bin/TimeTableNext package/debian/usr/bin/TimeTableNext
-          chmod +x package/debian/usr/bin/TimeTableNext
-          tar -czf "TimeTableNext-v4.1.0-Linux-${{ matrix.qt }}-x86_64.tar.gz" -C package TimeTableNext
-          printf 'Package: timetable-next\nVersion: 4.1.0\nArchitecture: amd64\nMaintainer: TimeTable-Qt Contributors\nDepends: %s\nSection: utils\nPriority: optional\nDescription: TimeTable Next desktop floating timetable (${{ matrix.qt }})\n' '${{ matrix.depends }}' > package/debian/DEBIAN/control
-          dpkg-deb --build --root-owner-group package/debian "TimeTableNext-v4.1.0-Linux-${{ matrix.qt }}-amd64.deb"
-      - uses: actions/upload-artifact@v4
         with:
-          name: release-linux-${{ matrix.qt }}
-          path: |
-            TimeTableNext-v4.1.0-Linux-${{ matrix.qt }}-x86_64.tar.gz
-            TimeTableNext-v4.1.0-Linux-${{ matrix.qt }}-amd64.deb
-          if-no-files-found: error
-
-  publish:
-    runs-on: ubuntu-24.04
-    name: Publish v4.1.0 GitHub Release
-    needs: [windows-qt6, windows-qt5, linux]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-        with:
-          pattern: release-*
-          path: assets
-          merge-multiple: true
-      - shell: bash
-        name: Check required artifacts and compute SHA256
-        run: |
-          set -euo pipefail
-          for artifact in \
-            TimeTableNext-v4.1.0-Windows-Qt6-x64.zip \
-            TimeTableNext-v4.1.0-Windows-Qt5-x64-Win7-Candidate.zip \
-            TimeTableNext-v4.1.0-Linux-Qt6-amd64.deb \
-            TimeTableNext-v4.1.0-Linux-Qt5-amd64.deb \
-            TimeTableNext-v4.1.0-Linux-Qt6-x86_64.tar.gz \
-            TimeTableNext-v4.1.0-Linux-Qt5-x86_64.tar.gz; do
-            test -s "assets/${artifact}"
-          done
-          (cd assets && sha256sum TimeTableNext* > SHA256SUMS.txt)
-      - shell: bash
-        name: Publish only after every supported target succeeds
+          fetch-depth: 0
+      - name: Validate tag and version
+        id: version
+        shell: bash
         env:
-          GH_TOKEN: ${{ github.token }}
+          REQUESTED_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
         run: |
           set -euo pipefail
-          if gh release view v4.1.0 >/dev/null 2>&1; then
-            echo 'v4.1.0 already exists. Will not overwrite a published release.'
+          tag="$REQUESTED_TAG"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo 'Only stable release tags such as v4.2.0 are supported.' >&2
             exit 1
           fi
-          gh release create v4.1.0 assets/* \
-            --target "${GITHUB_SHA}" \
-            --title "TimeTable Next v4.1.0" \
-            --notes-file RELEASE_NOTES.md
+          if ! git rev-parse -q --verify "refs/tags/${tag}^{commit}" >/dev/null; then
+            echo "Tag $tag does not exist in the repository." >&2
+            exit 1
+          fi
+          commit=$(git rev-parse "refs/tags/${tag}^{commit}")
+          version=$(git show "${commit}:CMakeLists.txt" | sed -nE 's/^[[:space:]]*project\(TimeTableNext[[:space:]]+VERSION[[:space:]]+([0-9]+\.[0-9]+\.[0-9]+).*/\1/p' | head -n 1)
+          if [[ -z "$version" || "$tag" != "v$version" ]]; then
+            echo "Tag $tag does not match CMake project version ${version:-unknown}." >&2
+            exit 1
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - name: Check for an already populated Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          set -euo pipefail
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            count=$(gh release view "$RELEASE_TAG" --json assets --jq '.assets | length')
+            if (( count > 0 )); then
+              echo "Release $RELEASE_TAG already has $count assets; refusing to overwrite it." >&2
+              exit 1
+            fi
+            echo "Release $RELEASE_TAG exists without assets; it can be repaired."
+          fi
+
+  build:
+    name: Build and package all platforms
+    needs: validate
+    uses: ./.github/workflows/modern-build.yml
+    with:
+      source_ref: ${{ needs.validate.outputs.tag }}
+
+  publish:
+    name: Verify assets and publish Release
+    runs-on: ubuntu-24.04
+    needs: [validate, build]
+    permissions:
+      contents: write
+    steps:
+      - name: Download artifacts from successful builds
+        uses: actions/download-artifact@v4
+        with:
+          pattern: TimeTableNext-*
+          path: assets
+          merge-multiple: true
+      - name: Check every package and create SHA256SUMS.txt
+        shell: bash
+        env:
+          VERSION: ${{ needs.validate.outputs.version }}
+        run: |
+          set -euo pipefail
+          cd assets
+          test -s TimeTableNext-Windows-x64.zip
+          test -s TimeTableNext-Qt5-Win7-Candidate.zip
+          mv TimeTableNext-Windows-x64.zip "TimeTableNext-v${VERSION}-Windows-Qt6-x64.zip"
+          mv TimeTableNext-Qt5-Win7-Candidate.zip "TimeTableNext-v${VERSION}-Windows-Qt5-x64-Win7-Candidate.zip"
+          for qt in Qt5 Qt6; do
+            test -s "TimeTableNext-${VERSION}-${qt}-Windows-x64-Setup.exe"
+            for distro in Ubuntu24.04 Debian13; do
+              test -s "TimeTableNext-v${VERSION}-Linux-${distro}-${qt}-amd64.deb"
+              test -s "TimeTableNext-v${VERSION}-Linux-${distro}-${qt}-x86_64.tar.gz"
+            done
+          done
+          shopt -s nullglob
+          files=(TimeTableNext-*)
+          if (( ${#files[@]} != 12 )); then
+            echo "Expected 12 packages, found ${#files[@]}." >&2
+            printf '%s\n' "${files[@]}" >&2
+            exit 1
+          fi
+          sha256sum "${files[@]}" > SHA256SUMS.txt
+          sha256sum --check SHA256SUMS.txt
+      - name: Create or complete GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ needs.validate.outputs.tag }}
+        run: |
+          set -euo pipefail
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            count=$(gh release view "$RELEASE_TAG" --json assets --jq '.assets | length')
+            if (( count != 0 )); then
+              echo "Release $RELEASE_TAG acquired assets while builds were running; refusing to overwrite." >&2
+              exit 1
+            fi
+            gh release upload "$RELEASE_TAG" assets/*
+            gh release edit "$RELEASE_TAG" --draft=false
+          else
+            gh release create "$RELEASE_TAG" --verify-tag --draft \
+              --title "TimeTable Next $RELEASE_TAG" --generate-notes
+            gh release upload "$RELEASE_TAG" assets/*
+            gh release edit "$RELEASE_TAG" --draft=false
+          fi
