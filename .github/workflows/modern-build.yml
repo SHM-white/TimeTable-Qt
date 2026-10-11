@@ -79,16 +79,30 @@ jobs:
         run: cmake -S . -B build-win7 -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON -DTIMETABLE_FORCE_QT5=ON
       - name: Build
         run: cmake --build build-win7 --parallel 2
-      - name: Deploy Qt5 test runtime
-        run: windeployqt --release --no-translations --dir build-win7 build-win7/schedule_tests.exe
-      - name: Diagnose legacy startup
+      - name: Deploy full Qt5 GUI test runtime
         shell: pwsh
         run: |
-          Write-Host "Qt5Core present: $(Test-Path build-win7/Qt5Core.dll)"
-          $process = Start-Process -FilePath (Resolve-Path build-win7/schedule_tests.exe).Path -PassThru -Wait -NoNewWindow
-          Write-Host "Qt5 test process exit code: $($process.ExitCode)"
+          # schedule_tests links only QtCore. Deploy using the actual GUI
+          # executable so the test directory also gets QtGui, Widgets,
+          # Network, and the required platform plugins.
+          windeployqt --release --no-translations --dir build-win7 build-win7/bin/TimeTableNext.exe
+          if ($LASTEXITCODE -ne 0) { throw 'Qt 5 test runtime deployment failed' }
+          foreach ($name in @('Qt5Core.dll', 'Qt5Gui.dll', 'Qt5Widgets.dll', 'Qt5Network.dll')) {
+            if (-not (Test-Path "build-win7/$name")) { throw "Missing test dependency: $name" }
+          }
       - name: Test
+        env:
+          # Qt5 on Windows otherwise may send qCritical diagnostics to
+          # OutputDebugString rather than the captured CTest stderr stream.
+          QT_ASSUME_STDERR_HAS_CONSOLE: '1'
         run: ctest --test-dir build-win7 --output-on-failure -V
+      - name: Print failing Qt5 test output
+        if: failure()
+        shell: pwsh
+        run: |
+          if (Test-Path build-win7/Testing/Temporary/LastTest.log) {
+            Get-Content build-win7/Testing/Temporary/LastTest.log
+          }
       - name: Package Qt 5 runtime
         shell: pwsh
         run: |
