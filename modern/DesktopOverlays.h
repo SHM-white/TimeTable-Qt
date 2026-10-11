@@ -1,10 +1,12 @@
 #pragma once
 #include <QDateTime>
+#include <QByteArray>
 #include "ElementLayout.h"
 #include <QHash>
 #include <QObject>
 #include <QPointer>
 #include <QRect>
+#include <QSet>
 #include <QString>
 #include <QVector>
 
@@ -25,6 +27,7 @@ struct OverlayConfig {
     QString note;
     QList<ElementDefinition> elements;
     QString backgroundImage;
+    QByteArray backgroundAsset; // Portable backups retain image bytes without external files.
     QColor backgroundColor = QColor("#FFFFFF");
     bool imageBackground = false;
     bool autoSize = false;
@@ -43,6 +46,12 @@ struct OverlayConfig {
     bool showDetailsOnClick = true;
     int fontSize = 13;
     int opacity = 94;
+    int fps = 60; // 0 disables continuous animation; schedule/model updates continue.
+    bool debug = false;
+    bool showFPS = false;
+    int elementInset = 5;
+    int cornerRadius = 17;
+    bool acrylic = false;
 };
 
 class DesktopOverlays final : public QObject {
@@ -62,6 +71,12 @@ public:
     void editElements(const QString& id);
     void showAll();
     void hideAll();
+    void setStartupVisible(const QString& id, bool visible);
+    QString configurationPath() const;
+    bool exportLayout(const QString& path, QString* error = nullptr) const;
+    bool restoreLayout(const QString& path, QString* error = nullptr);
+    bool setConfigurationPath(const QString& path, QString* error = nullptr);
+    const QVector<OverlayConfig>& configurations() const { return configs_; }
 protected:
     bool eventFilter(QObject* watched, QEvent* event) override;
 
@@ -72,6 +87,11 @@ private:
     QHash<QString, OverlayCard*> windows_;
     QPointer<QDialog> configurationDialog_;
     QPointer<QListWidget> configurationList_;
+    QString configurationPath_;
+    bool temporarilyHidden_ = false;
+    bool temporarilyShowAll_ = false;
+    QSet<QString> temporarilyHiddenWindows_;
+    bool storageWritable_ = true;
 
     int indexOf(const QString& id) const;
     OverlayConfig defaultConfig(const QString& type) const;
@@ -82,6 +102,9 @@ private:
     void remove(const QString& id);
     void refreshConfigurationList();
     void syncVisibility();
+    bool shouldShow(const OverlayConfig& config) const;
+    bool hasRecoverableCards() const;
+    void autoResized(const QString& id, const QRect& geometry);
     QString detailsText(const OverlayConfig& config) const;
 };
 } // namespace tt

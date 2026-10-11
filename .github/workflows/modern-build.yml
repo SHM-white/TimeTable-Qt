@@ -1,5 +1,7 @@
 name: TimeTable Next - Build and Package
 on:
+  push:
+    branches: ['codex/desktop-migration-*']
   pull_request:
   workflow_dispatch:
 permissions:
@@ -27,6 +29,18 @@ jobs:
           ./build/bin/TimeTableNext --smoke-test-light
           ./build/bin/TimeTableNext --smoke-test-dark
           ./build/bin/TimeTableNext --smoke-navigation
+          ./build/bin/TimeTableNext --smoke-test-english
+      - name: Package Linux Qt6 / Ubuntu 24.04
+        run: bash packaging/linux/package.sh build Qt6
+      - name: Upload Linux Qt6 DEB + tar.gz
+        uses: actions/upload-artifact@v4
+        with:
+          name: TimeTableNext-Ubuntu24.04-Qt6
+          path: |
+            TimeTableNext-v*-Linux-Ubuntu24.04-Qt6-amd64.deb
+            TimeTableNext-v*-Linux-Ubuntu24.04-Qt6-x86_64.tar.gz
+          if-no-files-found: error
+          retention-days: 30
   qt5-compatibility:
     name: Qt 5.15 legacy compatibility
     runs-on: ubuntu-24.04
@@ -49,9 +63,74 @@ jobs:
           ./build-qt5/bin/TimeTableNext --smoke-test-light
           ./build-qt5/bin/TimeTableNext --smoke-test-dark
           ./build-qt5/bin/TimeTableNext --smoke-navigation
+          ./build-qt5/bin/TimeTableNext --smoke-test-english
+      - name: Package Linux Qt5 / Ubuntu 24.04
+        run: bash packaging/linux/package.sh build-qt5 Qt5
+      - name: Upload Linux Qt5 DEB + tar.gz
+        uses: actions/upload-artifact@v4
+        with:
+          name: TimeTableNext-Ubuntu24.04-Qt5
+          path: |
+            TimeTableNext-v*-Linux-Ubuntu24.04-Qt5-amd64.deb
+            TimeTableNext-v*-Linux-Ubuntu24.04-Qt5-x86_64.tar.gz
+          if-no-files-found: error
+          retention-days: 30
+
+
+  debian13-packages:
+    name: Debian 13 / ${{ matrix.flavor }} / tests and packages
+    runs-on: ubuntu-24.04
+    container:
+      image: debian:trixie
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - flavor: Qt6
+            packages: qt6-base-dev qt6-base-dev-tools qt6-qpa-plugins
+            cmake_flags: -DTIMETABLE_FORCE_QT5=OFF
+          - flavor: Qt5
+            packages: qtbase5-dev qtbase5-dev-tools
+            cmake_flags: -DTIMETABLE_FORCE_QT5=ON
+    steps:
+      - name: Install Debian dependencies
+        shell: bash
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends git ca-certificates \
+            build-essential cmake ninja-build dpkg-dev fontconfig fonts-dejavu-core ${{ matrix.packages }}
+      - uses: actions/checkout@v4
+      - name: Build using Debian Qt
+        shell: bash
+        run: |
+          cmake -S . -B build-debian -G Ninja -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_TESTING=ON ${{ matrix.cmake_flags }}
+          cmake --build build-debian --parallel 2
+      - name: Debian CTest and offscreen UI smoke
+        shell: bash
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          ctest --test-dir build-debian --output-on-failure
+          ./build-debian/bin/TimeTableNext --smoke-test-light
+          ./build-debian/bin/TimeTableNext --smoke-test-dark
+          ./build-debian/bin/TimeTableNext --smoke-navigation
+          ./build-debian/bin/TimeTableNext --smoke-test-english
+      - name: Package Debian 13 and simulate APT install
+        shell: bash
+        run: bash packaging/linux/package.sh build-debian ${{ matrix.flavor }}
+      - name: Upload Debian 13 DEB and tar.gz
+        uses: actions/upload-artifact@v4
+        with:
+          name: TimeTableNext-Debian13-${{ matrix.flavor }}
+          path: |
+            TimeTableNext-v*-Linux-Debian13-${{ matrix.flavor }}-amd64.deb
+            TimeTableNext-v*-Linux-Debian13-${{ matrix.flavor }}-x86_64.tar.gz
+          if-no-files-found: error
+          retention-days: 30
 
   windows-qt5-legacy:
-    name: Windows Qt 5.15 portable / Win7 candidate
+    name: Windows Qt 5.15 ZIP + installer / Win7 candidate
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
@@ -75,16 +154,47 @@ jobs:
         run: cmake -S . -B build-win7 -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON -DTIMETABLE_FORCE_QT5=ON
       - name: Build
         run: cmake --build build-win7 --parallel 2
-      - name: Deploy Qt5 test runtime
-        run: windeployqt --release --no-translations --dir build-win7 build-win7/schedule_tests.exe
-      - name: Diagnose legacy startup
+      - name: Deploy full Qt5 GUI test runtime
         shell: pwsh
         run: |
-          Write-Host "Qt5Core present: $(Test-Path build-win7/Qt5Core.dll)"
-          $process = Start-Process -FilePath (Resolve-Path build-win7/schedule_tests.exe).Path -PassThru -Wait -NoNewWindow
-          Write-Host "Qt5 test process exit code: $($process.ExitCode)"
+          # schedule_tests links only QtCore. Deploy using the actual GUI
+          # executable so the test directory also gets QtGui, Widgets,
+          # Network, and the required platform plugins.
+          windeployqt --release --no-translations --dir build-win7 build-win7/bin/TimeTableNext.exe
+          if ($LASTEXITCODE -ne 0) { throw 'Qt 5 test runtime deployment failed' }
+          foreach ($name in @('Qt5Core.dll', 'Qt5Gui.dll', 'Qt5Widgets.dll', 'Qt5Network.dll')) {
+            if (-not (Test-Path "build-win7/$name")) { throw "Missing test dependency: $name" }
+          }
+      - name: Provide Windows system fonts to Qt5 offscreen tests
+        shell: pwsh
+        run: |
+          # Qt 5's Windows offscreen QPA plugin uses QBasicFontDatabase.
+          # It looks in <Qt application directory>/lib/fonts rather than
+          # resolving installed Windows fonts automatically. Without a font,
+          # QPainter renders empty text and geometry assertions fail.
+          $fontDir = 'build-win7/lib/fonts'
+          New-Item -ItemType Directory -Force -Path $fontDir | Out-Null
+          foreach ($font in @('arial.ttf', 'segoeui.ttf', 'msyh.ttc')) {
+            $source = Join-Path (Join-Path $env:WINDIR 'Fonts') $font
+            if (Test-Path $source) { Copy-Item -Path $source -Destination $fontDir }
+          }
+          if (-not (Get-ChildItem -Path $fontDir -File -Filter '*.ttf' | Select-Object -First 1)) {
+            throw 'Qt5 offscreen tests require at least one installed TrueType font'
+          }
+          # Fonts are used only by the CI tests; they are not packaged.
       - name: Test
+        env:
+          # Qt5 on Windows otherwise may send qCritical diagnostics to
+          # OutputDebugString rather than the captured CTest stderr stream.
+          QT_ASSUME_STDERR_HAS_CONSOLE: '1'
         run: ctest --test-dir build-win7 --output-on-failure -V
+      - name: Print failing Qt5 test output
+        if: failure()
+        shell: pwsh
+        run: |
+          if (Test-Path build-win7/Testing/Temporary/LastTest.log) {
+            Get-Content build-win7/Testing/Temporary/LastTest.log
+          }
       - name: Package Qt 5 runtime
         shell: pwsh
         run: |
@@ -93,15 +203,49 @@ jobs:
           windeployqt --release --no-translations --dir dist/TimeTableNext-Qt5 dist/TimeTableNext-Qt5/TimeTableNext.exe
           Copy-Item README-NEXT.md dist/TimeTableNext-Qt5/README.txt
           Compress-Archive -Path dist/TimeTableNext-Qt5 -DestinationPath TimeTableNext-Qt5-Win7-Candidate.zip -Force
+      - name: Prepare Inno Setup 6.2.2
+        shell: pwsh
+        run: |
+          $iscc = Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6/ISCC.exe'
+          $isccCommand = Get-Command ISCC.exe -ErrorAction SilentlyContinue
+          if ($isccCommand) { $iscc = $isccCommand.Source }
+          $version = if (Test-Path $iscc) { (Get-Item $iscc).VersionInfo.ProductVersion } else { '' }
+          if ($version -notmatch '^6\.2\.2(?:\D|$)') {
+            if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
+              throw 'Inno Setup 6.2.2 is required for the legacy installer, and Chocolatey is unavailable'
+            }
+            choco upgrade innosetup --version=6.2.2 --allow-downgrade --force --yes --no-progress
+            if ($LASTEXITCODE -ne 0) { throw 'Inno Setup installation failed' }
+            $iscc = Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6/ISCC.exe'
+          }
+          if (-not (Test-Path $iscc)) { throw 'ISCC.exe was not found' }
+          "TIMETABLE_ISCC=$iscc" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+      - name: Build Qt 5 per-user installer
+        shell: pwsh
+        run: |
+          $versionMatch = [regex]::Match((Get-Content CMakeLists.txt -Raw), '(?m)^\s*project\(TimeTableNext\s+VERSION\s+([0-9]+\.[0-9]+\.[0-9]+)')
+          if (-not $versionMatch.Success) { throw 'Cannot read the CMake project version' }
+          & $env:TIMETABLE_ISCC "/DAppVersion=$($versionMatch.Groups[1].Value)" `
+            "/DSourceDir=$((Resolve-Path dist/TimeTableNext-Qt5).Path)" `
+            "/DOutputDir=$PWD/dist/installers" /DQt5Legacy `
+            packaging/windows/TimeTableNext.iss
+          if ($LASTEXITCODE -ne 0) { throw 'Inno Setup compilation failed' }
       - uses: actions/upload-artifact@v4
         with:
           name: TimeTableNext-Qt5-Win7-Candidate
           path: TimeTableNext-Qt5-Win7-Candidate.zip
           if-no-files-found: error
           retention-days: 30
+      - name: Upload Qt 5 installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: TimeTableNext-Qt5-Windows-x64-Installer
+          path: dist/installers/TimeTableNext-*-Qt5-Windows-x64-Setup.exe
+          if-no-files-found: error
+          retention-days: 30
 
   windows-portable:
-    name: Windows x64 / portable ZIP
+    name: Windows x64 / ZIP + installer
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
@@ -131,10 +275,43 @@ jobs:
           windeployqt --release --no-translations --dir dist/TimeTableNext dist/TimeTableNext/TimeTableNext.exe
           Copy-Item README-NEXT.md dist/TimeTableNext/README.txt
           Compress-Archive -Path dist/TimeTableNext -DestinationPath TimeTableNext-Windows-x64.zip -Force
+      - name: Prepare Inno Setup
+        shell: pwsh
+        run: |
+          $iscc = Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6/ISCC.exe'
+          $isccCommand = Get-Command ISCC.exe -ErrorAction SilentlyContinue
+          if ($isccCommand) { $iscc = $isccCommand.Source }
+          if (-not (Test-Path $iscc)) {
+            if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
+              throw 'Inno Setup is required, and Chocolatey is unavailable'
+            }
+            choco install innosetup --version=6.2.2 --yes --no-progress
+            if ($LASTEXITCODE -ne 0) { throw 'Inno Setup installation failed' }
+            $iscc = Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6/ISCC.exe'
+          }
+          if (-not (Test-Path $iscc)) { throw 'ISCC.exe was not found' }
+          "TIMETABLE_ISCC=$iscc" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+      - name: Build Qt 6 per-user installer
+        shell: pwsh
+        run: |
+          $versionMatch = [regex]::Match((Get-Content CMakeLists.txt -Raw), '(?m)^\s*project\(TimeTableNext\s+VERSION\s+([0-9]+\.[0-9]+\.[0-9]+)')
+          if (-not $versionMatch.Success) { throw 'Cannot read the CMake project version' }
+          & $env:TIMETABLE_ISCC "/DAppVersion=$($versionMatch.Groups[1].Value)" `
+            "/DSourceDir=$((Resolve-Path dist/TimeTableNext).Path)" `
+            "/DOutputDir=$PWD/dist/installers" `
+            packaging/windows/TimeTableNext.iss
+          if ($LASTEXITCODE -ne 0) { throw 'Inno Setup compilation failed' }
       - name: Upload Windows ZIP
         uses: actions/upload-artifact@v4
         with:
           name: TimeTableNext-Windows-x64
           path: TimeTableNext-Windows-x64.zip
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload Windows installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: TimeTableNext-Windows-x64-Installer
+          path: dist/installers/TimeTableNext-*-Qt6-Windows-x64-Setup.exe
           if-no-files-found: error
           retention-days: 30

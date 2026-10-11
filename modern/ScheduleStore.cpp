@@ -1,4 +1,5 @@
 #include "ScheduleStore.h"
+#include "Translation.h"
 
 #include <QCoreApplication>
 #include <QDir>
@@ -7,6 +8,7 @@
 #include <QJsonDocument>
 #include <QJsonParseError>
 #include <QSaveFile>
+#include <QSet>
 #include <QRegularExpression>
 #include <QStandardPaths>
 #include <QUuid>
@@ -38,20 +40,45 @@ QVector<int> readWeeks(const QJsonValue& v) {
 }
 QString quoteCsv(QString v) {
     v.replace('"', "\"\"");
-    return (v.contains(',') || v.contains('\n') || v.contains('"'))
+    return (v.contains(',') || v.contains('\n') || v.contains('\r') || v.contains('"'))
         ? "\"" + v + "\"" : v;
 }
-QStringList csvFields(const QString& line) {
-    QStringList out; QString current; bool quoted = false;
-    for (int i=0; i<line.size(); ++i) {
-        auto c = line.at(i);
-        if (c == '"') {
-            if (quoted && i+1 < line.size() && line.at(i+1) == '"') { current += '"'; ++i; }
-            else quoted = !quoted;
-        } else if (c == ',' && !quoted) { out << current; current.clear(); }
-        else current += c;
+bool csvRecords(const QString& raw, QList<QStringList>* records, QString* error) {
+    QStringList cells; QString current; bool quoted=false, closedQuote=false;
+    for(int i=0;i<raw.size();++i) {
+        const QChar c=raw.at(i);
+        if(quoted) {
+            if(c=='"') {
+                if(i+1<raw.size()&&raw.at(i+1)=='"') { current+='"'; ++i; }
+                else { quoted=false; closedQuote=true; }
+            } else if(c=='\r') {
+                current+='\n';
+                if(i+1<raw.size()&&raw.at(i+1)=='\n') ++i;
+            } else current+=c;
+        } else if(c==',' || c=='\r' || c=='\n') {
+            cells<<current; current.clear(); closedQuote=false;
+            if(c!=',') {
+                if(c=='\r'&&i+1<raw.size()&&raw.at(i+1)=='\n') ++i;
+                if(cells.size()>1 || !cells.first().trimmed().isEmpty()) records->append(cells);
+                cells.clear();
+            }
+        } else if(c=='"' && current.isEmpty() && !closedQuote) quoted=true;
+        else if(c=='"' || (closedQuote&&!c.isSpace())) {
+            if(error) *error=tt::translate("CSV 引号格式无效");
+            return false;
+        } else if(!closedQuote) current+=c;
     }
-    out << current; return out;
+    if(quoted) { if(error) *error=tt::translate("CSV 引号未闭合"); return false; }
+    if(!current.isEmpty()||!cells.isEmpty()||closedQuote) { cells<<current; records->append(cells); }
+    return true;
+}
+bool sameCourse(const Course& a,const Course& b) {
+    auto aw=a.weeks,bw=b.weeks;
+    std::sort(aw.begin(),aw.end()); std::sort(bw.begin(),bw.end());
+    aw.erase(std::unique(aw.begin(),aw.end()),aw.end());
+    bw.erase(std::unique(bw.begin(),bw.end()),bw.end());
+    return a.name==b.name&&a.teacher==b.teacher&&a.room==b.room&&a.weekday==b.weekday&&
+        a.start==b.start&&a.end==b.end&&aw==bw;
 }
 bool writeBytes(const QString& path, const QByteArray& content, QString* error) {
     QSaveFile file(path);
@@ -102,7 +129,7 @@ int ScheduleStore::weekNumber(QDate d) const {
 }
 
 QString ScheduleStore::formatWeeks(const QVector<int>& source) {
-    if (source.isEmpty()) return QStringLiteral("无");
+    if (source.isEmpty()) return tt::translate("无");
     auto v = source;
     std::sort(v.begin(), v.end());
     v.erase(std::unique(v.begin(), v.end()), v.end());
@@ -119,36 +146,45 @@ QString ScheduleStore::formatWeeks(const QVector<int>& source) {
 QVector<int> ScheduleStore::parseWeeks(const QString& text, int maxWeek, QString* error) {
     QVector<int> result;
     const QString normalized = text.trimmed().replace(QChar(0xFF0C), ',').replace(QChar(0x3001), ',');
-    if (normalized == QStringLiteral("全部") || normalized == QStringLiteral("全") || normalized == "*") {
+    if (normalized == QStringLiteral("全部") || normalized == QStringLiteral("全") || normalized == "*" ||
+        normalized.compare("all",Qt::CaseInsensitive)==0) {
         for(int w=1;w<=maxWeek;++w) result << w;
         return result;
     }
-    if (normalized.isEmpty()) { if(error) *error=QStringLiteral("请输入周数，例如 1-16单、2-18双、1-8,10,12"); return {}; }
+    if (normalized.isEmpty()) { if(error) *error=tt::translate("请输入周数，例如 1-16单、2-18双、1-8,10,12"); return {}; }
     for (QString part : normalized.split(',', Qt::SkipEmptyParts)) {
         part=part.trimmed();
         int parity=0;
         if (part.endsWith(QStringLiteral("单"))) { parity=1; part.chop(1); }
         else if (part.endsWith(QStringLiteral("双"))) { parity=2; part.chop(1); }
+        else if(part.endsWith("odd",Qt::CaseInsensitive)) { parity=1; part.chop(3); }
+        else if(part.endsWith("even",Qt::CaseInsensitive)) { parity=2; part.chop(4); }
+        part=part.trimmed();
+        if(part.isEmpty()&&parity) part=QString("1-%1").arg(maxWeek);
         const QStringList bounds = part.split('-');
         bool ok1=false,ok2=true;
         const int first=bounds.value(0).toInt(&ok1);
         const int last=bounds.size()==2 ? bounds.value(1).toInt(&ok2) : first;
         if (!ok1 || !ok2 || bounds.size()>2 || first<1 || last>maxWeek || first>last) {
-            if (error) *error=QStringLiteral("周数格式无效：%1（有效范围 1-%2）").arg(part).arg(maxWeek);
+            if (error) *error=tt::translate("周数格式无效：%1（有效范围 1-%2）").arg(part).arg(maxWeek);
             return {};
         }
         for (int w=first;w<=last;++w)
             if ((!parity || (parity==1 && w%2) || (parity==2 && w%2==0)) && !result.contains(w)) result << w;
     }
     std::sort(result.begin(),result.end());
-    if (result.isEmpty() && error) *error=QStringLiteral("没有选中任何教学周");
+    if (result.isEmpty() && error) *error=tt::translate("没有选中任何教学周");
     return result;
 }
 
 bool ScheduleStore::validCourse(const Course& c, QString* error) {
     if (c.name.trimmed().isEmpty() || c.weekday<1 || c.weekday>7 ||
         !c.start.isValid() || !c.end.isValid() || c.start>=c.end || c.weeks.isEmpty()) {
-        if (error) *error=QStringLiteral("课程名称、星期、时间或教学周无效");
+        if (error) *error=tt::translate("课程名称、星期、时间或教学周无效");
+        return false;
+    }
+    for(int week:c.weeks) if(week<1) {
+        if(error) *error=tt::translate("课程教学周必须大于零");
         return false;
     }
     return true;
@@ -211,6 +247,43 @@ bool ScheduleStore::nextCourse(const QDateTime& now, Course* found, QDateTime* s
     return false;
 }
 
+QList<CourseConflict> ScheduleStore::conflicts() const {
+    QList<CourseConflict> result;
+    for(int a=0;a<courses.size();++a) for(int b=a+1;b<courses.size();++b) {
+        const auto& first=courses.at(a); const auto& second=courses.at(b);
+        if(first.weekday!=second.weekday || first.end<=second.start || second.end<=first.start) continue;
+        CourseConflict conflict; conflict.firstIndex=a; conflict.secondIndex=b;
+        for(int week:first.weeks)
+            if(second.weeks.contains(week)&&!conflict.weeks.contains(week)) conflict.weeks<<week;
+        if(!conflict.weeks.isEmpty()) {
+            std::sort(conflict.weeks.begin(),conflict.weeks.end());
+            result<<conflict;
+        }
+    }
+    return result;
+}
+
+QString CourseReminder::key() const {
+    return course.id+"/"+startsAt.toString(Qt::ISODate);
+}
+QList<CourseReminder> ScheduleStore::remindersDue(const QDateTime& now,int minutesBefore,
+                                                 int graceSeconds) const {
+    QList<CourseReminder> result;
+    if(!now.isValid()||minutesBefore<0||minutesBefore>1440||graceSeconds<1) return result;
+    // Include tomorrow: a lesson shortly after midnight may be reminded today.
+    for(int offset=0;offset<=1;++offset) {
+        const QDate date=now.date().addDays(offset);
+        for(const auto& course:coursesForDate(date)) {
+            QDateTime start=now; start.setDate(date); start.setTime(course.start);
+            const QDateTime reminder=start.addSecs(-minutesBefore*60);
+            if(start.isValid()&&now>=reminder&&now<reminder.addSecs(graceSeconds)&&
+               (minutesBefore==0||now<=start))
+                result<<CourseReminder{course,start};
+        }
+    }
+    return result;
+}
+
 QJsonObject ScheduleStore::toJson() const {
     QJsonArray classes;
     for(const auto& c:courses) {
@@ -241,38 +314,60 @@ QJsonObject ScheduleStore::toJson() const {
 
 bool ScheduleStore::fromJson(const QJsonObject& root, QString* error) {
     if (root.value("schema").toString()!="timetable-next/v1") {
-        if(error) *error=QStringLiteral("不是 TimeTable Next 的课表文件");
+        if(error) *error=tt::translate("不是 TimeTable Next 的课表文件");
         return false;
     }
+    const auto invalidField=[error](const QString& name) {
+        if(error) *error=tt::translate("课表字段类型无效：%1").arg(name);
+        return false;
+    };
+    if(!root.value("courses").isArray()) return invalidField("courses");
+    for(const QString& name:QStringList{"dayInfos","dayChanges","periods"})
+        if(root.contains(name)&&!root.value(name).isArray()) return invalidField(name);
+    if(!root.value("semesterStart").isString()||!root.value("totalWeeks").isDouble())
+        return invalidField("semesterStart / totalWeeks");
     ScheduleStore copy;
     const QDate start=QDate::fromString(root.value("semesterStart").toString(),Qt::ISODate);
     const int weeks=root.value("totalWeeks").toInt(0);
     if(!start.isValid() || weeks<1 || weeks>60) {
-        if(error) *error=QStringLiteral("学期开始日期或总周数无效");
+        if(error) *error=tt::translate("学期开始日期或总周数无效");
         return false;
     }
     copy.semesterMonday=mondayOf(start);
     copy.totalWeeks=weeks;
     copy.courses.clear(); copy.changes.clear(); copy.dayInfos.clear();
+    QSet<QString> ids;
     for(const auto& info:root.value("dayInfos").toArray()) {
+        if(!info.isObject()) return invalidField("dayInfos[]");
         const auto o=info.toObject();
+        if(!o.value("weekday").isDouble()||!o.value("messages").isArray()) return invalidField("dayInfos[].weekday / messages");
         const int day=o.value("weekday").toInt(0);
         if(day<1||day>7) {
-            if(error) *error=QStringLiteral("每日附加信息中的星期无效");
+            if(error) *error=tt::translate("每日附加信息中的星期无效");
             return false;
         }
         QStringList messages;
         for(const auto& item:o.value("messages").toArray()) {
-            if(!item.isString()) continue;
+            if(!item.isString()) return invalidField("dayInfos[].messages[]");
             const QString message=item.toString().trimmed();
             if(!message.isEmpty()) messages<<message;
         }
         copy.dayInfos[day]=messages;
     }
     for(const auto& item:root.value("courses").toArray()) {
+        if(!item.isObject()) return invalidField("courses[]");
         const QJsonObject o=item.toObject();
+        if(!o.value("name").isString()||!o.value("weekday").isDouble()||
+           !o.value("start").isString()||!o.value("end").isString()||!o.value("weeks").isArray())
+            return invalidField("courses[].name / weekday / start / end / weeks");
+        for(const QString& field:QStringList{"id","teacher","room","color"})
+            if(o.contains(field)&&!o.value(field).isString()) return invalidField("courses[]."+field);
+        for(const auto& week:o.value("weeks").toArray())
+            if(!week.isDouble()||week.toDouble()<1||week.toDouble()!=week.toInt()) return invalidField("courses[].weeks[]");
         Course c;
         c.id=o.value("id").toString(makeId());
+        if(c.id.isEmpty()||ids.contains(c.id)) c.id=makeId();
+        ids.insert(c.id);
         c.name=o.value("name").toString().trimmed();
         c.teacher=o.value("teacher").toString();
         c.room=o.value("room").toString();
@@ -283,18 +378,22 @@ bool ScheduleStore::fromJson(const QJsonObject& root, QString* error) {
         c.color=o.value("color").toString("#6C6AF6");
         if(!validCourse(c,error)) return false;
         for(int w:c.weeks) if(w>weeks) {
-            if(error) *error=QStringLiteral("课程周数超出学期范围"); return false;
+            if(error) *error=tt::translate("课程周数超出学期范围"); return false;
         }
         copy.courses << c;
     }
     for(const auto& item:root.value("dayChanges").toArray()) {
+        if(!item.isObject()) return invalidField("dayChanges[]");
         const QJsonObject o=item.toObject();
+        if(!o.value("date").isString()||!o.value("type").isString()||
+           (o.value("type").toString()!="holiday"&&o.value("type").toString()!="use"))
+            return invalidField("dayChanges[].date / type");
         DayChange d;
         d.date=QDate::fromString(o.value("date").toString(),Qt::ISODate);
         d.holiday=o.value("type").toString()=="holiday";
         d.sourceDate=QDate::fromString(o.value("sourceDate").toString(),Qt::ISODate);
         if(!d.date.isValid() || (!d.holiday && !d.sourceDate.isValid())) {
-            if(error) *error=QStringLiteral("调休日期无效"); return false;
+            if(error) *error=tt::translate("调休日期无效"); return false;
         }
         copy.changes << d;
     }
@@ -302,12 +401,15 @@ bool ScheduleStore::fromJson(const QJsonObject& root, QString* error) {
     if(!periodArray.isEmpty()) {
         copy.periods.clear();
         for(const auto& item:periodArray) {
+            if(!item.isObject()) return invalidField("periods[]");
             const QJsonObject o=item.toObject();
+            if(!o.value("section").isDouble()||!o.value("start").isString()||!o.value("end").isString())
+                return invalidField("periods[].section / start / end");
             const int index=o.value("section").toInt();
             const QTime from=parseTime(o.value("start").toString());
             const QTime to=parseTime(o.value("end").toString());
             if(index<1 || index>40 || !from.isValid() || !to.isValid() || from>=to) {
-                if(error) *error=QStringLiteral("节次时间表无效"); return false;
+                if(error) *error=tt::translate("节次时间表无效"); return false;
             }
             copy.periods[index]={from,to};
         }
@@ -362,7 +464,7 @@ bool ScheduleStore::importLegacy(const QJsonObject& root, QString* error) {
         }
     }
     if(!hasValidDay || (imported.isEmpty()&&oldInfo.isEmpty())) {
-        if(error) *error=QStringLiteral("未找到有效旧版课程或每日附加信息；占位项已忽略");
+        if(error) *error=tt::translate("未找到有效旧版课程或每日附加信息；占位项已忽略");
         return false;
     }
     courses=imported;
@@ -374,7 +476,7 @@ bool ScheduleStore::importXiaoAi(const QJsonObject& root, QString* error) {
     const QJsonArray data=root.value("courseInfos").toArray().isEmpty()
         ? root.value("data").toObject().value("courseInfos").toArray()
         : root.value("courseInfos").toArray();
-    if(data.isEmpty()) { if(error) *error=QStringLiteral("找不到 courseInfos 课程数组"); return false; }
+    if(data.isEmpty()) { if(error) *error=tt::translate("找不到 courseInfos 课程数组"); return false; }
     QList<Course> imported;
     for(const auto& item:data) {
         const QJsonObject o=item.toObject();
@@ -385,18 +487,18 @@ bool ScheduleStore::importXiaoAi(const QJsonObject& root, QString* error) {
         c.weekday=o.value("day").toInt();
         c.weeks=readWeeks(o.value("weeks"));
         const QJsonArray sections=o.value("sections").toArray();
-        if(sections.isEmpty()) { if(error) *error=QStringLiteral("小爱课程缺少节次信息"); return false; }
+        if(sections.isEmpty()) { if(error) *error=tt::translate("小爱课程缺少节次信息"); return false; }
         const int first=sections.first().toObject().value("section").toInt();
         const int last=sections.last().toObject().value("section").toInt();
         if(!periods.contains(first) || !periods.contains(last)) {
-            if(error) *error=QStringLiteral("第 %1-%2 节尚未配置上课时间，请先到设置页调整").arg(first).arg(last);
+            if(error) *error=tt::translate("第 %1-%2 节尚未配置上课时间，请先到设置页调整").arg(first).arg(last);
             return false;
         }
         c.start=periods.value(first).first;
         c.end=periods.value(last).second;
         if(!validCourse(c,error)) return false;
         for(int w:c.weeks) if(w>totalWeeks) {
-            if(error) *error=QStringLiteral("小爱课程周数大于学期总周数，请先调整设置");
+            if(error) *error=tt::translate("小爱课程周数大于学期总周数，请先调整设置");
             return false;
         }
         imported<<c;
@@ -407,11 +509,15 @@ bool ScheduleStore::importXiaoAi(const QJsonObject& root, QString* error) {
 bool ScheduleStore::importCsv(const QByteArray& bytes, QString* error) {
     QString raw=QString::fromUtf8(bytes);
     if(raw.startsWith(QChar(0xFEFF))) raw.remove(0,1);
-    const auto lines=raw.split(QRegularExpression("\r\n|\n|\r"),Qt::SkipEmptyParts);
+    QList<QStringList> records;
+    if(!csvRecords(raw,&records,error)) return false;
     QList<Course> imported;
-    for(int i=0;i<lines.size();++i) {
-        const QStringList cells=csvFields(lines.at(i));
-        if(cells.size()<4) continue;
+    for(int i=0;i<records.size();++i) {
+        const QStringList cells=records.at(i);
+        if(cells.size()<4) {
+            if(error) *error=tt::translate("CSV 第 %1 条记录少于 4 列").arg(i+1);
+            return false;
+        }
         if(i==0 && (cells[0].contains(QStringLiteral("星期")) ||
                      cells[0].contains(QStringLiteral("课程")) ||
                      cells[0].compare("day",Qt::CaseInsensitive)==0 ||
@@ -431,32 +537,64 @@ bool ScheduleStore::importCsv(const QByteArray& bytes, QString* error) {
         if(cells.size()>5) c.teacher=cells[5];
         if(cells.size()>6) c.room=cells[6];
         if(!validCourse(c,error)) {
-            if(error) *error=QStringLiteral("CSV 第 %1 行：%2").arg(i+1).arg(*error);
+            if(error) *error=tt::translate("CSV 第 %1 行：%2").arg(i+1).arg(*error);
             return false;
         }
         imported<<c;
     }
-    if(imported.isEmpty()) { if(error) *error=QStringLiteral("CSV 中没有有效课程"); return false; }
+    if(imported.isEmpty()) { if(error) *error=tt::translate("CSV 中没有有效课程"); return false; }
     courses=imported; changes.clear(); dayInfos.clear(); return true;
 }
 bool ScheduleStore::importFile(const QString& path, QString* error) {
+    return importFile(path,ImportMode::Replace,error);
+}
+bool ScheduleStore::importFile(const QString& path, ImportMode mode, QString* error) {
     QFile file(path);
     if(!file.open(QIODevice::ReadOnly)) { if(error) *error=file.errorString(); return false; }
     const QByteArray bytes=file.readAll();
     ScheduleStore copy=*this;
-    bool ok=false;
+    bool ok=false,native=false;
     if(path.endsWith(".csv",Qt::CaseInsensitive)) ok=copy.importCsv(bytes,error);
     else {
         QJsonParseError pe;
         const auto doc=QJsonDocument::fromJson(bytes,&pe);
         if(!doc.isObject()) { if(error) *error=pe.errorString(); return false; }
         const auto obj=doc.object();
-        if(obj.value("schema").toString()=="timetable-next/v1") ok=copy.fromJson(obj,error);
+        if(obj.value("schema").toString()=="timetable-next/v1") { native=true; ok=copy.fromJson(obj,error); }
         else if(obj.contains("data") || obj.contains("courseInfos")) ok=copy.importXiaoAi(obj,error);
         else ok=copy.importLegacy(obj,error);
     }
-    if(ok) *this=copy;
-    return ok;
+    if(!ok) return false;
+    if(mode==ImportMode::Replace) { *this=copy; return true; }
+    if(native&&semesterMonday!=copy.semesterMonday) {
+        if(error) *error=tt::translate("追加的课表开学日期与当前学期不同，请改用替换或切换学期档案");
+        return false;
+    }
+    ScheduleStore merged=*this;
+    QSet<QString> ids;
+    for(const auto& course:merged.courses) ids.insert(course.id);
+    for(auto course:copy.courses) {
+        for(int week:course.weeks) if(week>merged.totalWeeks) {
+            if(error) *error=tt::translate("追加课程周数超出当前学期范围");
+            return false;
+        }
+        bool duplicate=false;
+        for(const auto& existing:merged.courses) if(sameCourse(existing,course)) { duplicate=true; break; }
+        if(duplicate) continue;
+        if(course.id.isEmpty()||ids.contains(course.id)) course.id=makeId();
+        ids.insert(course.id); merged.courses<<course;
+    }
+    for(auto it=copy.dayInfos.cbegin();it!=copy.dayInfos.cend();++it)
+        for(const auto& message:it.value())
+            if(!merged.dayInfos[it.key()].contains(message)) merged.dayInfos[it.key()]<<message;
+    for(const auto& change:copy.changes) {
+        bool exists=false;
+        for(const auto& existing:merged.changes) if(existing.date==change.date) { exists=true; break; }
+        if(!exists) merged.changes<<change;
+    }
+    std::sort(merged.changes.begin(),merged.changes.end(),[](const DayChange& a,const DayChange& b){return a.date<b.date;});
+    *this=merged;
+    return true;
 }
 bool ScheduleStore::exportCsv(const QString& path, QString* error) const {
     QByteArray out=QByteArray::fromHex("EFBBBF");
@@ -495,7 +633,7 @@ bool ScheduleStore::exportXiaoAiJson(const QString& path, QString* error) const 
             if(it.value().second==c.end) last=it.key();
         }
         if(!first || !last || first>last) {
-            if(error) *error=QStringLiteral("课程「%1」时间与节次表不匹配，无法无损导出为小爱结构；请先调整节次时间").arg(c.name);
+            if(error) *error=tt::translate("课程「%1」时间与节次表不匹配，无法无损导出为小爱结构；请先调整节次时间").arg(c.name);
             return false;
         }
         QJsonArray sections;

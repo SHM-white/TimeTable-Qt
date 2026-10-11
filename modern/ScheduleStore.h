@@ -31,8 +31,21 @@ struct DayChange {
     QDate sourceDate;
 };
 
+struct CourseConflict {
+    int firstIndex = -1;
+    int secondIndex = -1;
+    QVector<int> weeks;
+};
+
+struct CourseReminder {
+    Course course;
+    QDateTime startsAt;
+    QString key() const;
+};
+
 class ScheduleStore {
 public:
+    enum class ImportMode { Replace, Append };
     QDate semesterMonday;
     int totalWeeks = 20;
     QList<Course> courses;
@@ -52,12 +65,16 @@ public:
     QList<Course> coursesForWeek(int week) const;
     const Course* currentCourse(const QDateTime& now) const;
     bool nextCourse(const QDateTime& now, Course* course, QDateTime* start) const;
+    QList<CourseConflict> conflicts() const;
+    QList<CourseReminder> remindersDue(const QDateTime& now, int minutesBefore,
+                                      int graceSeconds = 60) const;
 
     QJsonObject toJson() const;
     bool fromJson(const QJsonObject& root, QString* error = nullptr);
     bool load(const QString& path, QString* error = nullptr);
     bool save(const QString& path, QString* error = nullptr) const;
     bool importFile(const QString& path, QString* error = nullptr);
+    bool importFile(const QString& path, ImportMode mode, QString* error = nullptr);
     bool exportCsv(const QString& path, QString* error = nullptr) const;
     bool exportIcs(const QString& path, QString* error = nullptr) const;
     bool exportXiaoAiJson(const QString& path, QString* error = nullptr) const;
