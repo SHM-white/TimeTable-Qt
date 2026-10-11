@@ -100,4 +100,4 @@ begin
   end;
 end;
 
-; No user-data files or QSettings registry keys are removed on uninstall.
+// No user-data files or QSettings registry keys are removed on uninstall.
