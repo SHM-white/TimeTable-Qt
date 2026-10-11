@@ -83,6 +83,14 @@ if(BUILD_TESTING)
     add_test(NAME mainwindow_tests COMMAND mainwindow_tests)
     set_tests_properties(overlay_tests mainwindow_tests PROPERTIES
         ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
+    # Windows Qt 5's offscreen QPA plugin is suitable for paint regressions
+    # but may crash when showing a modal file/message dialog. Run that
+    # interaction suite against the native Windows platform plugin instead.
+    # Keep Qt 6 and all other Qt 5 graphical tests running offscreen.
+    if(WIN32 AND TT_QT_MAJOR EQUAL 5)
+        set_tests_properties(mainwindow_tests PROPERTIES
+            ENVIRONMENT "QT_QPA_PLATFORM=windows")
+    endif()
     add_executable(content_tests tests/content_tests.cpp)
     target_link_libraries(content_tests PRIVATE timetable_elements Qt${TT_QT_MAJOR}::Widgets)
     add_test(NAME content_tests COMMAND content_tests)
