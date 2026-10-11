@@ -30,6 +30,17 @@ jobs:
           ./build/bin/TimeTableNext --smoke-test-dark
           ./build/bin/TimeTableNext --smoke-navigation
           ./build/bin/TimeTableNext --smoke-test-english
+      - name: Package Linux Qt6 / Ubuntu 24.04
+        run: bash packaging/linux/package.sh build Qt6
+      - name: Upload Linux Qt6 DEB + tar.gz
+        uses: actions/upload-artifact@v4
+        with:
+          name: TimeTableNext-Linux-Qt6
+          path: |
+            TimeTableNext-v*-Linux-Qt6-amd64.deb
+            TimeTableNext-v*-Linux-Qt6-x86_64.tar.gz
+          if-no-files-found: error
+          retention-days: 30
   qt5-compatibility:
     name: Qt 5.15 legacy compatibility
     runs-on: ubuntu-24.04
@@ -53,6 +64,17 @@ jobs:
           ./build-qt5/bin/TimeTableNext --smoke-test-dark
           ./build-qt5/bin/TimeTableNext --smoke-navigation
           ./build-qt5/bin/TimeTableNext --smoke-test-english
+      - name: Package Linux Qt5 / Ubuntu 24.04
+        run: bash packaging/linux/package.sh build-qt5 Qt5
+      - name: Upload Linux Qt5 DEB + tar.gz
+        uses: actions/upload-artifact@v4
+        with:
+          name: TimeTableNext-Linux-Qt5
+          path: |
+            TimeTableNext-v*-Linux-Qt5-amd64.deb
+            TimeTableNext-v*-Linux-Qt5-x86_64.tar.gz
+          if-no-files-found: error
+          retention-days: 30
 
   windows-qt5-legacy:
     name: Windows Qt 5.15 ZIP + installer / Win7 candidate
