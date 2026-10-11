@@ -36,3 +36,23 @@ if ($LASTEXITCODE -ne 0) { throw 'Inno Setup compilation failed' }
 Qt 5 使用对应 Qt 5 的 `windeployqt`，增加 `/DQt5Legacy` 参数，并使用 Inno Setup 6.2.2 编译。没有该参数时脚本构建 Qt 6 安装包。输出为 `TimeTableNext-<版本>-Qt<5或6>-Windows-x64-Setup.exe`。
 
 安装包尚需由 Windows CI 实际编译并在目标 Windows 系统验收；Linux 静态检查不能替代安装、升级和卸载测试。
+
+## Linux 包（Ubuntu 24.04 AMD64）
+
+`modern-build.yml` 的 Linux Qt6 和 Qt5 任务先编译、运行 CTest 和无界面启动检查，全部通过后各自产生两个包，并上传为 Actions artifacts：
+
+| Qt 构建 | artifact | 内含文件 |
+| --- | --- | --- |
+| Qt6 | `TimeTableNext-Linux-Qt6` | `TimeTableNext-v4.2.0-Linux-Qt6-amd64.deb`、对应 `.tar.gz` |
+| Qt5 | `TimeTableNext-Linux-Qt5` | `TimeTableNext-v4.2.0-Linux-Qt5-amd64.deb`、对应 `.tar.gz` |
+
+版本号实际由 `CMakeLists.txt` 读取，上表仅为当前版本示例。两种 DEB 都使用 Debian 包名 `timetable-next`，因此应二选一安装（安装另一个会替换原版本）。它们使用 Ubuntu 24.04 的系统 Qt 依赖，不包含 Qt 运行库，也不保证在 Debian 12、Ubuntu 22.04 或其他发行版上直接可安装。
+
+下载对应 DEB 后在其所在目录执行：
+
+```bash
+sudo apt install ./TimeTableNext-v4.2.0-Linux-Qt6-amd64.deb
+TimeTableNext
+```
+
+也可以从应用启动菜单打开。打包脚本 `packaging/linux/package.sh` 在仓库根目录执行，例如 `bash packaging/linux/package.sh build Qt6`；还生成可解压运行的 Linux tar.gz（仍需系统自行安装 Qt 运行时）。Linux 安装包与 Windows 安装包一样只上传 CI artifacts，**不会由开发分支自动发布 Release**；正式发布工作流 `release.yml` 目前仍是历史 v4.1.0 发布配置。
