@@ -90,6 +90,23 @@ jobs:
           foreach ($name in @('Qt5Core.dll', 'Qt5Gui.dll', 'Qt5Widgets.dll', 'Qt5Network.dll')) {
             if (-not (Test-Path "build-win7/$name")) { throw "Missing test dependency: $name" }
           }
+      - name: Provide Windows system fonts to Qt5 offscreen tests
+        shell: pwsh
+        run: |
+          # Qt 5's Windows offscreen QPA plugin uses QBasicFontDatabase.
+          # It looks in <Qt application directory>/lib/fonts rather than
+          # resolving installed Windows fonts automatically. Without a font,
+          # QPainter renders empty text and geometry assertions fail.
+          $fontDir = 'build-win7/lib/fonts'
+          New-Item -ItemType Directory -Force -Path $fontDir | Out-Null
+          foreach ($font in @('arial.ttf', 'segoeui.ttf', 'msyh.ttc')) {
+            $source = Join-Path (Join-Path $env:WINDIR 'Fonts') $font
+            if (Test-Path $source) { Copy-Item -Path $source -Destination $fontDir }
+          }
+          if (-not (Get-ChildItem -Path $fontDir -File -Filter '*.ttf' | Select-Object -First 1)) {
+            throw 'Qt5 offscreen tests require at least one installed TrueType font'
+          }
+          # Fonts are used only by the CI tests; they are not packaged.
       - name: Test
         env:
           # Qt5 on Windows otherwise may send qCritical diagnostics to
