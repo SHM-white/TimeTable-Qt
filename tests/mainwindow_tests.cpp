@@ -158,9 +158,11 @@ int main(int argc,char** argv) {
             }
     });
     closeWarnings.start(10);
+    qInfo()<<"Beginning protected-startup dialog regression";
     {
         MainWindow window;
         closeWarnings.stop();
+        qInfo()<<"Protected-startup dialog closed";
         check(startupWarnings.size()==1,"failed startup reports a warning");
         check(startupWarnings.join(" ").contains(QStringLiteral("自动保存已暂停")),
               "warning explains persistent save protection");
