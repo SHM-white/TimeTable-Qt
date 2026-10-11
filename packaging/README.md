@@ -37,22 +37,27 @@ Qt 5 使用对应 Qt 5 的 `windeployqt`，增加 `/DQt5Legacy` 参数，并使�
 
 安装包尚需由 Windows CI 实际编译并在目标 Windows 系统验收；Linux 静态检查不能替代安装、升级和卸载测试。
 
-## Linux 包（Ubuntu 24.04 AMD64）
+## Linux DEB 与 tar.gz（按发行版分别构建）
 
-`modern-build.yml` 的 Linux Qt6 和 Qt5 任务先编译、运行 CTest 和无界面启动检查，全部通过后各自产生两个包，并上传为 Actions artifacts：
+CI 在目标发行版上分别编译、测试和打包。Ubuntu 24.04 使用 GitHub Ubuntu runner，Debian 13 使用 `debian:trixie` 容器。两套 Qt 5 / Qt 6 均要通过 CTest、深浅色和英文界面冒烟测试，打包后再模拟 APT 安装。
 
-| Qt 构建 | artifact | 内含文件 |
+| 目标 | Actions artifact | DEB 文件名（4.2.0 示例） |
 | --- | --- | --- |
-| Qt6 | `TimeTableNext-Linux-Qt6` | `TimeTableNext-v4.2.0-Linux-Qt6-amd64.deb`、对应 `.tar.gz` |
-| Qt5 | `TimeTableNext-Linux-Qt5` | `TimeTableNext-v4.2.0-Linux-Qt5-amd64.deb`、对应 `.tar.gz` |
+| Debian 13 Qt6 | `TimeTableNext-Debian13-Qt6` | `TimeTableNext-v4.2.0-Linux-Debian13-Qt6-amd64.deb` |
+| Debian 13 Qt5 | `TimeTableNext-Debian13-Qt5` | `TimeTableNext-v4.2.0-Linux-Debian13-Qt5-amd64.deb` |
+| Ubuntu 24.04 Qt6 | `TimeTableNext-Ubuntu24.04-Qt6` | `TimeTableNext-v4.2.0-Linux-Ubuntu24.04-Qt6-amd64.deb` |
+| Ubuntu 24.04 Qt5 | `TimeTableNext-Ubuntu24.04-Qt5` | `TimeTableNext-v4.2.0-Linux-Ubuntu24.04-Qt5-amd64.deb` |
 
-版本号实际由 `CMakeLists.txt` 读取，上表仅为当前版本示例。两种 DEB 都使用 Debian 包名 `timetable-next`，因此应二选一安装（安装另一个会替换原版本）。它们使用 Ubuntu 24.04 的系统 Qt 依赖，不包含 Qt 运行库，也不保证在 Debian 12、Ubuntu 22.04 或其他发行版上直接可安装。
+每个 artifact 还包括相同平台和 Qt 版本的 `.tar.gz`。版本号从 `CMakeLists.txt` 提取；所有 DEB 包名均为 `timetable-next`，Qt 5 和 Qt 6 应二选一安装。
 
-下载对应 DEB 后在其所在目录执行：
+**请勿在 Debian 上安装 Ubuntu 版 DEB。** Debian 13 Qt6 依赖 `libqt6widgets6`、`libqt6network6`，Ubuntu 24.04 则使用 `libqt6widgets6t64`、`libqt6network6t64`。二者还分别使用不同发行版的 Qt 和 glibc 编译环境。
+
+Debian 13 安装示例：
 
 ```bash
-sudo apt install ./TimeTableNext-v4.2.0-Linux-Qt6-amd64.deb
+cat /etc/os-release
+sudo apt install ./TimeTableNext-v4.2.0-Linux-Debian13-Qt6-amd64.deb
 TimeTableNext
 ```
 
-也可以从应用启动菜单打开。打包脚本 `packaging/linux/package.sh` 在仓库根目录执行，例如 `bash packaging/linux/package.sh build Qt6`；还生成可解压运行的 Linux tar.gz（仍需系统自行安装 Qt 运行时）。Linux 安装包与 Windows 安装包一样只上传 CI artifacts，**不会由开发分支自动发布 Release**；正式发布工作流 `release.yml` 目前仍是历史 v4.1.0 发布配置。
+本地使用 `bash packaging/linux/package.sh build Qt6` 打包；只支持 Debian 13 和 Ubuntu 24.04 AMD64，且需要在目标发行版已经完成的 CMake 构建目录。CI 检查真实 APT 包名并执行 `apt-get install --simulate`。Debian 12、Ubuntu 22.04 不在本次构建范围。开发产物保存在 Actions Artifacts，不会自动发布 Releases；`release.yml` 当前仍是历史 v4.1.0 正式发布工作流。
