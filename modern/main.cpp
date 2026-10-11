@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 #include "DesktopOverlays.h"
+#include "Translation.h"
 #include <QStyleFactory>
 #include <QSettings>
 #include <QTimer>
@@ -15,7 +16,7 @@ int main(int argc, char *argv[]) {
     app.setStyle(QStyleFactory::create("Fusion"));
     QCoreApplication::setOrganizationName("TimeTableQt");
     QCoreApplication::setApplicationName("TimeTableNext");
-    QCoreApplication::setApplicationVersion("4.0.0");
+    QCoreApplication::setApplicationVersion(TIMETABLE_VERSION);
     QApplication::setQuitOnLastWindowClosed(false);
     QFont font;
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
@@ -29,6 +30,9 @@ int main(int argc, char *argv[]) {
     // Headless CI regression path to catch UI startup failures on both themes.
     if(arguments.contains("--smoke-test-dark")) QSettings().setValue("dark",true);
     if(arguments.contains("--smoke-test-light")) QSettings().setValue("dark",false);
+    if(arguments.contains("--smoke-test-english"))QSettings().setValue("ui/language","en");
+    tt::AppTranslator translator;
+    translator.activate(QSettings().value("ui/language","zh_CN").toString());
     tt::MainWindow window;
     tt::DesktopOverlays overlays(&window);
     window.setOpenOverlaySettings([&overlays]{overlays.openConfiguration();});
@@ -49,7 +53,8 @@ int main(int argc, char *argv[]) {
             }
             QCoreApplication::quit();
         });
-    } else if(arguments.contains("--smoke-test-dark") || arguments.contains("--smoke-test-light"))
+    } else if(arguments.contains("--smoke-test-dark") || arguments.contains("--smoke-test-light") ||
+              arguments.contains("--smoke-test-english"))
         QTimer::singleShot(500,&app,&QCoreApplication::quit);
     return app.exec();
 }

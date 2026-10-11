@@ -1,5 +1,7 @@
 name: TimeTable Next - Build and Package
 on:
+  push:
+    branches: ['codex/desktop-migration-*']
   pull_request:
   workflow_dispatch:
 permissions:
@@ -27,6 +29,7 @@ jobs:
           ./build/bin/TimeTableNext --smoke-test-light
           ./build/bin/TimeTableNext --smoke-test-dark
           ./build/bin/TimeTableNext --smoke-navigation
+          ./build/bin/TimeTableNext --smoke-test-english
   qt5-compatibility:
     name: Qt 5.15 legacy compatibility
     runs-on: ubuntu-24.04
@@ -49,9 +52,10 @@ jobs:
           ./build-qt5/bin/TimeTableNext --smoke-test-light
           ./build-qt5/bin/TimeTableNext --smoke-test-dark
           ./build-qt5/bin/TimeTableNext --smoke-navigation
+          ./build-qt5/bin/TimeTableNext --smoke-test-english
 
   windows-qt5-legacy:
-    name: Windows Qt 5.15 portable / Win7 candidate
+    name: Windows Qt 5.15 ZIP + installer / Win7 candidate
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
@@ -93,15 +97,49 @@ jobs:
           windeployqt --release --no-translations --dir dist/TimeTableNext-Qt5 dist/TimeTableNext-Qt5/TimeTableNext.exe
           Copy-Item README-NEXT.md dist/TimeTableNext-Qt5/README.txt
           Compress-Archive -Path dist/TimeTableNext-Qt5 -DestinationPath TimeTableNext-Qt5-Win7-Candidate.zip -Force
+      - name: Prepare Inno Setup 6.2.2
+        shell: pwsh
+        run: |
+          $iscc = Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6/ISCC.exe'
+          $isccCommand = Get-Command ISCC.exe -ErrorAction SilentlyContinue
+          if ($isccCommand) { $iscc = $isccCommand.Source }
+          $version = if (Test-Path $iscc) { (Get-Item $iscc).VersionInfo.ProductVersion } else { '' }
+          if ($version -notmatch '^6\.2\.2(?:\D|$)') {
+            if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
+              throw 'Inno Setup 6.2.2 is required for the legacy installer, and Chocolatey is unavailable'
+            }
+            choco upgrade innosetup --version=6.2.2 --allow-downgrade --force --yes --no-progress
+            if ($LASTEXITCODE -ne 0) { throw 'Inno Setup installation failed' }
+            $iscc = Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6/ISCC.exe'
+          }
+          if (-not (Test-Path $iscc)) { throw 'ISCC.exe was not found' }
+          "TIMETABLE_ISCC=$iscc" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+      - name: Build Qt 5 per-user installer
+        shell: pwsh
+        run: |
+          $versionMatch = [regex]::Match((Get-Content CMakeLists.txt -Raw), '(?m)^\s*project\(TimeTableNext\s+VERSION\s+([0-9]+\.[0-9]+\.[0-9]+)')
+          if (-not $versionMatch.Success) { throw 'Cannot read the CMake project version' }
+          & $env:TIMETABLE_ISCC "/DAppVersion=$($versionMatch.Groups[1].Value)" `
+            "/DSourceDir=$((Resolve-Path dist/TimeTableNext-Qt5).Path)" `
+            "/DOutputDir=$PWD/dist/installers" /DQt5Legacy `
+            packaging/windows/TimeTableNext.iss
+          if ($LASTEXITCODE -ne 0) { throw 'Inno Setup compilation failed' }
       - uses: actions/upload-artifact@v4
         with:
           name: TimeTableNext-Qt5-Win7-Candidate
           path: TimeTableNext-Qt5-Win7-Candidate.zip
           if-no-files-found: error
           retention-days: 30
+      - name: Upload Qt 5 installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: TimeTableNext-Qt5-Windows-x64-Installer
+          path: dist/installers/TimeTableNext-*-Qt5-Windows-x64-Setup.exe
+          if-no-files-found: error
+          retention-days: 30
 
   windows-portable:
-    name: Windows x64 / portable ZIP
+    name: Windows x64 / ZIP + installer
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
@@ -131,10 +169,43 @@ jobs:
           windeployqt --release --no-translations --dir dist/TimeTableNext dist/TimeTableNext/TimeTableNext.exe
           Copy-Item README-NEXT.md dist/TimeTableNext/README.txt
           Compress-Archive -Path dist/TimeTableNext -DestinationPath TimeTableNext-Windows-x64.zip -Force
+      - name: Prepare Inno Setup
+        shell: pwsh
+        run: |
+          $iscc = Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6/ISCC.exe'
+          $isccCommand = Get-Command ISCC.exe -ErrorAction SilentlyContinue
+          if ($isccCommand) { $iscc = $isccCommand.Source }
+          if (-not (Test-Path $iscc)) {
+            if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
+              throw 'Inno Setup is required, and Chocolatey is unavailable'
+            }
+            choco install innosetup --version=6.2.2 --yes --no-progress
+            if ($LASTEXITCODE -ne 0) { throw 'Inno Setup installation failed' }
+            $iscc = Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6/ISCC.exe'
+          }
+          if (-not (Test-Path $iscc)) { throw 'ISCC.exe was not found' }
+          "TIMETABLE_ISCC=$iscc" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+      - name: Build Qt 6 per-user installer
+        shell: pwsh
+        run: |
+          $versionMatch = [regex]::Match((Get-Content CMakeLists.txt -Raw), '(?m)^\s*project\(TimeTableNext\s+VERSION\s+([0-9]+\.[0-9]+\.[0-9]+)')
+          if (-not $versionMatch.Success) { throw 'Cannot read the CMake project version' }
+          & $env:TIMETABLE_ISCC "/DAppVersion=$($versionMatch.Groups[1].Value)" `
+            "/DSourceDir=$((Resolve-Path dist/TimeTableNext).Path)" `
+            "/DOutputDir=$PWD/dist/installers" `
+            packaging/windows/TimeTableNext.iss
+          if ($LASTEXITCODE -ne 0) { throw 'Inno Setup compilation failed' }
       - name: Upload Windows ZIP
         uses: actions/upload-artifact@v4
         with:
           name: TimeTableNext-Windows-x64
           path: TimeTableNext-Windows-x64.zip
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload Windows installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: TimeTableNext-Windows-x64-Installer
+          path: dist/installers/TimeTableNext-*-Qt6-Windows-x64-Setup.exe
           if-no-files-found: error
           retention-days: 30
