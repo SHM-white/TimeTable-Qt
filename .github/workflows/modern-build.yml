@@ -1,17 +1,28 @@
-name: TimeTable Next - Build and Package
+name: Build and Package (Qt5 / Qt6)
 on:
   push:
-    branches: ['codex/desktop-migration-*']
+    branches: [master]
   pull_request:
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      source_ref:
+        description: Git ref to build when called from Release
+        required: false
+        type: string
 permissions:
   contents: read
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   linux-tests:
     name: Linux / model tests
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_ref || github.sha }}
       - name: Install Qt
         run: |
           sudo apt-get update
@@ -46,6 +57,8 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_ref || github.sha }}
       - name: Install legacy Qt
         run: |
           sudo apt-get update
@@ -100,6 +113,8 @@ jobs:
           apt-get install -y --no-install-recommends git ca-certificates \
             build-essential cmake ninja-build dpkg-dev fontconfig fonts-dejavu-core ${{ matrix.packages }}
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_ref || github.sha }}
       - name: Build using Debian Qt
         shell: bash
         run: |
@@ -134,6 +149,8 @@ jobs:
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_ref || github.sha }}
       - name: MSVC compiler environment
         uses: ilammy/msvc-dev-cmd@v1
         with:
@@ -249,6 +266,8 @@ jobs:
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_ref || github.sha }}
       - name: MSVC developer environment
         uses: ilammy/msvc-dev-cmd@v1
         with:

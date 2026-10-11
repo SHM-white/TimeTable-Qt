@@ -94,6 +94,6 @@ ctest --test-dir build -C Release --output-on-failure
 
 Qt5 可加 `-DTIMETABLE_FORCE_QT5=ON`，并使用独立构建目录。Linux GUI 检查可设置 `QT_QPA_PLATFORM=offscreen`，运行 `build/bin/TimeTableNext --smoke-test-light`、`--smoke-test-dark`、`--smoke-navigation` 或 `--smoke-test-english`。
 
-Windows 工作流配置 Qt6.8.3 / x64 主构建和 Qt5.15.2 / x64 Win7 兼容候选，分别运行 `windeployqt` 并生成便携 ZIP 和 Inno Setup 当前用户安装包。安装流程支持快捷方式、可选自启、升级和卸载保留用户数据；不会自动发布 Releases。具体 artifact 名称和本地打包方法见 [安装包说明](packaging/README.md)。是否已产生可下载包需核对对应 Windows CI 作业结果。
+Windows 工作流配置 Qt6.8.3 / x64 主构建和 Qt5.15.2 / x64 Win7 兼容候选，分别运行 `windeployqt` 并生成便携 ZIP 和 Inno Setup 当前用户安装包。安装流程支持快捷方式、可选自启、升级和卸载保留用户数据；PR 和主分支构建只上传 Actions artifacts，正式版本 Tag 才触发 Release。具体 artifact 名称和本地打包方法见 [安装包说明](packaging/README.md)，发版规则见 [CI / Release 指南](docs/CI_RELEASE.md)。是否已产生可下载包需核对对应 Windows CI 作业结果。
 
 本轮 Linux Release 构建中，Qt5.15 和 Qt6 均通过全部 8 组回归（共 16/16）：课表、元素、桌面窗口、主窗口数据保护、内容源、编辑器、布局存储和翻译；两套构建的浅色、深色、页面切换及英文启动检查也全部通过（共 8/8）。真实 Windows 安装/升级/卸载、亚克力、多屏、高 DPI、托盘通知、自启与联网服务仍需实机验证；Linux 离屏测试不能证明这些桌面行为。
