@@ -625,11 +625,16 @@ void MainWindow::buildTray() {
 }
 
 void MainWindow::closeEvent(QCloseEvent* event) {
-    if(!reallyQuit_ && tray_ && tray_->isVisible()) {
+    const bool hasTray=tray_ && tray_->isVisible();
+    const bool hasRecoverableCards=canContinueWithOverlays_ && canContinueWithOverlays_();
+    if(!reallyQuit_ && (hasTray || hasRecoverableCards)) {
         hide();event->ignore();
-        tray_->showMessage(QStringLiteral("TimeTable Next"),
-            tt::translate("已最小化到系统托盘，右键托盘图标可退出。"),
-            QSystemTrayIcon::Information,2500);
+        if(hasTray) {
+            tray_->showMessage(QStringLiteral("TimeTable Next"),
+                tt::translate("已最小化到系统托盘，右键托盘图标可退出。"),
+                QSystemTrayIcon::Information,2500);
+        }
+        // DesktopOverlays watches Hide and restores the configured cards.
     } else {
         reallyQuit_=true;
         QApplication::quit();

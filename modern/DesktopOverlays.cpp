@@ -460,7 +460,11 @@ private:
 };
 
 DesktopOverlays::DesktopOverlays(MainWindow* planner):QObject(planner),planner_(planner) {}
-DesktopOverlays::~DesktopOverlays() { qDeleteAll(windows_);windows_.clear(); }
+DesktopOverlays::~DesktopOverlays() {
+    planner_->setCanContinueWithOverlays({});
+    qDeleteAll(windows_);
+    windows_.clear();
+}
 
 OverlayConfig DesktopOverlays::defaultConfig(const QString& type) const {
     OverlayConfig c;
@@ -555,6 +559,15 @@ bool DesktopOverlays::shouldShow(const OverlayConfig& config) const {
         (config.visible || temporarilyShowAll_) && !planner_->isVisible() &&
         !(configurationDialog_ && configurationDialog_->isVisible());
 }
+bool DesktopOverlays::hasRecoverableCards() const {
+    if(temporarilyHidden_) return false;
+    for(const auto& config:configs_) {
+        if(!temporarilyHiddenWindows_.contains(config.id) &&
+            (config.visible || temporarilyShowAll_))
+            return true;
+    }
+    return false;
+}
 void DesktopOverlays::setStartupVisible(const QString& id,bool visible) {
     const int index=indexOf(id);if(index<0)return;
     configs_[index].visible=visible;save();syncVisibility();refreshConfigurationList();
@@ -568,6 +581,7 @@ void DesktopOverlays::autoResized(const QString& id,const QRect& geometry) {
 }
 void DesktopOverlays::start() {
     load();
+    planner_->setCanContinueWithOverlays([this]{return hasRecoverableCards();});
     planner_->installEventFilter(this);
     rebuild();
     planner_->setOnScheduleChanged([this]{refresh();});
@@ -585,11 +599,17 @@ void DesktopOverlays::rebuild() {
         windows_.insert(c.id,w);
         if(shouldShow(c)) {
             w->show();
+            // The Wayland/offscreen QPA plugins (including common WSLg
+            // configurations) cannot animate top-level window opacity.
+            // Keep the existing painted alpha, but only use native fades on
+            // Windows, where the plugin supports setWindowOpacity().
+#ifdef Q_OS_WIN
             auto* animation=new QPropertyAnimation(w,"windowOpacity",w);
             animation->setDuration(190);
             animation->setStartValue(0.0);
             animation->setEndValue(1.0);
             animation->start(QAbstractAnimation::DeleteWhenStopped);
+#endif
         }
     }
     refreshConfigurationList();

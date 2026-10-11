@@ -103,6 +103,7 @@ private:
     void refreshConfigurationList();
     void syncVisibility();
     bool shouldShow(const OverlayConfig& config) const;
+    bool hasRecoverableCards() const;
     void autoResized(const QString& id, const QRect& geometry);
     QString detailsText(const OverlayConfig& config) const;
 };

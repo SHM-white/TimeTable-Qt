@@ -37,12 +37,18 @@ public:
     void openPage(int index);
     void setOnScheduleChanged(std::function<void()> callback) { onScheduleChanged_ = std::move(callback); }
     void setOpenOverlaySettings(std::function<void()> callback) { onOpenOverlaySettings_ = std::move(callback); }
+    // If the system tray is unavailable, closing the planner must still
+    // preserve running desktop cards instead of quitting the whole app.
+    void setCanContinueWithOverlays(std::function<bool()> callback) {
+        canContinueWithOverlays_ = std::move(callback);
+    }
 protected:
     void closeEvent(QCloseEvent* event) override;
 private:
     ScheduleStore store_;
     std::function<void()> onScheduleChanged_;
     std::function<void()> onOpenOverlaySettings_;
+    std::function<bool()> canContinueWithOverlays_;
     QString dataPath_;
     // A failed load must never be replaced by the default / edited in-memory store.
     // Only an explicitly confirmed, successful import lifts this protection.
