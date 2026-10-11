@@ -244,6 +244,31 @@ int main(int argc,char** argv) {
         runEvents(1200);
         check(hasActiveAnimation(card("cycling")),
             "rebuilt cyclic card starts scrolling independently of the data timer phase");
+        // Closing the course/settings manager without a system tray must
+        // return to the desktop cards, not terminate the application.
+        planner.show();
+        runEvents(40);
+        check(card("scrolling") && !card("scrolling")->isVisible(),
+            "opening planner temporarily hides desktop cards");
+        planner.close();
+        runEvents(40);
+        check(!planner.isVisible(),"closing planner hides it instead of leaving it open");
+        check(card("scrolling") && card("scrolling")->isVisible(),
+            "closing planner restores desktop cards with or without a system tray");
+        overlays.openConfiguration();
+        runEvents(40);
+        check(card("scrolling") && !card("scrolling")->isVisible(),
+            "opening desktop settings temporarily hides cards");
+        for(auto* top:QApplication::topLevelWidgets()) {
+            if(top->windowTitle().contains(QStringLiteral("桌面窗口管理"))) {
+                top->close();
+                break;
+            }
+        }
+        runEvents(40);
+        check(card("scrolling") && card("scrolling")->isVisible(),
+            "closing desktop settings restores cards");
+
         const auto preferences=overlays.configurations();
         overlays.hideAll();
         QApplication::processEvents();
