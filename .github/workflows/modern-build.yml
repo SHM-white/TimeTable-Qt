@@ -35,10 +35,10 @@ jobs:
       - name: Upload Linux Qt6 DEB + tar.gz
         uses: actions/upload-artifact@v4
         with:
-          name: TimeTableNext-Linux-Qt6
+          name: TimeTableNext-Ubuntu24.04-Qt6
           path: |
-            TimeTableNext-v*-Linux-Qt6-amd64.deb
-            TimeTableNext-v*-Linux-Qt6-x86_64.tar.gz
+            TimeTableNext-v*-Linux-Ubuntu24.04-Qt6-amd64.deb
+            TimeTableNext-v*-Linux-Ubuntu24.04-Qt6-x86_64.tar.gz
           if-no-files-found: error
           retention-days: 30
   qt5-compatibility:
@@ -69,10 +69,63 @@ jobs:
       - name: Upload Linux Qt5 DEB + tar.gz
         uses: actions/upload-artifact@v4
         with:
-          name: TimeTableNext-Linux-Qt5
+          name: TimeTableNext-Ubuntu24.04-Qt5
           path: |
-            TimeTableNext-v*-Linux-Qt5-amd64.deb
-            TimeTableNext-v*-Linux-Qt5-x86_64.tar.gz
+            TimeTableNext-v*-Linux-Ubuntu24.04-Qt5-amd64.deb
+            TimeTableNext-v*-Linux-Ubuntu24.04-Qt5-x86_64.tar.gz
+          if-no-files-found: error
+          retention-days: 30
+
+
+  debian13-packages:
+    name: Debian 13 / ${{ matrix.flavor }} / tests and packages
+    runs-on: ubuntu-24.04
+    container:
+      image: debian:trixie
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - flavor: Qt6
+            packages: qt6-base-dev qt6-base-dev-tools qt6-qpa-plugins
+            cmake_flags: -DTIMETABLE_FORCE_QT5=OFF
+          - flavor: Qt5
+            packages: qtbase5-dev qtbase5-dev-tools
+            cmake_flags: -DTIMETABLE_FORCE_QT5=ON
+    steps:
+      - name: Install Debian dependencies
+        shell: bash
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends git ca-certificates \
+            build-essential cmake ninja-build dpkg-dev fontconfig fonts-dejavu-core ${{ matrix.packages }}
+      - uses: actions/checkout@v4
+      - name: Build using Debian Qt
+        shell: bash
+        run: |
+          cmake -S . -B build-debian -G Ninja -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_TESTING=ON ${{ matrix.cmake_flags }}
+          cmake --build build-debian --parallel 2
+      - name: Debian CTest and offscreen UI smoke
+        shell: bash
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          ctest --test-dir build-debian --output-on-failure
+          ./build-debian/bin/TimeTableNext --smoke-test-light
+          ./build-debian/bin/TimeTableNext --smoke-test-dark
+          ./build-debian/bin/TimeTableNext --smoke-navigation
+          ./build-debian/bin/TimeTableNext --smoke-test-english
+      - name: Package Debian 13 and simulate APT install
+        shell: bash
+        run: bash packaging/linux/package.sh build-debian ${{ matrix.flavor }}
+      - name: Upload Debian 13 DEB and tar.gz
+        uses: actions/upload-artifact@v4
+        with:
+          name: TimeTableNext-Debian13-${{ matrix.flavor }}
+          path: |
+            TimeTableNext-v*-Linux-Debian13-${{ matrix.flavor }}-amd64.deb
+            TimeTableNext-v*-Linux-Debian13-${{ matrix.flavor }}-x86_64.tar.gz
           if-no-files-found: error
           retention-days: 30
 

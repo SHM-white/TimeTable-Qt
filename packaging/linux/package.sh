@@ -1,27 +1,41 @@
 #!/usr/bin/env bash
-# Build Ubuntu 24.04 AMD64 packages from an already-tested CMake build.
+# This package must be built and tested on its target Linux distribution.
 set -euo pipefail
-
 if [[ $# -ne 2 || ! -f CMakeLists.txt ]]; then
-  echo 'Usage (from repository root): bash packaging/linux/package.sh <build-dir> <Qt5|Qt6>' >&2
+  echo 'Usage: bash packaging/linux/package.sh <build-dir> <Qt5|Qt6>' >&2
   exit 2
 fi
-
 build_dir=$1
 flavor=$2
-case "$flavor" in
-  Qt5) depends='libqt5widgets5t64, libqt5network5t64, libc6, libstdc++6' ;;
-  Qt6) depends='libqt6widgets6t64, libqt6network6t64, qt6-qpa-plugins, libc6, libstdc++6' ;;
+. /etc/os-release
+case "$ID:$VERSION_ID" in
+  ubuntu:24.04) distribution=Ubuntu24.04 ;;
+  debian:13) distribution=Debian13 ;;
+  *) echo "Unsupported build distribution: $ID $VERSION_ID" >&2; exit 2 ;;
+esac
+case "$distribution:$flavor" in
+  Ubuntu24.04:Qt5|Debian13:Qt5)
+    depends='libqt5widgets5t64, libqt5network5t64, libc6, libstdc++6' ;;
+  Ubuntu24.04:Qt6)
+    depends='libqt6widgets6t64, libqt6network6t64, qt6-qpa-plugins, libc6, libstdc++6' ;;
+  Debian13:Qt6)
+    depends='libqt6widgets6, libqt6network6, qt6-qpa-plugins, libc6, libstdc++6' ;;
   *) echo "Unsupported Qt flavor: $flavor" >&2; exit 2 ;;
 esac
-
+IFS=',' read -ra dependency_list <<< "$depends"
+for dependency in "${dependency_list[@]}"; do
+  dependency="${dependency// /}"
+  apt-cache show "$dependency" > /dev/null 2>&1 || {
+    echo "Package not found in $distribution APT sources: $dependency" >&2
+    exit 1
+  }
+done
 version=$(sed -nE 's/^[[:space:]]*project\(TimeTableNext[[:space:]]+VERSION[[:space:]]+([0-9]+\.[0-9]+\.[0-9]+).*/\1/p' CMakeLists.txt | head -n 1)
 [[ -n "$version" ]] || { echo 'Unable to read project version' >&2; exit 1; }
-[[ "$(dpkg --print-architecture)" == amd64 ]] || { echo 'Only Ubuntu x86_64 (amd64) is supported by this CI package' >&2; exit 1; }
+[[ "$(dpkg --print-architecture)" == amd64 ]] || { echo 'Only AMD64 is supported' >&2; exit 1; }
 exe="$build_dir/bin/TimeTableNext"
-[[ -x "$exe" ]] || { echo "Missing executable: $exe" >&2; exit 1; }
-
-out="TimeTableNext-v$version-Linux-$flavor"
+[[ -x "$exe" ]] || { echo "Executable not found: $exe" >&2; exit 1; }
+out="TimeTableNext-v$version-Linux-$distribution-$flavor"
 work=$(mktemp -d)
 trap 'rm -rf "$work"' EXIT
 root="$work/deb"
@@ -47,12 +61,11 @@ Architecture: amd64
 Maintainer: TimeTable-Qt Contributors
 Depends: $depends
 Description: TimeTable Next desktop floating timetable ($flavor)
- Ubuntu 24.04 build with Qt shared libraries provided by the system.
+ Built for $distribution with system-provided Qt shared libraries.
 CONTROL
-
 dpkg-deb --build --root-owner-group "$root" "$out-amd64.deb"
 test "$(dpkg-deb --field "$out-amd64.deb" Version)" = "$version"
-
+apt-get install --simulate "./$out-amd64.deb"
 mkdir -p "$work/tar/TimeTableNext"
 install -m755 "$exe" "$work/tar/TimeTableNext/TimeTableNext"
 install -m644 README-NEXT.md "$work/tar/TimeTableNext/README.md"
